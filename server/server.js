@@ -1,8 +1,14 @@
-/**
- * Is a framework for building node.js web application
- * It allows us to respond to HTTP requests in REST architecture way
- * We create event listeners to HTTP methods like Get, Post and etc
- */
+/*****************************************
+*                 .-::-.                 *
+*              -ohhhhhhhho-              *
+J            `ohhhhhhhhhhhho`            J
+A            ohhhhhhhhhhhhhho            A
+P            hhhhhhhhhhhhhhhh            P            
+A            ohhhhhhhhhhhhhho            A
+N            `ohhhhhhhhhhhho`            N
+*              -ohhhhhhhho-              *
+*                 .-::-.                 *           
+******************************************/
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -29,6 +35,7 @@ app.use('/api/guests', guests);
 app.use('/api/auth/protected/poi', poi);
 
 // END: HTTP REQUESTS ROUTES HANDLERS AND DB REQURESTS
+
 
  /**
   * The server needs to listen to some port in order to handle requests it encounters.

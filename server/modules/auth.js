@@ -22,7 +22,7 @@ router.post('/login', (req, res) => {
     let checkIfValidUserQuery = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
     DButilsAzure.execQuery(checkIfValidUserQuery).then((response, err) =>{
-        if (err) res.status(500).json({message: 'Sorry, there was a problem connecting to the server.'});
+        if (err) res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
         else if (response.length == 0) res.status(400).json({message: 'Username or password is incorrect'});
         else{   
             let usernameForToken = response[0].Username;
@@ -55,6 +55,23 @@ router.post('/register', (req, res) => {
     execRegisterQueries(checkIfUserNameExistQuery, res, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery, insertUserQuestionsQuery, insertNewUserCategoryQuery);
 });
 
+router.get('/register', (req, res) => {
+
+let getCategoriesQuery = `SELECT * FROM categories`;
+DButilsAzure.execQuery(getCategoriesQuery).then((response) => {
+            
+    res.status(200).json({
+        categories: response,
+        countries: optionalCountries
+    });
+})
+.catch((err) =>{
+    res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
+});
+
+
+});
+
 router.post('/forgetPassword', (req, res) => {
     const { error } = validateForgetPassword(req.body);
 
@@ -77,9 +94,12 @@ router.post('/forgetPassword', (req, res) => {
         if (response.length == 0) res.status(400).json({message: 'Wrong answers, please try again.'});
         else {
             DButilsAzure.execQuery(getUsernameAndPasswordQuery).then((response, err) =>{
-                if(err) res.status(500).json({message: 'Sorry, there was a problem connecting to the server.'});
+                if(err) res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
                 else 
-                    res.send(response);
+                    res.status(200).json({
+                        username: response[0].username,
+                        password: response[0].password
+                    });
             })
         }
     })
@@ -125,15 +145,15 @@ function getCountries() {
                         else {
                             DButilsAzure.execQuery(insertNewUserQuery).then((response, err) => {
                                 if (err)
-                                    res.status(500).json({ message: 'Sorry, there was a problem connecting to the server.' });
+                                    res.status(500).json({ message: 'Sorry, An error has occurred on the server. Please, try your request again later.' });
                                 else {
                                     DButilsAzure.execQuery(insertUserQuestionsQuery).then((response, err) => {
                                         if (err)
-                                            res.status(500).json({ message: 'Sorry, there was a problem connecting to the server.' });
+                                            res.status(500).json({ message: 'Sorry, An error has occurred on the server. Please, try your request again later.' });
                                         else {
                                             DButilsAzure.execQuery(insertNewUserCategoryQuery).then((response, err) => {
                                                 if (err)
-                                                    res.status(500).json({ message: 'Sorry, there was a problem connecting to the server.' });
+                                                    res.status(500).json({ message: 'Sorry, An error has occurred on the server. Please, try your request again later.' });
                                                 res.status(200).json({ message: 'Successful Registration to our system. You can login now.' });
                                             });
                                         }
