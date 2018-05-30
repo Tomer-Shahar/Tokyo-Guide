@@ -13,24 +13,23 @@ router.get('/poi/:id', (req,res)=> {
     }
 
     let id = req.params.id;
-    
     let getPOIByIDQueryQuery = `SELECT * FROM poi INNER JOIN categories ON poi.CategoryId=categories.CategoryId WHERE PID = '${id}';`;
     DButilsAzure.execQuery(getPOIByIDQueryQuery).then((response) =>{
         if (response.length !== 1) res.status(400).json({message: 'Wrong ID'});
         else {
-            let views = response[0].Views;
-            views += 1;
+            let views = response[0].Views + 1;
             let POIresponse = response;
             let increaseQuery = `UPDATE poi SET Views = '${views}' WHERE PID = '${id}'`;
-            DButilsAzure.execQuery(increaseQuery).then((response, err) =>{
-                if (err) res.status(500).json({message: 'Sorry, there was a problem connecting to the server.'});
-                else res.status(200).send(POIresponse[0]);
+            DButilsAzure.execQuery(increaseQuery).then((response) =>{
+                res.status(200).send(POIresponse[0]);
+            }).catch((err) =>{
+                res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
             });
         }
     })
     .catch((err) =>{
         res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
-    })
+    });
 });
 
 router.get('/poi', (req,res)=> {

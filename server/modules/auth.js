@@ -7,6 +7,7 @@ const xml2js = require('xml2js');
 const fs = require('fs');
 let optionalCountries = getCountries();
 const secretkey = "khalifa_in_the_middle_attack";
+const expiresInTime = "1d";
 
 router.post('/login', (req, res) => {
     const { error } = validateLogin(req.body);
@@ -21,53 +22,80 @@ router.post('/login', (req, res) => {
     let password = req.body.password;
     let checkIfValidUserQuery = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
-    DButilsAzure.execQuery(checkIfValidUserQuery).then((response, err) =>{
-        if (err) res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
-        else if (response.length == 0) res.status(400).json({message: 'Username or password is incorrect'});
-        else{   
+    DButilsAzure.execQuery(checkIfValidUserQuery).then((response) =>{
+        if (response.length == 0) 
+            res.status(400).json({message: 'Username or password is incorrect'});
+        else {   
             let usernameForToken = response[0].Username;
             let firstNameForToken = response[0].FirstName;
             let lastNameForToken = response[0].LastName;
-            var payload = {
-                username: usernameForToken,
-                firstName: firstNameForToken,
-                lastname: lastNameForToken
-            }
-            console.log(payload)
-            var token = jwt.sign(payload, secretkey, {expiresIn: "1d"}, (err, token) => { res.json({token: token}); });
+            var payload = { username: usernameForToken, firstName: firstNameForToken, lastname: lastNameForToken }
+            var token = jwt.sign(payload, secretkey, {expiresIn: expiresInTime}, (err, token) => { res.json({token: token}); });
         }
-    })
+    }).catch((err) => {
+        res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
+    });
 });
 
 router.post('/register', (req, res) => {
-    getCountries();
     const { error } = validateUser(req.body);
+
     if(error){
         let message = "";
         error.details.forEach( (element) => {message += element.message;});
         return res.status(400).send(message);
     }
 
-    let { checkIfUserNameExistQuery, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery,
-         insertUserQuestionsQuery, insertNewUserCategoryQuery } = getUserDetails(req);
-
+    let username = req.body.username, password = req.body.password, firstName = req.body.firstName;
+    let lastName = req.body.lastName, city = req.body.city, country = req.body.country, email = req.body.email;
+    let questionID1 = req.body.questionID1, answer1 = req.body.answer1, questionID2 = req.body.questionID2;
+    let answer2 = req.body.answer2, category1 = req.body.category1, category2 = req.body.category2;
+    let category3 = req.body.category3, category4 = req.body.category4;
+    let checkIfUserNameExistQuery = `SELECT * FROM users WHERE username = '${username}'`;
+    let checkIfQuestionsExistQuery = `SELECT * FROM questions WHERE QuestionID = '${questionID1}' OR QuestionID  = '${questionID2}' `;
+    let insertNewUserQuery = `INSERT INTO users(Username, Password, FirstName, LastName, City, Country, Email)
+    VALUES ('${username}', '${password}', '${firstName}', '${lastName}', '${city}', '${country}', '${email}');`;
+    let insertUserQuestionsQuery = `INSERT INTO user_qa(Username, QuestionID1, Answer1, QuestionID2, Answer2)
+    VALUES ('${username}', '${questionID1}', '${answer1}', '${questionID2}', '${answer2}');`;
+    let checkIfCategoryExistQurey = `SELECT * FROM categories WHERE CategoryID = '${category1}' OR CategoryID = '${category2}' `;
+    let insertNewUserCategoryQuery = `INSERT INTO user_categories(Username, CategoryID)  
+    VALUES ('${username}', '${category1}'), ('${username}', '${category2}')`;
+    let categoriesLength = 2;
+    if(category1 == category2) 
+        return res.status(400).json({ message: 'Duplicate categories' }); 
+    if (category3 !== undefined) {
+        checkIfCategoryExistQurey += `OR CategoryID = ${category3} `;
+        insertNewUserCategoryQuery += `, ('${username}', '${category3}')`;
+        categoriesLength++;
+        if(category3 == category1 || category3 == category2)
+            return res.status(400).json({ message: 'Duplicate categories' }); 
+    }
+    if (category4 !== undefined) {
+        checkIfCategoryExistQurey += `OR CategoryID = ${category4}`;
+        insertNewUserCategoryQuery += `, ('${username}', '${category4}')`;
+        categoriesLength++;
+        if(category4 == category1 || category4 == category2 || category4 == category3)
+            return res.status(400).json({ message: 'Duplicate categories' }); 
+    }
+    insertNewUserCategoryQuery += `;`;
                                         
     execRegisterQueries(checkIfUserNameExistQuery, res, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery, insertUserQuestionsQuery, insertNewUserCategoryQuery);
 });
 
+
 router.get('/register', (req, res) => {
 
-let getCategoriesQuery = `SELECT * FROM categories`;
-DButilsAzure.execQuery(getCategoriesQuery).then((response) => {
-            
-    res.status(200).json({
-        categories: response,
-        countries: optionalCountries
+    let getCategoriesQuery = `SELECT * FROM categories`;
+    DButilsAzure.execQuery(getCategoriesQuery).then((response) => {
+                
+        res.status(200).json({
+            categories: response,
+            countries: optionalCountries
+        });
+    })
+    .catch((err) =>{
+        res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
     });
-})
-.catch((err) =>{
-    res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
-});
 
 
 });
@@ -93,16 +121,18 @@ router.post('/forgetPassword', (req, res) => {
     DButilsAzure.execQuery(checkQAValidtionQuery).then((response) => {
         if (response.length == 0) res.status(400).json({message: 'Wrong answers, please try again.'});
         else {
-            DButilsAzure.execQuery(getUsernameAndPasswordQuery).then((response, err) =>{
-                if(err) res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
-                else 
-                    res.status(200).json({
-                        username: response[0].username,
-                        password: response[0].password
-                    });
-            })
+            DButilsAzure.execQuery(getUsernameAndPasswordQuery).then((response) =>{
+                res.status(200).json({
+                    username: response[0].username,
+                    password: response[0].password
+                });
+            }).catch((err) =>{
+                res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
+            });
         }
-    })
+    }).catch((err) =>{
+        res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
+    });
 });
 
 router.use('/protected/*', ensureToken, (req, res, next) =>{
@@ -129,73 +159,46 @@ function getCountries() {
     });
     return arrayOfCountries;
   }
+  
 
-  function execRegisterQueries(checkIfUserNameExistQuery, res, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery, insertUserQuestionsQuery, insertNewUserCategoryQuery) {
-    DButilsAzure.execQuery(checkIfUserNameExistQuery).then((response, err) => {
+function execRegisterQueries(checkIfUserNameExistQuery, res, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery, insertUserQuestionsQuery, insertNewUserCategoryQuery) {
+    DButilsAzure.execQuery(checkIfUserNameExistQuery).then((response) => {
         if (response.length != 0)
             res.status(400).json({ message: 'The username already exist' });
         else {
-            DButilsAzure.execQuery(checkIfQuestionsExistQuery).then((response, err) => {
+            DButilsAzure.execQuery(checkIfQuestionsExistQuery).then((response) => {
                 if (response.length != 2)
                     res.status(400).json({ message: 'At least one question id not exist' });
                 else {
-                    DButilsAzure.execQuery(checkIfCategoryExistQurey).then((response, err) => {
+                    DButilsAzure.execQuery(checkIfCategoryExistQurey).then((response) => {
                         if (response.length != categoriesLength)
                             res.status(400).json({ message: 'At least one category id not exist' });
                         else {
-                            DButilsAzure.execQuery(insertNewUserQuery).then((response, err) => {
-                                if (err)
-                                    res.status(500).json({ message: 'Sorry, An error has occurred on the server. Please, try your request again later.' });
-                                else {
-                                    DButilsAzure.execQuery(insertUserQuestionsQuery).then((response, err) => {
-                                        if (err)
-                                            res.status(500).json({ message: 'Sorry, An error has occurred on the server. Please, try your request again later.' });
-                                        else {
-                                            DButilsAzure.execQuery(insertNewUserCategoryQuery).then((response, err) => {
-                                                if (err)
-                                                    res.status(500).json({ message: 'Sorry, An error has occurred on the server. Please, try your request again later.' });
-                                                res.status(200).json({ message: 'Successful Registration to our system. You can login now.' });
-                                            });
-                                        }
+                            DButilsAzure.execQuery(insertNewUserQuery).then((response) => {
+                                DButilsAzure.execQuery(insertUserQuestionsQuery).then((response, err) => {
+                                    DButilsAzure.execQuery(insertNewUserCategoryQuery).then((response, err) => {
+                                        res.status(200).json({ message: 'Successful Registration to our system. You can login now.' });
+                                    }).catch((err) => {
+                                        res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
                                     });
-                                }
+                                }).catch((err) => {
+                                    res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
+                                });
+                            }).catch((err) => {
+                                res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
                             });
                         }
+                    }).catch((err) => {
+                        res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
                     });
                 }
+            }) .catch((err) => {
+                res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
             });
         }
+    }).catch((err) => {
+        res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
     });
-}
-
-function getUserDetails(req) {
-    let username = req.body.username, password = req.body.password, firstName = req.body.firstName;
-    let lastName = req.body.lastName, city = req.body.city, country = req.body.country, email = req.body.email;
-    let questionID1 = req.body.questionID1, answer1 = req.body.answer1, questionID2 = req.body.questionID2;
-    let answer2 = req.body.answer2, category1 = req.body.category1, category2 = req.body.category2;
-    let category3 = req.body.category3, category4 = req.body.category4;
-    let checkIfUserNameExistQuery = `SELECT * FROM users WHERE username = '${username}'`;
-    let checkIfQuestionsExistQuery = `SELECT * FROM questions WHERE QuestionID = '${questionID1}' OR QuestionID  = '${questionID2}' `;
-    let insertNewUserQuery = `INSERT INTO users(Username, Password, FirstName, LastName, City, Country, Email)
-    VALUES ('${username}', '${password}', '${firstName}', '${lastName}', '${city}', '${country}', '${email}');`;
-    let insertUserQuestionsQuery = `INSERT INTO user_qa(Username, QuestionID1, Answer1, QuestionID2, Answer2)
-    VALUES ('${username}', '${questionID1}', '${answer1}', '${questionID2}', '${answer2}');`;
-    let checkIfCategoryExistQurey = `SELECT * FROM categories WHERE CategoryID = '${category1}' OR CategoryID = '${category2}' `;
-    let insertNewUserCategoryQuery = `INSERT INTO user_categories(Username, CategoryID)  
-    VALUES ('${username}', '${category1}'), ('${username}', '${category2}')`;
-    let categoriesLength = 2;
-    if (category3 !== undefined) {
-        checkIfCategoryExistQurey += `OR CategoryID = ${category3} `;
-        insertNewUserCategoryQuery += `, ('${username}', '${category3}')`;
-        categoriesLength++;
-    }
-    if (category4 !== undefined) {
-        checkIfCategoryExistQurey += `OR CategoryID = ${category4}`;
-        insertNewUserCategoryQuery += `, ('${username}', '${category4}')`;
-        categoriesLength++;
-    }
-    insertNewUserCategoryQuery += `;`;
-    return { checkIfUserNameExistQuery, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery, insertUserQuestionsQuery, insertNewUserCategoryQuery };
 }
 
 function ensureToken(req, res, next){

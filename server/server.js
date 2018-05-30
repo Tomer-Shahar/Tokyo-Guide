@@ -1,5 +1,5 @@
 /*****************************************
-*                 .-::-.                 *
+*                                        *
 *              -ohhhhhhhho-              *
 J            `ohhhhhhhhhhhho`            J
 A            ohhhhhhhhhhhhhho            A
@@ -7,7 +7,7 @@ P            hhhhhhhhhhhhhhhh            P
 A            ohhhhhhhhhhhhhho            A
 N            `ohhhhhhhhhhhho`            N
 *              -ohhhhhhhho-              *
-*                 .-::-.                 *           
+*                                        *
 ******************************************/
 const express = require('express');
 const bodyParser = require('body-parser');
