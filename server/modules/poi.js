@@ -157,11 +157,7 @@ router.put('/order', (req, res) => {
 
 });
 
-router.post('/question', (req, res) => {
-    let username = req.username;
-    let getUserQuestionsQuery = `SELECT QuestionId1, QuestionId2 FROM user_qa WHERE Username = '${username}'`;
-    execQuestion(getUserQuestionsQuery, res);
-});
+
 
 router.delete('/favorite', (req, res) => {
     const { error } = validPID(req.body);
@@ -393,26 +389,6 @@ function execFavorite(checkPIDQuery, res, checkPIDQueryWithUsernameQuery, insert
         });
 }
 
-function execQuestion(getUserQuestionsQuery, res) {
-    DButilsAzure.execQuery(getUserQuestionsQuery).then((response, err) => {
-        if (err)
-            res.status(500).json({ message: 'Sorry, there was a problem connecting to the server.' });
-        else if (response.length == 0)
-            res.status(400).json({ message: 'Wrong ID' });
-        else {
-            let QuestionId1 = response[0].QuestionId1;
-            let QuestionId2 = response[0].QuestionId2;
-            let getQuestionsQuery = `SELECT QuestionID, QuestionText FROM questions WHERE QuestionID = '${QuestionId1}' OR QuestionID = '${QuestionId2}'`;
-            DButilsAzure.execQuery(getQuestionsQuery).then((response, err) => {
-                res.status(200).send(response);
-            });
-        }
-    })
-        .catch((err) => {
-            res.status(500).json({ message: 'Sorry, we cant help you to find your POI by ID.' });
-        });
-}
-
 function execOrder(checkPIDQuery, res, numberOfPID, checkPIDQueryWithUsernameQuery, insertOrdersQuery) {
     DButilsAzure.execQuery(checkPIDQuery).then((response) => {
         if (response.length !== numberOfPID)
@@ -436,7 +412,7 @@ function execOrder(checkPIDQuery, res, numberOfPID, checkPIDQueryWithUsernameQue
 
 function validReview(Ranking){
     const schema = {
-       id: Joi.number().required(),
+       id: Joi.number().min(1).required(),
        description: Joi.string().min(50).required()
     };
 
@@ -445,7 +421,7 @@ function validReview(Ranking){
 
 function validRanking(Ranking){
     const schema = {
-       id: Joi.number().required(),
+       id: Joi.number().min(1).required(),
        ranking: Joi.number().integer().required()
     };
 
@@ -454,7 +430,7 @@ function validRanking(Ranking){
 
 function validPID(POI){
     const schema = {
-       id: Joi.number().required()
+       id: Joi.number().min(1).required()
     };
 
     return Joi.validate(POI, schema);
