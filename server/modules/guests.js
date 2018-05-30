@@ -106,6 +106,32 @@ router.get('/review/:id', (req,res)=> {
     })
 });
 
+router.get('/question', (req, res) => {
+    let username = req.username;
+    let getUserQuestionsQuery = `SELECT QuestionId1, QuestionId2 FROM user_qa WHERE Username = '${username}'`;
+    execQuestion(getUserQuestionsQuery, res);
+});
+
+function execQuestion(getUserQuestionsQuery, res) {
+    DButilsAzure.execQuery(getUserQuestionsQuery).then((response, err) => {
+        if (err)
+            res.status(500).json({ message: 'Sorry, there was a problem connecting to the server.' });
+        else if (response.length == 0)
+            res.status(400).json({ message: 'Wrong ID' });
+        else {
+            let QuestionId1 = response[0].QuestionId1;
+            let QuestionId2 = response[0].QuestionId2;
+            let getQuestionsQuery = `SELECT QuestionID, QuestionText FROM questions WHERE QuestionID = '${QuestionId1}' OR QuestionID = '${QuestionId2}'`;
+            DButilsAzure.execQuery(getQuestionsQuery).then((response, err) => {
+                res.status(200).send(response);
+            });
+        }
+    })
+        .catch((err) => {
+            res.status(500).json({ message: 'Sorry, we cant help you to find your POI by ID.' });
+        });
+}
+
 function validReview(POI){
     const schema = {
         number: Joi.number().min(1).required(),

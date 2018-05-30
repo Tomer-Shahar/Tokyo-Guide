@@ -148,6 +148,37 @@ router.use('/protected/*', ensureToken, (req, res, next) =>{
 });
 
 
+router.post('/question', (req, res) => {
+    const { error } = validateID(req.body);
+
+    if(error){
+        let message = "";
+        error.details.forEach( (element) => {message += element.message;});
+        return res.status(400).send(message);
+    }
+    
+    let username = req.body.username;
+    if (username === undefined) return res.status(400).json({ message: 'Wrong ID' });
+    let getUserQuestionsQuery = `SELECT QuestionId1, QuestionId2 FROM user_qa WHERE Username = '${username}'`;
+    execQuestion(getUserQuestionsQuery, res);
+});
+
+
+function execQuestion(getUserQuestionsQuery, res) {
+    DButilsAzure.execQuery(getUserQuestionsQuery).then((response) => {
+        if (response.length == 0)
+            res.status(400).json({ message: 'Wrong ID' });
+        else {
+            let QuestionId1 = response[0].QuestionId1;
+            let QuestionId2 = response[0].QuestionId2;
+            let getQuestionsQuery = `SELECT QuestionID, QuestionText FROM questions WHERE QuestionID = '${QuestionId1}' OR QuestionID = '${QuestionId2}'`;
+            DButilsAzure.execQuery(getQuestionsQuery).then((response, err) => {
+                res.status(200).send(response);
+            }).catch((err) => {res.status(500).json({ message: err }); });
+        }
+    }).catch((err) => {res.status(500).json({ message: err }); });
+}
+
 function getCountries() {
     var parser = new xml2js.Parser({explicitArray : false});
     var xml = fs.readFileSync('./sources/countries.xml', {encoding: 'utf-8'});
@@ -218,6 +249,14 @@ function validateForgetPassword(user){
        answer1: Joi.string().min(3).required(),
        questionID2: Joi.number().required(),
        answer2: Joi.string().min(3).required()
+    };
+
+    return Joi.validate(user, schema);
+}
+
+function validateID(user){
+    const schema = {
+       username: Joi.string().min(3).required()
     };
 
     return Joi.validate(user, schema);
