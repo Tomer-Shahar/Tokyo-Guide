@@ -239,7 +239,7 @@ router.post('/favorites/:number', (req, res) => {
 });
 
 router.post('/favorite', (req, res) => {
-    const { error } = validPID(req.body);
+    const { error } = validReview(req.body);
 
     if(error){
         let message = "";
