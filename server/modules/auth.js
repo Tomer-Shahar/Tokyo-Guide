@@ -181,7 +181,7 @@ function execQuestion(getUserQuestionsQuery, res) {
 
 function getCountries() {
     var parser = new xml2js.Parser({explicitArray : false});
-    var xml = fs.readFileSync('countries.xml', {encoding: 'utf-8'});
+    var xml = fs.readFileSync(__dirname + '\\countries.xml', {encoding: 'utf-8'});
     let arrayOfCountries = new Array();
     parser.parseString(xml,function(err,result){
         let countries = JSON.parse(JSON.stringify(result))['Countries']['Country'];
