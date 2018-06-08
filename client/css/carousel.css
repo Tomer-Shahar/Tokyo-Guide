@@ -21,11 +21,6 @@ body {
   z-index: 10;
 }
 
-#journey{
-  width: 2.2rem;
-  height: 2.2rem;
-}
-
 /* Declare heights because of positioning of img element */
 .carousel-item {
   height: 32rem;

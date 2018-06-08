@@ -13,7 +13,7 @@
               <div class="container">
                 <div id="first-caption" class="carousel-caption text-left">
                   <h1>Welcome to Tokyo.</h1>
-                  <p>Welcome to the official Tokyo travelling guide site. Help yourself discover all of the marvel known as Tokyo </p>
+                  <p>Welcome to the official Tokyo travelling guide site. Help yourself discover all of the marvel known as Tokyo.</p>
                   <p><a class="btn btn-lg btn-primary" href="#" role="button">Register today</a></p>
                 </div>
               </div>
@@ -70,20 +70,23 @@
         <div class="col-lg-4">
           <img id="first-circle" class="rounded-circle" src="resources/images/redCircle.jpg" alt="Generic placeholder image" width="140" height="140">
           <h2>What is this site?</h2>
-          <p>You have arrived at the NT Tokyo Travel Guide. We aim to show you all that Tokyo has to offer and make the best of your trip there. You can begin by browsing the site or </p>
-          <p><a class="btn btn-secondary" href="#" role="button">Learn More &raquo;</a></p>
+          <p>You have arrived at the NT Tokyo Travel Guide. We aim to show you all that Tokyo has to offer and make the best of your trip there.
+             You can begin by browsing the site and looking around.</p>
+          <p><a id="firstBtn" class="btn btn-secondary" data-toggle="modal" data-target=".about-modal">Learn More &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           <img class="rounded-circle" src="resources/images/shrine.png" alt="Generic placeholder image" width="140" height="140">
-          <h2>What To Do?</h2>
-          <p>Using this travel guide you may find out about the best points of interest in the city, rated and reviewed by the site's users. By signing up, you may contribute as well.</p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+          <h2>What do I do?</h2>
+          <p>Using this travel guide you may find out about the best points of interest in the city, rated and reviewed by the site's users.
+            By signing up, you may contribute by rating & reviewing attractions.</p>
+          <p><a id="secondBtn" class="btn btn-secondary">View Attractions &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           <img class="rounded-circle" src="resources/images/wave-circle.png" alt="Generic placeholder image" width="140" height="140">
-          <h2>{{count}}</h2>
-          <p>If we've convinced you, you may register by clicking the button in the top right of the site or clicking "Sign Up" to the left. Or, if you aren't convinced yet, you may scroll down and see some examples</p>
-          <p><a class="btn btn-secondary" href="#" role="button">Examples &raquo;</a></p>
+          <h2>Alright, lets Go</h2>
+          <p>If we've convinced you, you may register by clicking the button in the top right of the site or down below. 
+            Or, if you aren't convinced yet, you may scroll down and see some examples</p>
+          <p><a id="thirdBtn" class="btn btn-secondary">Sign Me Up &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 
@@ -130,5 +133,33 @@
       <!-- /END THE FEATURETTES -->
 
     </div>
+
+    <div class="modal fade about-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalCenterTitle">About This Product</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="creators">Creators:</h3>
+                <img src="resources/images/NT-logo.png"/><br/>
+                <br/>
+                Nevo Itzhak and Tomer Shahar<br/><br/>
+                This website was created using a combination of Javascript, JQuery, HTML and css through the bootstrap library.
+                The client side was written using AngularJS. The server side was written with the RESTful API in node.js </br><br/>
+
+                Internet programming environments 
+                Department of Software and Information Systems Engineering
+                Copyright 2018 ltd
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
   </main>
 </body>
