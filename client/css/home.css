@@ -1,0 +1,49 @@
+
+  @font-face{
+    font-family: electroHarmonix;
+    src: url("../resources/fonts/electroharmonix.ttf");
+  }
+
+  @font-face{
+    font-family: kamikaze;
+    src: url("../resources/fonts/Kamikaze.ttf");
+  }
+  
+  #first-caption{
+    height: 17rem;
+    font-weight: bold;
+    
+    text-shadow: rgb(15, 13, 6) 1px 0 10px;
+  }
+  
+  #second-caption{
+    height: 20rem;
+    font-weight: bold;
+    text-shadow: rgb(15, 13, 6) 1px 0 10px; 
+  }
+
+  #third-caption{
+    height: 19rem;
+    font-weight: bold;
+    text-shadow: rgb(15, 13, 6) 1px 0 10px; 
+  }
+
+  #fourth-caption{
+    height: 16rem;
+    font-weight: bold;
+    text-shadow: rgb(15, 13, 6) 3px 0px 10px;
+    /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+  }
+  
+  #fourth-caption h1:hover,h1:focus{
+    color: rgba(185, 107, 107, 0.952);
+  }
+
+  #fourth-caption p:hover,p:focus{
+    color: rgba(201, 53, 53, 0.952);
+  }
+
+  #fourth-caption > p{
+    font-size: 23px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }

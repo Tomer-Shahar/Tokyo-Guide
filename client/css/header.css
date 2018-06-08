@@ -1,0 +1,20 @@
+
+  @font-face{
+    font-family: electroHarmonix;
+    src: url("../resources/fonts/electroharmonix.ttf");
+  }
+
+  @font-face{
+    font-family: kamikaze;
+    src: url("../resources/fonts/Kamikaze.ttf");
+  }
+
+
+#register-btn{
+    border-color: rgba(97, 10, 10, 0);
+    border-width: 3px;
+    color: rgb(194, 18, 18);
+    
+    font-size: 22px;
+    font-family: electroHarmonix;
+  }
