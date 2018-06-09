@@ -21,6 +21,7 @@ router.post('/login', (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
     let checkIfValidUserQuery = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+    let checkIfAdminQuery = `SELECT * FROM admins WHERE username = '${username}'`;
 
     DButilsAzure.execQuery(checkIfValidUserQuery).then((response) =>{
         if (response.length == 0) 
@@ -29,8 +30,16 @@ router.post('/login', (req, res) => {
             let usernameForToken = response[0].Username;
             let firstNameForToken = response[0].FirstName;
             let lastNameForToken = response[0].LastName;
-            var payload = { username: usernameForToken, firstName: firstNameForToken, lastname: lastNameForToken }
-            var token = jwt.sign(payload, secretkey, {expiresIn: expiresInTime}, (err, token) => { res.json({token: token}); });
+            DButilsAzure.execQuery(checkIfAdminQuery).then((response) =>{
+                let isAdmin = false;
+                if (response !== 0)
+                    isAdmin = true;
+                var payload = { username: usernameForToken, admin: isAdmin }
+                var token = jwt.sign(payload, secretkey, {expiresIn: expiresInTime}, (err, token) => { 
+                    res.json({token: token, firstName: firstNameForToken, lastname: lastNameForToken}); });
+            }).catch((err) => {
+                res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
+            });
         }
     }).catch((err) => {
         res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
