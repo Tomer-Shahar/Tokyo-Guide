@@ -62,3 +62,10 @@ input[disabled="disabled"] {
     margin: auto;
 
 }
+
+/* Restore password form */
+
+#next-btn{
+    color: white;
+
+}

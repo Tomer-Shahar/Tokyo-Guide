@@ -25,7 +25,12 @@
   #third-caption{
     height: 19rem;
     font-weight: bold;
-    text-shadow: rgb(15, 13, 6) 1px 0 10px; 
+    text-shadow: rgb(15, 13, 6) 1px 0 10px;
+    padding: 0 2rem 0 0;
+  }
+
+  #third-caption h1{
+    padding: 0 11.8rem 0 0;
   }
 
   #fourth-caption{

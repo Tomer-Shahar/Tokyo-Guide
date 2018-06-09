@@ -25,6 +25,10 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate']);
             templateUrl: "views/success-sign-up.html",
             controller: "loginCtrl"
           })
+          .when("/restorePassword", {
+            templateUrl: "views/restorePassword.html",
+            controller: "loginCtrl"
+          })
         .otherwise({ redirectTo: "/" });
 
     }]);
