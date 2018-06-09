@@ -1,5 +1,10 @@
-angular.module('tokyoApp').controller('loginCtrl', ["$scope", function($scope) {
+angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", function($scope, $location) {
 
-   $scope.name = "tom"
+    $scope.userName = "Guest"
+    $scope.loggedIn = "false"
+    
+    $scope.submit = function() {
+        $location.path("/success-sign-up");
+      };
 
 }]);

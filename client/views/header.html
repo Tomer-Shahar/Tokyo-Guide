@@ -1,4 +1,4 @@
-    <header ng-controller="headerCtrl">
+    <header ng-controller="loginCtrl">
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="#">NT Tokyo Travel Guide</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,7 +14,7 @@
               <a class="nav-link" href="#/pois">Attractions</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#/login">Sign In</a>
+                <a class="nav-link" href="#/login" ng-hide="{{loggedIn}}">Sign In</a>
               </li>
             <li>
               <a class="nav-link" >Hello, {{userName}}</a>

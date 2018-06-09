@@ -1,0 +1,64 @@
+main {
+    background: #eeeeee;
+    border-radius: 10px;
+    margin: 30px auto;
+    width: 80%;
+}
+
+.content {
+    overflow: hidden;
+    padding: 20px;
+}
+
+.content.sign-in{
+    width: 100%;
+    margin: 1.3rem 8rem 0 5rem;
+}
+
+.ng-scope{
+    width: 100%;
+    margin: auto;
+}
+
+.content button, .content input[type="submit"] {
+    background: #ffffff;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px rgba(20, 20, 20, .1);
+    color: #777777;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.content input, .content textarea {
+    border: 2px solid #dddddd;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 10px 5%;
+    width: 90%;
+}
+
+.content input[type="submit"]:last-child {
+    display: block;
+    margin: 15px auto;
+    width: 150px;
+}
+
+/* form validation */
+input.ng-touched.ng-invalid,
+textarea.ng-touched.ng-invalid {
+    border: 2px solid red;
+}
+
+input[disabled="disabled"] {
+    cursor: not-allowed !important;
+    opacity: .4;
+}
+
+.outerForm{
+
+    width: 25%;
+    margin: auto;
+
+}

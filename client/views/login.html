@@ -1,1 +1,14 @@
-<h1 ng-controller="loginCtrl">Yo this is a login page {{name}}</h1>
+<div class="content sign-in">
+        <form name="contactForm" ng-submit="submit()" class="outerForm" novalidate>
+            <h1> Please sign in</h1>            
+            <input type="text" name="name" placeholder="Name" ng-model="contact.name" ng-required="true" class="input-field">
+            <div ng-show="contactForm.name.$touched && contactForm.name.$invalid">
+                <small style="color: red;display: block;text-align: center;">Enter a valid username</small>
+            </div>
+            <input type="email" name="email" placeholder="Email" ng-model="contact.email" ng-required="true" class="input-field">
+            <div ng-show="contactForm.email.$touched && contactForm.email.$invalid">
+                <small style="color: red;display: block;text-align: center;">Enter a valid email address</small>
+            </div>
+            <input type="submit" value="Login" ng-disabled="contactForm.$invalid">
+        </form>
+    </div>
