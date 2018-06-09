@@ -86,11 +86,17 @@ router.post('/register', (req, res) => {
 router.get('/register', (req, res) => {
 
     let getCategoriesQuery = `SELECT * FROM categories`;
+    let getQuestionsQuery = `SELECT * FROM questions`
     DButilsAzure.execQuery(getCategoriesQuery).then((response) => {
-                
-        res.status(200).json({
-            categories: response,
-            countries: optionalCountries
+        let categories = response
+        DButilsAzure.execQuery(getQuestionsQuery).then((response) => {
+            res.status(200).json({
+                categories: categories,
+                questions: response,
+                countries: optionalCountries
+            });
+        }).catch((err) =>{
+            res.status(500).json({message: 'Sorry, An error has occurred on the server. Please, try your request again later.'});
         });
     })
     .catch((err) =>{
