@@ -7,9 +7,9 @@
             <small style="color: red;display: block;text-align: center;">Enter a valid username</small>
         </div>
 
-        <input type="email" name="email" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field">
+        <input type="text" name="email" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field">
         <div ng-show="contactForm.email.$touched && contactForm.email.$invalid">
-            <small style="color: red;display: block;text-align: center;">Enter a valid email address</small>
+            <small style="color: red;display: block;text-align: center;">Enter a valid password address</small>
         </div>
 
         <input type="submit" value="Login" ng-disabled="contactForm.$invalid" ng-click="submit()">
