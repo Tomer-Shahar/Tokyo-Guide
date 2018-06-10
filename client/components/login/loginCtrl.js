@@ -10,7 +10,7 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", funct
       };
     
     $scope.verifyUserName = function(){
-        //Verify the username with the server..
+        //Verify the username with the server..2
         $scope.userVerified = !$scope.userVerified
     }
 }]);
