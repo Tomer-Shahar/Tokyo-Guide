@@ -1,12 +1,12 @@
 
   @font-face{
     font-family: electroHarmonix;
-    src: url("../resources/fonts/electroharmonix.ttf");
+    src: url("../../resources/fonts/electroharmonix.ttf");
   }
 
   @font-face{
     font-family: kamikaze;
-    src: url("../resources/fonts/Kamikaze.ttf");
+    src: url("../../resources/fonts/Kamikaze.ttf");
   }
 
 

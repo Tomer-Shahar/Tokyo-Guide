@@ -1,4 +1,4 @@
-var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate']);
+var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule']);
 
     app.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider)  {
 
@@ -6,27 +6,27 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate']);
 
         $routeProvider
         .when("/", {
-          templateUrl: "views/home.html",
+          templateUrl: "components/home/home.html",
           controller: "homeCtrl"
         })
         .when("/pois", {
-            templateUrl: "views/pois.html",
+            templateUrl: "components/pois/pois.html",
             controller: "poisCtrl"
           })
           .when("/register", {
-            templateUrl: "views/register.html",
+            templateUrl: "components/register/register.html",
             controller: "registerCtrl"
           })
           .when("/login", {
-            templateUrl: "views/login.html",
+            templateUrl: "components/login/login.html",
             controller: "loginCtrl"
           })
           .when("/success-sign-up", {
-            templateUrl: "views/success-sign-up.html",
+            templateUrl: "components/success-sign-up/success-sign-up.html",
             controller: "loginCtrl"
           })
           .when("/restorePassword", {
-            templateUrl: "views/restorePassword.html",
+            templateUrl: "components/restorePassword/restorePassword.html",
             controller: "loginCtrl"
           })
         .otherwise({ redirectTo: "/" });
