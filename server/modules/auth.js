@@ -60,7 +60,7 @@ router.post('/register', (req, res) => {
     let questionID1 = req.body.questionID1, answer1 = req.body.answer1, questionID2 = req.body.questionID2;
     let answer2 = req.body.answer2, category1 = req.body.category1, category2 = req.body.category2;
     let category3 = req.body.category3, category4 = req.body.category4;
-    let checkIfUserNameExistQuery = `SELECT * FROM users WHERE username = '${username}'`;
+    let checkIfUserNameExistQuery = `SELECT * FROM users WHERE username = '${username}' or Email = '${email}'`;
     let checkIfQuestionsExistQuery = `SELECT * FROM questions WHERE QuestionID = '${questionID1}' OR QuestionID  = '${questionID2}' `;
     let insertNewUserQuery = `INSERT INTO users(Username, Password, FirstName, LastName, City, Country, Email)
     VALUES ('${username}', '${password}', '${firstName}', '${lastName}', '${city}', '${country}', '${email}');`;
@@ -210,7 +210,7 @@ function getCountries() {
 function execRegisterQueries(checkIfUserNameExistQuery, res, checkIfQuestionsExistQuery, checkIfCategoryExistQurey, categoriesLength, insertNewUserQuery, insertUserQuestionsQuery, insertNewUserCategoryQuery) {
     DButilsAzure.execQuery(checkIfUserNameExistQuery).then((response) => {
         if (response.length != 0)
-            res.status(400).json({ message: 'The username already exist' });
+            res.status(400).json({ message: 'The username or the email already exist' });
         else {
             DButilsAzure.execQuery(checkIfQuestionsExistQuery).then((response) => {
                 if (response.length != 2)
