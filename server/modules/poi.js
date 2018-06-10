@@ -157,8 +157,6 @@ router.put('/order', (req, res) => {
 
 });
 
-
-
 router.delete('/favorite', (req, res) => {
     const { error } = validPID(req.body);
 
@@ -239,7 +237,7 @@ router.post('/favorites/:number', (req, res) => {
 });
 
 router.post('/favorite', (req, res) => {
-    const { error } = validReview(req.body);
+    const { error } = validPID(req.body);
 
     if(error){
         let message = "";
