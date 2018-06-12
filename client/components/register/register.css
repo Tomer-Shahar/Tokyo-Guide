@@ -71,5 +71,8 @@ input[disabled="disabled"] {
 
 #next-btn{
   color: white;
+}
 
+.help-block{
+  text-align: center
 }

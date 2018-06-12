@@ -1,23 +1,38 @@
 <div class="content sign-in">
-        <form name="contactForm" class="outerForm" novalidate >
+        <form name="registerForm" class="outerForm" ng-submit="submitForm(registerForm.$valid)" novalidate >
             <h1> Please enter your details</h1>            
     
             <input type="text" name="firstName" placeholder="First name" ng-model="user.firstName" ng-required="true" class="input-field">
-            <div ng-show="contactForm.firstName.$touched && contactForm.firstName.$invalid">
-                <small style="color: red;display: block;text-align: center;">Enter your name.</small>
+            <div ng-show="registerForm.firstName.$touched && registerForm.firstName.$invalid">
+                <small class="help-block">Enter your name.</small>
             </div>
     
             <input type="text" name="lastName" placeholder="Last name" ng-model="user.lastName" ng-required="true" class="input-field">
-            <div ng-show="contactForm.lastName.$touched && contactForm.email.$invalid">
-                <small style="color: red;display: block;text-align: center;">Enter your last name.</small>
+            <div ng-show="registerForm.lastName.$touched && registerForm.lastName.$invalid">
+                <small class="help-block">Enter your last name.</small>
             </div>
 
-            <input type="email" name="email" placeholder="Email" ng-model="user.email" ng-required="true" class="input-field">
-            <div ng-show="contactForm.email.$touched && contactForm.email.$invalid">
-                <small style="color: red;display: block;text-align: center;">Enter a valid email.</small>
+            <input type="email" name="email" autocomplete='email' placeholder="Email" ng-model="user.email" ng-required="true" class="input-field">
+            <div ng-show="registerForm.email.$touched && registerForm.email.$invalid">
+                <small class="help-block">Enter a valid email.</small>
             </div>
 
-            <!-- Counry - dropdown menu - from XML -->
+            <input type="text" name="userName" placeholder="User name" ng-model="user.userName" ng-required="true" class="input-field" ng-minlength="3" ng-maxlength="8">
+            <div ng-show="registerForm.userName.$touched && registerForm.userName.$invalid">
+                <small class="help-block"">Enter a valid username: between 3-8 characters.</small>
+            </div>
+
+            <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10">
+            <div ng-show="registerForm.password.$touched && registerForm.password.$invalid">
+                <small class="help-block">Invalid password: Must contain 5-10 alpha-numeric characters..</small>
+            </div>
+
+            <input type="password" name="rePassword" placeholder="Repeat your password" ng-model="user.rePassword" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10">
+            <div ng-show="registerForm.rePassword.$touched && registerForm.rePassword.$invalid">
+                <small class="help-block">Incorrect password: must match previous password.</small>
+            </div>
+
+            <!-- Country - dropdown menu - from XML -->
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect01">Country</label>
@@ -29,44 +44,43 @@
             </div>
 
             <input type="text" name="city" placeholder="City" ng-model="user.city" ng-required="true" class="input-field">
-            <div ng-show="contactForm.city.$touched && contactForm.city.$invalid">
-                <small style="color: red;display: block;text-align: center;">Enter your city.</small>
+            <div ng-show="registerForm.city.$touched && registerForm.city.$invalid">
+                <small class="help-block">Enter your city.</small>
             </div>
             
             <h5 id="questTitle" >Please choose 2 different security questions.</h5>
-
+            
+            <!-- Question 1 -->
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect01">Question 1</label>
+                    <label class="input-group-text" for="inputGroupSelect02">Question 1</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect01">
+                <select class="custom-select" id="inputGroupSelect02">
                     <option selected>Choose...</option>
                     <option ng-repeat="q in questions" ng-model="questions">{{q.questionText}}</option>
                 </select>
             </div>
             <input type="text" name="answer1" placeholder="Your answer.." ng-model="user.answer1" ng-required="true" class="input-field">
-            <div ng-show="contactForm.answer1.$touched && contactForm.answer1.$invalid">
-                <small style="color: red;display: block;text-align: center;">Please insert your answer.</small>
+            <div ng-show="registerForm.answer1.$touched && registerForm.answer1.$invalid">
+                <small class="help-block">Please insert your answer.</small>
             </div>
 
+            <!-- Question 2 -->
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect01">Question 2</label>
+                    <label class="input-group-text" for="inputGroupSelect03">Question 2</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect01">
+                <select class="custom-select" id="inputGroupSelect03">
                     <option selected>Choose...</option>
                     <option ng-repeat="q in questions" ng-model="questions">{{q.questionText}}</option>
                 </select>
             </div>
             <input type="text" name="answer2" placeholder="Your answer.." ng-model="user.answer2" ng-required="true" class="input-field">
-            <div ng-show="contactForm.answer2.$touched && contactForm.answer2.$invalid">
-                <small style="color: red;display: block;text-align: center;">Please insert your answer.</small>
+            <div ng-show="registerForm.answer2.$touched && registerForm.answer2.$invalid">
+                <small class="help-block">Please insert your answer.</small>
             </div>
-
-            <!-- Counry - Existing categories for the user-->
-            <!-- Counry - Questions and answers-->
-    
-            <input type="submit" value="Continue" ng-disabled="contactForm.$invalid" ng-click="submit()">
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary btn-lg" ng-disabled="registerForm.$invalid">Submit</button>
         </form>
     </div>
     
