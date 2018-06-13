@@ -1,4 +1,4 @@
-angular.module('tokyoApp').service('loginService', ['$http','$location','localStorageModel', function ($http, $location, localStorageModel){
+angular.module('tokyoApp').service('loginService', ['$http', '$httpProvider' ,'$location','localStorageModel', function ($http, $httpProvider, $location, localStorageModel){
 
     let token = ""
     let serverUrl = 'http://localhost:3000/api'
@@ -12,8 +12,9 @@ angular.module('tokyoApp').service('loginService', ['$http','$location','localSt
 
     this.setToken = function (t) {
         token = t
-        $http.defaults.headers.common['x-access-token'] = t
-        // $httpProvider.defaults.headers.post[ 'x-access-token' ] = token
+        //$http.defaults.headers.common['x-access-token'] = t
+        $httpProvider.defaults.common['Authorization'] = token;
+        //$httpProvider.defaults.headers.post[ 'x-access-token' ] = token
         console.log("token set")
     }
 
@@ -63,6 +64,21 @@ angular.module('tokyoApp').service('loginService', ['$http','$location','localSt
                 //Second function handles error
                 // self.reg.content = "Something went wrong";
             });
+    }
+}])
+
+.service('adminService',['$http','$location', function( $http, $location){
+
+    let serverUrl = 'http://localhost:3000/api'
+
+    // KEEPS RETURNING UNDEFINED - What to do?
+    this.getAdminData = function(){
+        return $http.post(serverUrl + "/auth/protected/admin")
+        .then((response) =>{
+            return response.data
+        }, (err)=>{
+            console.log("Something went wrong :-( ----> adminService " + err)
+        });
     }
 }])
 
