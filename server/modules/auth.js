@@ -34,6 +34,7 @@ router.post('/login', (req, res) => {
                 let isAdmin = false;
                 if (response !== 0)
                     isAdmin = true;
+                console.log(isAdmin);
                 var payload = { username: usernameForToken, admin: isAdmin }
                 var token = jwt.sign(payload, secretkey, {expiresIn: expiresInTime}, (err, token) => { 
                     res.json({token: token, firstName: firstNameForToken, lastname: lastNameForToken}); });
@@ -157,6 +158,7 @@ router.use('/protected/*', ensureToken, (req, res, next) =>{
             req.username = data.username;
             req.firstName = data.firstName;
             req.lastname = data.lastname;
+            req.admin = data.admin;
             next('route');
         }
     });

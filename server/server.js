@@ -22,6 +22,7 @@ const DButilsAzure = require('./DButils');
 const auth = require(`./${moduleFolder}/auth`);
 const guests = require(`./${moduleFolder}/guests`);
 const poi = require(`./${moduleFolder}/poi`);
+const admin = require(`./${moduleFolder}/admin`);
 
 /**
  * START: HTTP REQUESTS ROUTES HANDLERS AND DB REQURESTS
@@ -33,6 +34,7 @@ const poi = require(`./${moduleFolder}/poi`);
 app.use('/api/auth', auth);
 app.use('/api/guests', guests);
 app.use('/api/auth/protected/poi', poi);
+app.use('/api/auth/protected/admin', admin);
 
 // END: HTTP REQUESTS ROUTES HANDLERS AND DB REQURESTS
 
