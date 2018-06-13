@@ -3,6 +3,7 @@ angular.module('tokyoApp').service('loginService', ['$http','$location','localSt
     let token = ""
     let serverUrl = 'http://localhost:3000/api'
     var self = this
+    self.firstName = "Guest"
 
     self.currUser = {
         firstName: "",
@@ -26,6 +27,7 @@ angular.module('tokyoApp').service('loginService', ['$http','$location','localSt
                 self.currUser.lastName = user.lastName
                 self.setToken(response.data.token)
                 localStorageModel.addLocalStorage('token', response.data.token)
+                self.firstName = user.firstName
                 $location.path('/home')
             }, function (response) {
                 //Second function handles error
@@ -43,7 +45,7 @@ angular.module('tokyoApp').service('loginService', ['$http','$location','localSt
     this.getRegisterParams = function(){
         return $http.get(serverUrl + "/auth/register")
         .then(function(response){
-            this.regParams = response.data
+            return response.data
         }, function(response){
             console.log("Something went wrong :-(")
         });
@@ -62,8 +64,6 @@ angular.module('tokyoApp').service('loginService', ['$http','$location','localSt
                 // self.reg.content = "Something went wrong";
             });
     }
-
-
 }])
 
 

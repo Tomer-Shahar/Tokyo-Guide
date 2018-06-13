@@ -1,38 +1,10 @@
-angular.module('tokyoApp').controller('registerCtrl', ["$scope","$http", 'registerService', 'message',
-    function (message){
-        $scope.message = message;
-    },
-    function($scope, $http, registerService) {
+angular.module('tokyoApp').controller('registerCtrl', ["$scope", 'registerService', 'message',
+    function($scope, registerService, message) {
 
-        let serverUrl = 'http://localhost:3000/api'
-        var params;
-        $scope.categories = [
-            {
-                "id": '1',
-                "CategoryName": 'a'
-            },
-            {
-                'id': '2',
-                'CategoryName': 'b'
-            }
-        ] 
-        console.log("Register parameters:")
-        console.log($scope.message)
-        /*
-        $scope.getParams = function (){
-                $http.get(serverUrl + "/auth/register")
-            .then(function(response){
-                $scope.params = response
-                console.log($scope.params)
-                return response.data
-            }, function(response){
-                console.log("Something went wrong :-(")
-            });
-        } */
-
-       // $scope.countries = $scope.params.data.countries
-       // $scope.questions = $scope.params.data.questions
-        
+        $scope.params = message;        
+        $scope.categories = $scope.params.categories
+        $scope.questions = $scope.params.questions
+        $scope.countries = $scope.params.countries
 
         $scope.submitForm = function(isValid) {
 

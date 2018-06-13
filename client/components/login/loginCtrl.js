@@ -5,10 +5,6 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location",'$http
     $scope.forgotPassword= false
     $scope.userVerified = false
     
-    $scope.submit = function() {
-        $location.path("/success-sign-up");
-      };
-    
     $scope.verifyUserName = function(){
         //Verify the username with the server..
         $scope.userVerified = !$scope.userVerified

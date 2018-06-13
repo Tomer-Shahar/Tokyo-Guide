@@ -63,10 +63,9 @@ input[disabled="disabled"] {
 
 }
 
-#questTitle{
-  margin: 1.2rem 0 1.2rem 0;
+.outerForm h5{
+  margin: 2rem 0 1.2rem 0;
 }
-
 /* Restore password form */
 
 #next-btn{
@@ -77,39 +76,34 @@ input[disabled="disabled"] {
   text-align: center
 }
 
-lbl {
+.categories label {
   display: block;
   white-space: nowrap;
   margin: 10px;
+  width: 200px;
+  font-size: 22px;
+  height: 2.3rem;
 }
 
-lbl input {
+.categories label input {
   vertical-align: middle;
 }
 
-lbl span {
+.categories label span {
   display: inline-block;
   white-space: normal;
-  vertical-align: top;
   position: relative;
   top: 2px;
 }
 
-label {
-  display: block;
-  white-space: nowrap;
-  margin: 10px;
+@supports (zoom:2) {
+	input[type="radio"],  input[type=checkbox]{
+	zoom: 2;
+	}
 }
-
-label input {
-  vertical-align: middle;
+@supports not (zoom:2) {
+	input[type="radio"],  input[type=checkbox]{
+		transform: scale(2);
+		margin: 15px;
+	}
 }
-
-label span {
-  display: inline-block;
-  white-space: normal;
-  vertical-align: top;
-  position: relative;
-  top: 2px;
-}
-

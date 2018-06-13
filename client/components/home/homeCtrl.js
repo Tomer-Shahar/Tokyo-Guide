@@ -12,5 +12,4 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", function($scope) {
     $scope.followLink = function(){
       $location = "https://www.telegraph.co.uk/travel/food-and-wine-holidays/cities-with-the-most-michelin-stars/tokyo/"
     }
-
 }]);
