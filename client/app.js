@@ -34,6 +34,15 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
             templateUrl: "components/restorePassword/restorePassword.html",
             controller: "loginCtrl"
           })
+          .when("/admin", {
+            templateUrl: "components/admin/admin.html",
+            controller: "adminCtrl",
+            resolve: {
+              data: (adminService) => {
+                return adminService.getAdminData();
+              }
+            }
+          })
         .otherwise({ redirectTo: "/" });
 
     }]);
