@@ -1,4 +1,11 @@
 <div class="content sign-in">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+            <label class="form-check-label" for="defaultCheck1">
+                Default checkbox
+            </label>
+        </div>
+            
         <form name="registerForm" class="outerForm" ng-submit="submitForm(registerForm.$valid)" novalidate >
             <h1> Please enter your details</h1>            
     
@@ -47,7 +54,19 @@
             <div ng-show="registerForm.city.$touched && registerForm.city.$invalid">
                 <small class="help-block">Enter your city.</small>
             </div>
+
+            <h5>Please choose at least 2 categories you like.</h5>
+            <div class="container">
+                <form>
+                    <div class="checkbox inline-field" ng-repeat="c in categories">
+                        <label>
+                            <input type="checkbox"><span>{{c.CategoryName}}</span>
+                        </label>
+                    </div>
+                </form>
             
+            </div>
+
             <h5 id="questTitle" >Please choose 2 different security questions.</h5>
             
             <!-- Question 1 -->
@@ -82,5 +101,5 @@
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-lg" ng-disabled="registerForm.$invalid">Submit</button>
         </form>
-    </div>
+
     

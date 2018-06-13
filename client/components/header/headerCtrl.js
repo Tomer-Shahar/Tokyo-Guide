@@ -1,4 +1,4 @@
-angular.module('tokyoApp').controller('headerCtrl', ["$scope", "$location",'$http','setHeadersToken', function($scope, $location, $http, setHeadersToken) {
+angular.module('tokyoApp').controller('headerCtrl', ["$scope", "$location",'$http','loginService', function($scope, $location, $http, loginService) {
 
     $scope.userName = "Guest"
 

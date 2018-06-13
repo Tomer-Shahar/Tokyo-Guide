@@ -11,11 +11,16 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
         })
         .when("/pois", {
             templateUrl: "components/pois/pois.html",
-            controller: "poisCtrl"
+            controller: "poisCtrl",
           })
           .when("/register", {
             templateUrl: "components/register/register.html",
-            controller: "registerCtrl"
+            controller: "registerCtrl",
+            resolve: {
+              message: function(registerService){
+                return registerService.getRegisterParams();
+              }
+            }
           })
           .when("/login", {
             templateUrl: "components/login/login.html",

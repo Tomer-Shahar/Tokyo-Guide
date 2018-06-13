@@ -1,4 +1,4 @@
-angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location",'$http','setHeadersToken', function($scope, $location, $http, setHeadersToken) {
+angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location",'$http','loginService', function($scope, $location, $http, loginService) {
 
     $scope.userName = "Guest"
     $scope.loggedIn = false
@@ -17,6 +17,6 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location",'$http
     $scope.login = function () {
         // register user
         console.log($scope.user)
-        setHeadersToken.login($scope.user)
+        loginService.login($scope.user)
     }
 }]);

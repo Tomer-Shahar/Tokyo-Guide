@@ -1,4 +1,4 @@
-angular.module('tokyoApp').service('setHeadersToken',[ '$http','$location','localStorageModel', function ($http, $location, localStorageModel){
+angular.module('tokyoApp').service('loginService', ['$http','$location','localStorageModel', function ($http, $location, localStorageModel){
 
     let token = ""
     let serverUrl = 'http://localhost:3000/api'
@@ -25,16 +25,31 @@ angular.module('tokyoApp').service('setHeadersToken',[ '$http','$location','loca
                 self.currUser.firstName = user.firstName
                 self.currUser.lastName = user.lastName
                 self.setToken(response.data.token)
-                localStorageModel.addLocalStorage('token', response)
+                localStorageModel.addLocalStorage('token', response.data.token)
                 $location.path('/home')
             }, function (response) {
                 //Second function handles error
                 var x = "Something went wrong";
                 console.log(response)
-            });
+         });
+    }
+}])
+
+.service('registerService',['$http','$location', function( $http, $location){
+
+    let serverUrl = 'http://localhost:3000/api'
+
+    // KEEPS RETURNING UNDEFINED - What to do?
+    this.getRegisterParams = function(){
+        return $http.get(serverUrl + "/auth/register")
+        .then(function(response){
+            this.regParams = response.data
+        }, function(response){
+            console.log("Something went wrong :-(")
+        });
     }
 
-    self.reg = function () {
+    this.reg = function () {
         // register user
         $http.post(serverUrl + "reg/", user)
             .then(function (response) {
@@ -48,9 +63,7 @@ angular.module('tokyoApp').service('setHeadersToken',[ '$http','$location','loca
             });
     }
 
-    self.addTokenToLocalStorage = function () {
-        localStorageModel.addLocalStorage('token', self.login.content)
-    }
+
 }])
 
 
