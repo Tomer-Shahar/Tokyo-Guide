@@ -7,11 +7,16 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
         $routeProvider
         .when("/", {
           templateUrl: "components/home/home.html",
-          controller: "homeCtrl"
+          controller: "homeCtrl",
+          resolve: {
+            randomPois: function(randomPoiService){
+              return randomPoiService.getRandomPoi();
+            }
+          }
         })
         .when("/pois", {
             templateUrl: "components/pois/pois.html",
-            controller: "poisCtrl",
+            controller: "poisCtrl"
           })
           .when("/register", {
             templateUrl: "components/register/register.html",

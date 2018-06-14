@@ -1,4 +1,4 @@
-angular.module('tokyoApp').service('loginService', ['$http', '$httpProvider' ,'$location','localStorageModel', function ($http, $httpProvider, $location, localStorageModel){
+angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', */ '$location','localStorageModel', function ($http, /* $httpProvider, */ $location, localStorageModel){
 
     let token = ""
     let serverUrl = 'http://localhost:3000/api'
@@ -12,8 +12,8 @@ angular.module('tokyoApp').service('loginService', ['$http', '$httpProvider' ,'$
 
     this.setToken = function (t) {
         token = t
-        //$http.defaults.headers.common['x-access-token'] = t
-        $httpProvider.defaults.common['Authorization'] = token;
+        $http.defaults.headers.common['x-access-token'] = t
+        //$httpProvider.defaults.common['Authorization'] = token;
         //$httpProvider.defaults.headers.post[ 'x-access-token' ] = token
         console.log("token set")
     }
@@ -35,6 +35,19 @@ angular.module('tokyoApp').service('loginService', ['$http', '$httpProvider' ,'$
                 var x = "Something went wrong";
                 console.log(response)
          });
+    }
+}])
+.service('randomPoiService',['$http','$location', function( $http, $location){
+
+    let serverUrl = 'http://localhost:3000/api'
+
+    this.getRandomPoi = function(){
+        return $http.get(serverUrl + "/guests/poiRand/3/0")
+        .then((response) =>{
+            return response.data
+        }, (err)=>{
+            console.log("Something went wrong :-( ----> adminService " + err)
+        });
     }
 }])
 
