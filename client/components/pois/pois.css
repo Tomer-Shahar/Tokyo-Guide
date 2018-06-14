@@ -2,6 +2,8 @@
     padding-bottom: 0;
 }
 
+/* Filter and search bar */
+
 .filter-search{
     width: 70rem;
     height: 5rem;
@@ -14,8 +16,28 @@
 .filter-search img{
     width: 5rem;
 }
+#searchBtn{
+    color: black;
+    border-color: crimson;
+    border-width: 2px;
+    font-weight: bold;
+}
+
+
+/* Table styling*/
 
 .fave{
     width: 2.5rem;
 }
 
+.thead tr th{
+    color: red;
+}
+
+.thead tr th{
+    cursor: pointer;
+}
+
+.headerProperty{
+    cursor: pointer;
+}

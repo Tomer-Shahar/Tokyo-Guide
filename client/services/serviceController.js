@@ -41,8 +41,8 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
 
     let serverUrl = 'http://localhost:3000/api'
 
-    this.getRandomPoi = function(){
-        return $http.get(serverUrl + "/guests/poiRand/3/2.5")
+    this.getRandomPoi = function(num){
+        return $http.get(serverUrl + "/guests/poiRand/"+num+"/2.5")
         .then((response) =>{
             return response.data
         }, (err)=>{

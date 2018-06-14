@@ -5,32 +5,32 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService'/*,'allP
         {
             "name": "Akiba",
             "category": "electronics",
-            "views": "30",
-            "rating": "4.5",
+            "views": 30,
+            "rating": 4.5,
             "id": "1",
             "isFave": "true"
         },
         {
             "name": "Bahd",
             "category": "electronicsdsadd",
-            "views": "320",
-            "rating": "2",
+            "views": 320,
+            "rating": 2,
             "id": "2",
             "isFave": "false"
         },
         {
             "name": "gasddw",
             "category": "shrines",
-            "views": "90",
-            "rating": "4",
+            "views": 90,
+            "rating": 4,
             "id": "3",
             "isFave": "false"
         },
         {
             "name": "zenzen",
             "category": "goop",
-            "views": "800",
-            "rating": "4.8",
+            "views": 800,
+            "rating": 4.8,
             "id": "4",
             "isFave": "true"
         }

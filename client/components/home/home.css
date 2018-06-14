@@ -68,3 +68,7 @@
   .featurette-heading span{
     margin: 0.5rem 0 0 0;
   }
+
+  .col-md-5.order-md-1 h4{
+    margin: 1rem 0 0 0;
+  }

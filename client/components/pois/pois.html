@@ -10,21 +10,19 @@
   <div class="container poi-container">     
       <form class="form-inline mt-2 mt-md-0">
           <div class="filter-search">
-            <button type="button" class="btn btn-primary btn-lg" ng-click="order = 'name'">Order by name</button>
-            <button type="button" class="btn btn-secondary btn-lg" ng-click="order = 'rating'">Order by rating</button>
             <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
          </div>
         </form>
         <hr class="my-4">    
     <table class="table table-dark table-striped">
       <thead>
         <tr ng-click="openPoiTab(poi)">
-            <th>Name</th>
-            <th>Category</th>
-            <th>Views</th>
-            <th>Rating</th>
+            <th class="headerProperty" ng-click="order = 'name'">Name</th>
+            <th class="headerProperty" ng-click="order = 'category'">Category</th>
+            <th class="headerProperty" ng-click="order = 'views'">Views</th>
+            <th class="headerProperty" ng-click="order = 'rating'">Rating</th>
             <th ng-show={{loggedIn}}>Favorite?</th>
         </tr>
       </thead> 

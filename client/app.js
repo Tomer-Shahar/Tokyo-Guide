@@ -10,7 +10,7 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
           controller: "homeCtrl",
           resolve: {
             randomPois: function(randomPoiService){
-              return randomPoiService.getRandomPoi();
+              return randomPoiService.getRandomPoi(3);
             }
           }
         })
@@ -51,6 +51,15 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
             resolve: {
               data: (adminService) => {
                 return adminService.getAdminData();
+              }
+            }
+          })
+          .when("/about", {
+            templateUrl: "components/about/about.html",
+            controller: "aboutCtrl",
+            resolve: {
+              randomPois: function(randomPoiService){
+                return randomPoiService.getRandomPoi(6);
               }
             }
           })
