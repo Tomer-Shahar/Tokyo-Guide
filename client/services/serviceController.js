@@ -42,7 +42,7 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
     let serverUrl = 'http://localhost:3000/api'
 
     this.getRandomPoi = function(){
-        return $http.get(serverUrl + "/guests/poiRand/3/0")
+        return $http.get(serverUrl + "/guests/poiRand/3/2.5")
         .then((response) =>{
             return response.data
         }, (err)=>{
@@ -55,8 +55,8 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
 
     let serverUrl = 'http://localhost:3000/api'
 
-    // KEEPS RETURNING UNDEFINED - What to do?
     this.getRegisterParams = function(){
+        console.log("in the register service")
         return $http.get(serverUrl + "/auth/register")
         .then(function(response){
             return response.data
@@ -64,19 +64,21 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
             console.log("Something went wrong :-(")
         });
     }
+}])
 
-    this.reg = function () {
-        // register user
-        $http.post(serverUrl + "reg/", user)
-            .then(function (response) {
-                //First function handles success
-                self.reg.content = response.data;
+.service('poiService',['$http','$location', function( $http, $location){
 
-            }, function (response) {
-                self.reg.content = response.data
-                //Second function handles error
-                // self.reg.content = "Something went wrong";
-            });
+    let serverUrl = 'http://localhost:3000/api'
+
+    this.getRegisterParams = function(){
+        console.log("in the poi service")
+        return $http.get(serverUrl + "/guests/poi")
+        .then(function(response){
+            console.log("http request returned")
+            return response.data
+        }, function(response){
+            console.log("Something went wrong :-(")
+        });
     }
 }])
 
@@ -84,7 +86,6 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
 
     let serverUrl = 'http://localhost:3000/api'
 
-    // KEEPS RETURNING UNDEFINED - What to do?
     this.getAdminData = function(){
         return $http.post(serverUrl + "/auth/protected/admin")
         .then((response) =>{

@@ -2,32 +2,32 @@
         <form name="registerForm" class="outerForm" ng-submit="submitForm(registerForm.$valid)" novalidate >
             <h1> Please enter your details</h1>            
     
-            <input type="text" name="firstName" placeholder="First name" ng-model="user.firstName" ng-required="true" class="input-field">
+            <input type="text" name="firstName" placeholder="First name" ng-model="user.firstName" ng-required="true" class="input-field" autocomplete="name">
             <div ng-show="registerForm.firstName.$touched && registerForm.firstName.$invalid">
                 <small class="help-block">Enter your name.</small>
             </div>
     
-            <input type="text" name="lastName" placeholder="Last name" ng-model="user.lastName" ng-required="true" class="input-field">
+            <input type="text" name="lastName" placeholder="Last name" ng-model="user.lastName" ng-required="true" class="input-field" autocomplete="family-name">
             <div ng-show="registerForm.lastName.$touched && registerForm.lastName.$invalid">
                 <small class="help-block">Enter your last name.</small>
             </div>
 
-            <input type="email" name="email" autocomplete='email' placeholder="Email" ng-model="user.email" ng-required="true" class="input-field">
+            <input type="email" name="email" autocomplete='email' placeholder="Email" ng-model="user.email" ng-required="true" class="input-field" autocomplete="email">
             <div ng-show="registerForm.email.$touched && registerForm.email.$invalid">
                 <small class="help-block">Enter a valid email.</small>
             </div>
 
-            <input type="text" name="userName" placeholder="User name" ng-model="user.userName" ng-required="true" class="input-field" ng-minlength="3" ng-maxlength="8">
+            <input type="text" name="userName" placeholder="User name" ng-model="user.userName" ng-required="true" class="input-field" ng-minlength="3" ng-maxlength="8" autocomplete="username">
             <div ng-show="registerForm.userName.$touched && registerForm.userName.$invalid">
                 <small class="help-block"">Enter a valid username: between 3-8 characters.</small>
             </div>
 
-            <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10">
+            <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10" autocomplete="new-password">
             <div ng-show="registerForm.password.$touched && registerForm.password.$invalid">
                 <small class="help-block">Invalid password: Must contain 5-10 alpha-numeric characters..</small>
             </div>
 
-            <input type="password" name="rePassword" placeholder="Repeat your password" ng-model="user.rePassword" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10">
+            <input type="password" name="rePassword" placeholder="Repeat your password" ng-model="user.rePassword" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10" autocomplete="new-password">
             <div ng-show="registerForm.rePassword.$touched && registerForm.rePassword.$invalid">
                 <small class="help-block">Incorrect password: must match previous password.</small>
             </div>
@@ -37,13 +37,13 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect01">Country</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect01">
+                <select class="custom-select" id="inputGroupSelect01" autocomplete="country-name">
                     <option selected>Choose...</option>
                     <option ng-repeat="country in countries" ng-model="user.country">{{country}}</option>
                 </select>
             </div>
 
-            <input type="text" name="city" placeholder="City" ng-model="user.city" ng-required="true" class="input-field">
+            <input type="text" name="city" placeholder="City" ng-model="user.city" ng-required="true" class="input-field" autocomplete="address-level2">
             <div ng-show="registerForm.city.$touched && registerForm.city.$invalid">
                 <small class="help-block">Enter your city.</small>
             </div>

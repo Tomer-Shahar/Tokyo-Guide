@@ -1,8 +1,54 @@
-<h1>This is the POI page :-) {{name}}</h1> </br>
+<div class="poi-page">
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">Welcome to the points of interest page!</h1>
+      <hr class="my-4">
+      <p class="lead">Here you can view all of the Tokyo attractions in our database. Clicking on one of the attractions will open a new tab
+        that includes more detailed info about the attraction and will also registered users to review the attraction. </p>
+    </div>
+  </div>
+  <div class="container poi-container">     
+      <form class="form-inline mt-2 mt-md-0">
+          <div class="filter-search">
+            <button type="button" class="btn btn-primary btn-lg" ng-click="order = 'name'">Order by name</button>
+            <button type="button" class="btn btn-secondary btn-lg" ng-click="order = 'rating'">Order by rating</button>
+            <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+         </div>
+        </form>
+        <hr class="my-4">    
+    <table class="table table-dark table-striped">
+      <thead>
+        <tr ng-click="openPoiTab(poi)">
+            <th>Name</th>
+            <th>Category</th>
+            <th>Views</th>
+            <th>Rating</th>
+            <th ng-show={{loggedIn}}>Favorite?</th>
+        </tr>
+      </thead> 
+      <tbody> 
+        <tr ng-repeat="poi in pois | orderBy: order | filter: search"> 
+          <td>{{poi.name}}</td>
+          <td>{{poi.category}}</td>
+          <td>{{poi.views}}</td>
+          <td>{{poi.rating}}</td>
+          <td ng-show="{{poi.isFave}}"><img class="fave" src="resources/images/isFavorite.png"></td>
+          <td ng-show="!{{poi.isFave}}"><img class="fave" src="resources/images/notFavorite.png"></td>
+      </tbody>
+    </table>
+  </div>
 
-<div id="mapid" style="height: 500px;width: 1000px">
+
+
+
+
+
+
+  <div id="mapid" style="height: 500px;width: 1000px">
     <script>
-	var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+    var mymap = L.map('mapid').setView([51.505, -0.09], 13);
 
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 18,
@@ -12,7 +58,7 @@
         id: 'mapbox.streets'
     }).addTo(mymap);
 
-  //  L.marker([51.5, -0.09]).addTo(mymap);
+    //  L.marker([51.5, -0.09]).addTo(mymap);
 
     L.circle([51.508, -0.11], {
         color: 'red',
@@ -28,5 +74,5 @@
     ]).addTo(mymap);
 
     </script>
-
+  </div>
 </div>

@@ -16,7 +16,13 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
         })
         .when("/pois", {
             templateUrl: "components/pois/pois.html",
-            controller: "poisCtrl"
+            controller: "poisCtrl",
+            /*resolve: {
+              allPois: function(poiService){
+                console.log("in the resolve")
+                return poiService.getAllPoi();
+              }
+            } */
           })
           .when("/register", {
             templateUrl: "components/register/register.html",
