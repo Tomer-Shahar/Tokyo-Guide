@@ -1,15 +1,23 @@
-<div class="content sign-in">
-    <form name="contactForm" class="outerForm" novalidate ng-submit="login()" >
+<div class="content sign-in" ng-hide="forgotPass">
+    <form name="loginForm" class="outerForm" novalidate ng-submit="login()" >
         <h1> Please sign in</h1>            
 
         <input type="text" name="name" placeholder="User name" ng-model="user.username" ng-required="true" class="input-field" autocomplete="username">
+        <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" autocomplete="current-password">
+        <input type="submit" value="Login" ng-disabled="loginForm.$invalid">
+        <button type="button" id="forgot-btn" class="btn btn-primary" ng-click="flipPassRestore()">Forgot Password?</button>
+    </form>
+</div> <!-- Login div-->
 
-        <input type="password" name="email" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" autocomplete="current-password">
-
-        <input type="submit" value="Login" ng-disabled="contactForm.$invalid">
-
-        <a type="submit" class="btn btn-secondary" href="#/restorePassword">Forgot Password?</a>
+<div class="content sign-in" ng-show="forgotPass" ng-model="forgotPass">
+    <form name="restoreForm" class="outerForm" novalidate ng-submit="getQuestions()" >
+        <h1> Restore Password</h1>     
+        <h5>Please enter your username and click Next.</h4>       
+        <input type="text" name="name" placeholder="User name" ng-model="user.username" ng-required="true" class="input-field">
+        <div ng-show="restoreForm.name.$touched && restoreForm.name.$invalid">
+            <small style="color: red;display: block;text-align: center;">Enter a valid username</small>
+        </div>
+            <input type="submit" class="btn btn-primary" ng-disabled="restoreForm.$invalid" value="next →">
+            <button type="button" id="back-to-login" class="btn btn-primary" ng-click="flipPassRestore()">← back</button>
     </form>
 </div>
-
-

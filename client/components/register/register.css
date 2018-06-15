@@ -107,3 +107,8 @@ input[disabled="disabled"] {
 		margin: 15px;
 	}
 }
+
+input[disabled="disabled"] {
+  cursor: not-allowed !important;
+  opacity: .4;
+}

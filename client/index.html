@@ -7,7 +7,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" type="image/png" href="resources/images/tokyo-icon-2.png">
-
     <title>NT Tokyo Travel Guide</title>
   </head>
 
@@ -19,10 +18,10 @@
       ** Footer  **
   -->
 
-  <body ng-controller="indexCtrl"> <!-- Parent controller -->
+  <body id="index-body" ng-controller="indexCtrl"> <!-- Parent controller -->
     <header ng-include = "'components/header/header.html'"></header>
     <main ng-view></main>
-    <footer ng-include = "'components/footer/footer.html'"></footer>
+    <div ng-include = "'components/footer/footer.html'"></div>
 
 
 
@@ -38,7 +37,7 @@
       <script src="js/lib/popper.min.js"></script>
       <script src="js/lib/bootstrap.min.js"></script>
       <script src="js/lib/jquery-3.3.1.slim.min.js"></script>
-     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> <!-- Carousel doesn't work without this ಠ_ಠ -->
       
 
       <script src="js/lib/angular.min.js"></script>

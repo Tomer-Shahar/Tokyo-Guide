@@ -1,4 +1,3 @@
-<body>
   <main>
       <div id="myCarousel" class="carousel slide" data-ride="carousel">
           <ol class="carousel-indicators">
@@ -85,7 +84,7 @@
           <img class="rounded-circle" src="resources/images/wave-circle.png" alt="Generic placeholder image" width="140" height="140">
           <h2>Alright, lets Go</h2>
           <p>If we've convinced you, you may register by clicking the button in the top right of the site or down below. 
-            Or, if you aren't convinced yet, you may scroll down and see some examples</p>
+            Or insgtead you cam scroll down and see some examples. Click the images for more details!</p>
           <p><a id="thirdBtn" class="btn btn-secondary" href="#/register">Sign Me Up &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
@@ -95,20 +94,20 @@
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
+      <div class="row featurette" ng-click="setCurrPoi('0')" data-toggle="modal" data-target="#poiModal">
         <div class="col-md-7">
           <h2 class="featurette-heading">{{Pois[0].Name}}</br><span class="text-muted"><i>It'll blow your mind.</i></span></h2>
           <p class="lead">{{Pois[0].Description}}</p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" src="{{img0}}" ng-click="setCurrPoi('0')" data-toggle="modal" data-target="#poiModal">
+          <img class="featurette-image img-fluid mx-auto" src="{{img0}}" >
           <h4 style="text-align: center"><span class="text-muted">{{Pois[0].CategoryName}}</span></h4>
         </div>
       </div>
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
+      <div class="row featurette" ng-click="setCurrPoi('1')" data-toggle="modal" data-target="#poiModal">
         <div class="col-md-7 order-md-2">
           <h2 class="featurette-heading">{{Pois[1].Name}}</br><span class="text-muted">See for yourself.</span></h2>
           <p class="lead">{{Pois[1].Description}}</p>
@@ -121,7 +120,7 @@
 
       <hr class="featurette-divider">
 
-      <div class="row featurette">
+      <div class="row featurette" ng-click="setCurrPoi('2')" data-toggle="modal" data-target="#poiModal">
         <div class="col-md-7">
           <h2 class="featurette-heading">{{Pois[2].Name}}</br><span class="text-muted">You'll <i>love</i> it.</span></h2>
           <p class="lead">{{Pois[2].Description}}</p>
@@ -131,7 +130,7 @@
           <h4 style="text-align: center"><span class="text-muted">{{Pois[2].CategoryName}}</span></h4>
         </div>
       </div>
-      <hr class="featurette-divider">
+      <hr class="featurette-divider" id="home-end-div">
       <!-- /END THE FEATURETTES -->
 
       <!-- Modal -->
@@ -139,7 +138,7 @@
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
             <div class="modal-header">
-              <h2 class="featurette-heading poi-details" id="poiModalLabel">{{Pois[0].Name}}</h5>
+              <h2 class="featurette-heading poi-details" id="poiModalLabel">{{Pois[currPoi].Name}}</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -153,26 +152,46 @@
               <div class="row featurette modal-featurette">
                 <div class="col-md-7">
                   <p class="lead">Number of views: {{Pois[currPoi].Views}}</p>
-                  <p class="lead">Rating: {{Pois[currPoi].Rating}}</p>
+                  <p class="lead">Rating:  {{Pois[currPoi].Rating}}</p>
                   <p class="lead">Description: {{Pois[currPoi].Description}}</p>
                   <hr class="featurette-divider poi-divider">
                   <p class="lead">Latest reviews:</p>
-                  <p class="lead">1) {{Pois[currPoi].</p>
-
+                  <p class="lead">1) {{poiReviews[currPoi][0].Description}}.</p> </br>
+                  <p class="lead">Date Written: {{poiReviews[currPoi][0].Date}}.</p> </br>
+                  <p class="lead">2) {{poiReviews[currPoi][1].Description}}.</p></br>
+                  <p class="lead">Date Written: {{poiReviews[currPoi][1].Date}}.</p>
                 </div>
                 <div class="col-md-5">
-                  <img class="featurette-image img-fluid mx-auto" src="{{img0}}" ng-click="setCurrPoi('0')" data-toggle="modal" data-target="#poiModal">
+                  <img class="featurette-image img-fluid mx-auto" src="{{currImg}}">
                   <h4 style="text-align: center"><span class="text-muted">{{Pois[0].CategoryName}}</span></h4>
+                  <p ng-show="{{loggedIn}}"><img class="fave" src="resources/images/isFavorite.png"></p>
                 </div>
               </div>
             </div>
+              <div class="container">
+              <!-- Map will go here-->
+              IMAGINE THERE'S A MAP HERE </br>
+              </div>
+              <div ng-show="{{loggedIn}}" class="container">
+                <hr class="featurette-divider" id="map-review-divider">
+                <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
+                  <!-- Review Form -->
+                  <form name="poiReview" class="form-group" id="formDiv" novalidate ng-model="showReview" ng-show="showReview" ng-submit="submitReview()" >
+                    <div class="form-inline mt-2 mt-md-0 inline-div">
+                        <p>Enter a rating between 0 and 5:</p>
+                        <input type="number" name="rating" ng-model="poiRating" ng-required="true" placeholder="Your rating" min="0" max="5">
+                        <small class="help-block" id="help-msg" ng-show="poiReview.rating.$touched && poiReview.rating.$invalid">Invalid rating: mandatory field, between 0 to 5</small>
+                    </div> 
+                    <textarea class="form-control" id="poiTextReview" rows="3" placeholder="You may write a review here - at least 50 characters" ng-model="textReview" ng-minlength="50"></textarea>
+                    <button type="submit" class="btn btn-primary btn-lg" ng-disabled="poiReview.$invalid">Submit</button>
+                  </form>
+                  <!-- End Review Form-->
+              </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 

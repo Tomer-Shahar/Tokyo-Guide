@@ -12,3 +12,12 @@
 #creators{
     font-family: electroHarmonix;
   }
+
+#footer-container{
+  padding: 0;
+}
+
+.footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}

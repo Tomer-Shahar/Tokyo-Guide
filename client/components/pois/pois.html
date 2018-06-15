@@ -8,39 +8,44 @@
     </div>
   </div>
   <div class="container poi-container">     
-      <form class="form-inline mt-2 mt-md-0">
-          <div class="filter-search">
-            <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
-            <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
-         </div>
-        </form>
-        <hr class="my-4">
+    <form class="form-inline mt-2 mt-md-0">
+        <div class="filter-search">
+          <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
+          <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
+        </div>
+    </form>
+    <hr class="my-4" id="geisha-divider">
     <div class="no-results" ng-show="{{ (pois | filter: search).length }} === 3">
       There are {{ (pois | filter: search).length }} results
     </div>
     <table class="table table-dark table-striped" ng-show="filteredPois.length">
       <thead>
         <tr ng-click="openPoiTab(poi)">
-            <th class="headerProperty" ng-click="order = 'name'">Name</th>
-            <th class="headerProperty" ng-click="order = 'category'">Category</th>
-            <th class="headerProperty" ng-click="order = 'views'">Views</th>
-            <th class="headerProperty" ng-click="order = 'rating'">Rating</th>
+            <th class="headerProperty" ng-click="order = 'name'; reverseSort = !reverseSort">Name</th>
+            <th class="headerProperty" ng-click="order = 'category'; reverseSort = !reverseSort">Category</th>
+            <th class="headerProperty" ng-click="order = '-views'; reverseSort = !reverseSort">Views</th>
+            <th class="headerProperty" ng-click="order = '-rating'; reverseSort = !reverseSort">Rating</th>
             <th ng-show={{loggedIn}}>Favorite?</th>
         </tr>
       </thead> 
       <tbody> 
-        <tr ng-repeat="poi in filteredPois = (pois | orderBy: order | filter: search)"> 
+        <tr ng-repeat="poi in filteredPois = (pois | orderBy: order : reverseSort | filter: search)"> 
           <td>{{poi.name}}</td>
           <td>{{poi.category}}</td>
           <td>{{poi.views}}</td>
           <td>{{poi.rating}}</td>
-          <td ng-show="{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/isFavorite.png"></td>
-          <td ng-show="!{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/notFavorite.png"></td>
+          <td ng-show="{{loggedIn}} && faveList[poi.PID]"> <img ng-click="unFave(poi)" class="fave" src="resources/images/isFavorite.png"></td>
+          <td ng-show="{{loggedIn}} && !faveList[poi.PID]"><img ng-click="addToFave(poi)" class="fave" src="resources/images/notFavorite.png"></td>
           </tr>
-          <div ng-hide="filteredPois.length">Nothing here!</div>
       </tbody>
     </table>
+    <div class="container no-results" ng-hide="filteredPois.length">
+      <h1 class="display-4">Woops. Sorry</h1>
+      <p class="lead">Looks like there isn't any attraction with the name you searched for.</p>
+      <p class="lead">Here, have this bowl of rice instead: <img src="resources/images/rice2.svg"> </p>
+    </div>
+
   </div>
 
   <!--

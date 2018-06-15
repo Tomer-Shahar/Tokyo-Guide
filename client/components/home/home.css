@@ -73,8 +73,14 @@
     margin: 1rem 0 0 0;
   }
 
+  #home-end-div{
+    margin: 1rem 0 1rem 0;
+  }
   /* Modal Settings */
-
+  .modal-content{
+    width: 90rem;
+    margin: 0 0 0 -18rem;
+  }
   .poi-details{
     margin: 0;
     font-weight: 400;
@@ -92,4 +98,41 @@
 
   .modal-featurette{
     margin: 2rem 0 0 0;
+  }
+
+  .col-md-5 > p{
+    margin: 0 auto;
+    padding: 0 9rem 0 5rem;
+    width: 2.5rem;
+  }
+
+  .mapPoi{
+    height: 400px;
+    width: max-content;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }
+
+  #map-review-divider{
+    margin: 2rem 0 2rem 0;
+  }
+
+  #poiTextReview{
+    margin: 2rem 0 1rem 0;
+  }
+
+  .inline-div * {
+    margin: 2rem 1rem 0 1rem;
+  }
+
+  .inline-div input{
+    width:  8rem;
+  }
+
+  #help-msg{
+    margin: 2rem 0rem 0 0rem;
+  }
+
+  .modal-footer button{
+    margin: 0 auto;
   }

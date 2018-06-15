@@ -28,7 +28,7 @@
   }
 
   .lead{
-    max-width: 50rem;
+    max-width: 55rem;
     margin: 0 auto;
   }
 
@@ -65,4 +65,8 @@
 
   .cardCategory{
     text-align: center;
+  }
+
+  #small-average{
+    margin: 0 auto;
   }

@@ -1,11 +1,11 @@
-angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService',
-    function($scope, loginService) {
+angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService','$location',
+    function($scope, loginService, $location) {
 
         //$scope.userName = loginService.firstName;
         $scope.userName = "Guest"
-        $scope.isLogged = true //loginService.loggedIn; //change according to service
+        $scope.isLogged = loginService.loggedIn; //change according to service
         $scope.faveCounter = 8
-        $scope.isAdmin = true
+        $scope.isAdmin = loginService.isAdmin
 
         $scope.popup = function(){
            console.log("indexCtrls username: " + $scope.userName)
@@ -14,6 +14,10 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService',
 
         $scope.icreaseFaveCount = function(){
             $scope.faveCounter = $scope.faveCounter + 1
+        }
+
+        $scope.logOut = function(){
+            loginService.logout();
         }
     }
 ]);

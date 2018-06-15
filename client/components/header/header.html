@@ -21,7 +21,7 @@
           </li>
         <li>
         <li class="nav-item">
-            <a class="nav-link" href="#/login" ng-model="indexCtrl.isLogged" ng-show="{{isLogged}}">Logout</a>
+            <a class="nav-link" href="#/home" ng-click="logOut()" ng-model="indexCtrl.isLogged" ng-show="{{isLogged}}">Logout</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#/favePois" ng-model="indexCtrl.isLogged" ng-show="{{isLogged}}"><img id="fave-img" src="resources/images/favesWhite.png">[{{faveCounter}}]</a>

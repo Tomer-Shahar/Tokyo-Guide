@@ -1,7 +1,7 @@
-angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'loginService', function($scope, $location, loginService) {
+angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'loginService','restoreService', function($scope, $location, loginService, restoreService) {
 
-    $scope.loggedIn = false
-    $scope.forgotPassword= false
+    $scope.loggedIn = $scope.$parent.isLogged
+    $scope.forgotPass= false
     $scope.userVerified = false
     console.log("Login controller constructed")
     console.log("username of loginCtrl: " + $scope.userName);
@@ -22,5 +22,18 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'logi
             $location.path('/home')
         });
         console.log("Back at loginCtrl - after the promise")
+    }
+
+    $scope.getQuestions = function(){
+        var questions = restoreService.getQuestions($scope.user.username)
+        questions.then(function(result){
+            $scope.questions = result;
+            console.log($scope.questions[0].QuestionText)
+            console.log($scope.questions[1].QuestionText)
+        });
+    }
+
+    $scope.flipPassRestore = function(){
+        $scope.forgotPass = !$scope.forgotPass
     }
 }]);

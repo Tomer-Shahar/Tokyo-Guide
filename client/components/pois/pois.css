@@ -2,6 +2,10 @@
     padding-bottom: 0;
 }
 
+.container.poi-container{
+    margin-top: 1rem;
+}
+
 /* Filter and search bar */
 
 .filter-search{
@@ -23,11 +27,19 @@
     font-weight: bold;
 }
 
+#geisha-divider{
+    margin-top: 0!important;
+}
+
 
 /* Table styling*/
 
 .fave{
     width: 2.5rem;
+}
+
+.fave:hover{
+    cursor: pointer;
 }
 
 .thead tr th{
@@ -40,4 +52,12 @@
 
 .headerProperty{
     cursor: pointer;
+}
+
+.no-results{
+    padding: 0 0 2rem 0;
+}
+
+.lead img{
+    width: 4rem;
 }

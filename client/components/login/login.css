@@ -65,7 +65,28 @@ input[disabled="disabled"] {
 
 /* Restore password form */
 
-#next-btn{
-    color: white;
+.mx-auto.login-page{
+    width: 142px;
+}
 
+#forgot-btn{
+    color: #ffffff;
+    background-color: #007bff;
+    width: 90%;
+}
+
+#back-to-login{
+    width: 90%;
+}
+
+.btn.btn-primary{
+}
+
+.mx-auto.forgot-page{
+    width: 22rem;
+    margin-top: 0.7rem;
+}
+
+.mx-auto.forgot-page > button{
+    width: 10rem;
 }
