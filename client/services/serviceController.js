@@ -1,35 +1,33 @@
-angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', */ '$location','localStorageModel', function ($http, /* $httpProvider, */ $location, localStorageModel){
+angular.module('tokyoApp')
+.service('loginService', ['$http', /*'$httpProvider', */ '$location','localStorageModel', function ($http, /* $httpProvider, */ $location, localStorageModel){
 
     let token = ""
     let serverUrl = 'http://localhost:3000/api'
     var self = this
     self.firstName = "Guest"
-
-    self.currUser = {
-        firstName: "",
-        lastName: ""
-    }
+    self.loggedIn = false
 
     this.setToken = function (t) {
         token = t
-        $http.defaults.headers.common['x-access-token'] = t
+        //$http.defaults.headers.common['x-access-token'] = t
+        $http.defaults.headers.common['authorization'] = t
         //$httpProvider.defaults.common['Authorization'] = token;
-        //$httpProvider.defaults.headers.post[ 'x-access-token' ] = token
+        //$http.defaults.headers.post[ 'authorization' ] = token
         console.log("token set")
     }
 
     this.login = function (user) {
         // register user
-        console.log('logging in from service')
-        $http.post(serverUrl + "/auth/login", user)
+        return $http.post(serverUrl + "/auth/login", user)
             .then(function (response) {
                 //First function handles success
-                self.currUser.firstName = user.firstName
-                self.currUser.lastName = user.lastName
                 self.setToken(response.data.token)
                 localStorageModel.addLocalStorage('token', response.data.token)
-                self.firstName = user.firstName
-                $location.path('/home')
+                self.firstName = response.data.firstName
+                self.loggedIn = true
+                console.log("loginService: The user " + self.firstName + " has logged in." )
+                return response.data;
+
             }, function (response) {
                 //Second function handles error
                 var x = "Something went wrong";
@@ -51,7 +49,7 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
     }
 }])
 
-.service('registerService',['$http','$location', function( $http, $location){
+.service('registerService',['$http', function( $http){
 
     let serverUrl = 'http://localhost:3000/api'
 
@@ -71,15 +69,33 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
     let serverUrl = 'http://localhost:3000/api'
 
     this.getRegisterParams = function(){
-        console.log("in the poi service")
         return $http.get(serverUrl + "/guests/poi")
         .then(function(response){
-            console.log("http request returned")
             return response.data
         }, function(response){
             console.log("Something went wrong :-(")
         });
     }
+
+    this.getFavoritePois = function(){
+        return $http.get(serverUrl + "/guests/poi")
+        .then(function(response){
+            return response.data
+        }, function(response){
+            console.log("Something went wrong :-(")
+        });
+    }
+
+    this.getNewReviews = function(poiID){
+        return $http.get(serverUrl + "/guests/review/" + poiID + "/2" )
+        .then(function(response){
+            console.log("Reviews: " + response.data)
+            return response.data
+        }, function(response){
+            console.log("Something went wrong :-(")
+        });
+    }
+
 }])
 
 .service('adminService',['$http','$location', function( $http, $location){
@@ -88,7 +104,7 @@ angular.module('tokyoApp').service('loginService', ['$http', /*'$httpProvider', 
 
     this.getAdminData = function(){
         return $http.post(serverUrl + "/auth/protected/admin")
-        .then((response) =>{
+        .then((response) =>{ק
             return response.data
         }, (err)=>{
             console.log("Something went wrong :-( ----> adminService " + err)

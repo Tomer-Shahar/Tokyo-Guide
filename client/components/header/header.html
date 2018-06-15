@@ -1,4 +1,4 @@
-<header ng-controller="headerCtrl">
+<header ng-controller="indexCtrl">
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" style="color: white">NT Tokyo Travel Guide</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,20 +11,27 @@
           <a class="nav-link" href="#/home">Home<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#/about">About<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#/about">About<span class="sr-only"></span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#/pois">Attractions</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#/login" ng-hide="{{loggedIn}}">Sign In</a>
+            <a class="nav-link" href="#/login" ng-model="indexCtrl.isLogged" ng-show="!{{isLogged}}">Sign In</a>
           </li>
         <li>
-          <li class="nav-item">
-              <a class="nav-link" href="#/admin">Administrator</a>
-            </li>
-          <li>
-          <a class="nav-link" >Hello, {{userName}}</a>
+        <li class="nav-item">
+            <a class="nav-link" href="#/login" ng-model="indexCtrl.isLogged" ng-show="{{isLogged}}">Logout</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#/favePois" ng-model="indexCtrl.isLogged" ng-show="{{isLogged}}"><img id="fave-img" src="resources/images/favesWhite.png">[{{faveCounter}}]</a>
+        </li>
+        <li>
+        <li class="nav-item">
+            <a class="nav-link" href="#/admin" ng-model="indexCtrl.isAdmin" ng-show="{{isAdmin}}">Administrator</a>
+        </li>
+        <li>
+          <a class="nav-link" ng-model="indexCtrl.userName" ng-click="popup()" >Hello, {{userName}}</a>
         </li>
       </ul>
         <a id="register-btn" class="btn btn-outline-success my-2 my-sm-0" href="#/register">Sign Up</a>

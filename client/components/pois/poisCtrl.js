@@ -37,7 +37,7 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService'/*,'allP
     ]
  
     $scope.name = "tom"
-    $scope.loggedIn = true 
+    $scope.loggedIn = $scope.$parent.isLogged
     $scope.isFave = true
     
  }]);

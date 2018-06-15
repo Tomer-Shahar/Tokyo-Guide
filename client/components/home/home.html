@@ -72,7 +72,7 @@
           <h2>What is this site?</h2>
           <p>You have arrived at the NT Tokyo Travel Guide. We aim to show you all that Tokyo has to offer and make the best of your trip there.
              You can begin by browsing the site and looking around.</p>
-          <p><a id="firstBtn" class="btn btn-secondary" data-toggle="modal" data-target="#/about">Learn More &raquo;</a></p>
+          <p><a id="firstBtn" class="btn btn-secondary" href="#/about">Learn More &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           <img class="rounded-circle" src="resources/images/shrine.png" alt="Generic placeholder image" width="140" height="140">
@@ -101,7 +101,7 @@
           <p class="lead">{{Pois[0].Description}}</p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" src="{{img0}}">
+          <img class="featurette-image img-fluid mx-auto" src="{{img0}}" ng-click="setCurrPoi('0')" data-toggle="modal" data-target="#poiModal">
           <h4 style="text-align: center"><span class="text-muted">{{Pois[0].CategoryName}}</span></h4>
         </div>
       </div>
@@ -114,7 +114,7 @@
           <p class="lead">{{Pois[1].Description}}</p>
         </div>
         <div class="col-md-5 order-md-1">
-          <img class="featurette-image img-fluid mx-auto" src="{{img1}}">
+          <img class="featurette-image img-fluid mx-auto" src="{{img1}}" ng-click="setCurrPoi('1')" data-toggle="modal" data-target="#poiModal">
           <h4 style="text-align: center"><span class="text-muted">{{Pois[1].CategoryName}}</span></h4>
         </div>
       </div>
@@ -127,42 +127,52 @@
           <p class="lead">{{Pois[2].Description}}</p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" src="{{img2}}" alt="Generic placeholder image">
+          <img class="featurette-image img-fluid mx-auto" src="{{img2}}" alt="Generic placeholder image" ng-click="setCurrPoi('2')" data-toggle="modal" data-target="#poiModal">
           <h4 style="text-align: center"><span class="text-muted">{{Pois[2].CategoryName}}</span></h4>
         </div>
       </div>
       <hr class="featurette-divider">
-
       <!-- /END THE FEATURETTES -->
 
-    </div>
-
-    <div class="modal fade about-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
+      <!-- Modal -->
+      <div class="modal fade bd-example-modal-lg" id="poiModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalCenterTitle">About This Product</h5>
+              <h2 class="featurette-heading poi-details" id="poiModalLabel">{{Pois[0].Name}}</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-                <h3 id="creators">Creators:</h3>
-                <img src="resources/images/NT-logo.png"/><br/>
-                <br/>
-                Nevo Itzhak and Tomer Shahar<br/><br/>
-                This website was created using a combination of Javascript, JQuery, HTML and css through the bootstrap library.
-                The client side was written using AngularJS. The server side was written with the RESTful API in node.js </br><br/>
+                <h2 class="featurette-heading poi-details">
+                  <span class="text-muted poi-muted-text">
+                    Additional Details:
+                  </span>
+               </h2>
+              <div class="row featurette modal-featurette">
+                <div class="col-md-7">
+                  <p class="lead">Number of views: {{Pois[currPoi].Views}}</p>
+                  <p class="lead">Rating: {{Pois[currPoi].Rating}}</p>
+                  <p class="lead">Description: {{Pois[currPoi].Description}}</p>
+                  <hr class="featurette-divider poi-divider">
+                  <p class="lead">Latest reviews:</p>
+                  <p class="lead">1) {{Pois[currPoi].</p>
 
-                Internet programming environments 
-                Department of Software and Information Systems Engineering
-                Copyright 2018 ltd
+                </div>
+                <div class="col-md-5">
+                  <img class="featurette-image img-fluid mx-auto" src="{{img0}}" ng-click="setCurrPoi('0')" data-toggle="modal" data-target="#poiModal">
+                  <h4 style="text-align: center"><span class="text-muted">{{Pois[0].CategoryName}}</span></h4>
+                </div>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
       </div>
-  </main>
-</body>
+
+    </div>
+

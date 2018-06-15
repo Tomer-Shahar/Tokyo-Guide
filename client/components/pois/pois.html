@@ -15,8 +15,11 @@
             <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
          </div>
         </form>
-        <hr class="my-4">    
-    <table class="table table-dark table-striped">
+        <hr class="my-4">
+    <div class="no-results" ng-show="{{ (pois | filter: search).length }} === 3">
+      There are {{ (pois | filter: search).length }} results
+    </div>
+    <table class="table table-dark table-striped" ng-show="filteredPois.length">
       <thead>
         <tr ng-click="openPoiTab(poi)">
             <th class="headerProperty" ng-click="order = 'name'">Name</th>
@@ -27,50 +30,28 @@
         </tr>
       </thead> 
       <tbody> 
+        <tr ng-repeat="poi in filteredPois = (pois | orderBy: order | filter: search)"> 
+          <td>{{poi.name}}</td>
+          <td>{{poi.category}}</td>
+          <td>{{poi.views}}</td>
+          <td>{{poi.rating}}</td>
+          <td ng-show="{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/isFavorite.png"></td>
+          <td ng-show="!{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/notFavorite.png"></td>
+          </tr>
+          <div ng-hide="filteredPois.length">Nothing here!</div>
+      </tbody>
+    </table>
+  </div>
+
+  <!--
+      <tbody> 
         <tr ng-repeat="poi in pois | orderBy: order | filter: search"> 
           <td>{{poi.name}}</td>
           <td>{{poi.category}}</td>
           <td>{{poi.views}}</td>
           <td>{{poi.rating}}</td>
-          <td ng-show="{{poi.isFave}}"><img class="fave" src="resources/images/isFavorite.png"></td>
-          <td ng-show="!{{poi.isFave}}"><img class="fave" src="resources/images/notFavorite.png"></td>
+          <td ng-show="{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/isFavorite.png"></td>
+          <td ng-show="!{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/notFavorite.png"></td>
+          </tr>
       </tbody>
-    </table>
-  </div>
-
-
-
-
-
-
-
-  <div id="mapid" style="height: 500px;width: 1000px">
-    <script>
-    var mymap = L.map('mapid').setView([51.505, -0.09], 13);
-
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox.streets'
-    }).addTo(mymap);
-
-    //  L.marker([51.5, -0.09]).addTo(mymap);
-
-    L.circle([51.508, -0.11], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 900
-    }).addTo(mymap);
-
-    L.polygon([
-        [51.509, -0.08],
-        [51.503, -0.06],
-        [51.51, -0.047]
-    ]).addTo(mymap);
-
-    </script>
-  </div>
-</div>
+  -->

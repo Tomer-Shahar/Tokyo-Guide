@@ -24,7 +24,12 @@
   }
   
   .jumbotron .container {
-    max-width: 40rem;
+    max-width: 60rem;
+  }
+
+  .lead{
+    max-width: 50rem;
+    margin: 0 auto;
   }
 
   .jumbotron.text-center{

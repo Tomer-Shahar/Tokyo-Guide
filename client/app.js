@@ -1,11 +1,11 @@
-var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule']);
+var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule',"pathgather.popeye"]);
 
     app.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider)  {
 
         $locationProvider.hashPrefix('');
 
         $routeProvider
-        .when("/", {
+        .when("/home", {
           templateUrl: "components/home/home.html",
           controller: "homeCtrl",
           resolve: {
@@ -30,6 +30,15 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
             resolve: {
               message: function(registerService){
                 return registerService.getRegisterParams();
+              }
+            }
+          })
+          .when("/favePois", {
+            templateUrl: "components/favePois/favePois.html",
+            controller: "favePoisCtrl",
+            resolve: {
+              message: function(poiService){
+                return poiService.getFavoritePois();
               }
             }
           })
@@ -63,6 +72,6 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
               }
             }
           })
-        .otherwise({ redirectTo: "/" });
+        .otherwise({ redirectTo: "/home" });
 
     }]);
