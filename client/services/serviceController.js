@@ -3,40 +3,61 @@ angular.module('tokyoApp')
 
     let serverUrl = 'http://localhost:3000/api'
     var self = this
-    self.firstName = "Guest"
-    self.loggedIn = true
-    self.isAdmin = false
+    this.isLoggedInObject = {
+        isLoggedin: false,
+        firstName: "Guest"
+    };
+
+    this.checkLogIn = function(){
+        const token_key  = "token";
+        const name_key = "name";
+        
+        const token = localStorageModel.getLocalStorage(token_key);
+        const user = localStorageModel.getLocalStorage(name_key);
+
+        if(token && user) {
+            this.isLoggedInObject.isLoggedin = true;
+            this.isLoggedInObject.firstName = user;
+        }
+    };
+    this.checkLogIn();
 
     this.setToken = function (t) {
         token = t
-        //$http.defaults.headers.common['x-access-token'] = t
         $http.defaults.headers.common['authorization'] = "Bearer " + t
-        //$httpProvider.defaults.common['Authorization'] = token;
-        //$http.defaults.headers.post[ 'authorization' ] = token
-        console.log("token set")
     }
 
     this.logout = function(){
-        console.log("Logging out from service..")
         self.token = ""
         $http.defaults.headers.common['authorization'] = ""
-        self.loggedIn = false
-        self.isAdmin = false
-        self.firstName = "Guest"
+        let obj = {
+            isLoggedin : false,
+            firstName: "Guest"
+        }
+        this.isLoggedInObject = obj;
+
+        localStorageModel.removeItem("token")
+        localStorageModel.removeItem("name")
     }
 
     this.login = function (user) {
         // register user
-        self.logout();
+        //this.logout();
         return $http.post(serverUrl + "/auth/login", user)
             .then(function (response) {
                 //First function handles success
                 self.token = response.data.token
                 self.setToken(self.token)
-                localStorageModel.addLocalStorage('token', response.data.token)
-                self.firstName = response.data.firstName
-                self.loggedIn = true
-                console.log("loginService: The user " + self.firstName + " has logged in." )
+                localStorageModel.addLocalStorage( "token" , response.data.token);
+                localStorageModel.addLocalStorage( "name" , response.data.firstName);
+
+
+                let tmpObj = {
+                    firstName: response.data.firstName,
+                    isLoggedin: true
+                }
+                self.isLoggedInObject = tmpObj;
+                console.log("loginService: The user " + self.isLoggedInObject.firstName + " has logged in." )
                 return response.data;
 
             }, function (response) {
@@ -45,6 +66,7 @@ angular.module('tokyoApp')
                 console.log(response)
          });
     }
+    
 }])
 .service('randomPoiService',['$http','$location', function( $http, $location){
 
@@ -74,18 +96,20 @@ angular.module('tokyoApp')
         });
     }
 }])
-
 .service('poiService',['$http','$location', function( $http, $location){
 
     let serverUrl = 'http://localhost:3000/api'
 
     this.getFavoritePois = function(){
+        console.log("Entered fave poi service")
         return $http.post(serverUrl + "/auth/protected/poi/userFavorites")
         .then(function(response){
+            debugger;
             console.log("Getting fave POIs")
             return response.data
         }, function(response){
-            console.log("Something went wrong :-(")
+            debugger;
+            console.log("Something went wrong :-()")
         });
     }
 
@@ -98,8 +122,16 @@ angular.module('tokyoApp')
         });
     }
 
-}])
+    this.getAllPoi = function(){
+        return $http.get(serverUrl + "/guests/poi" )
+        .then(function(response){
+            return response.data
+        }, function(response){
+            console.log("Something went wrong :-(")
+        });
+    }
 
+}])
 .service('adminService',['$http','$location', function( $http, $location){
 
     let serverUrl = 'http://localhost:3000/api'

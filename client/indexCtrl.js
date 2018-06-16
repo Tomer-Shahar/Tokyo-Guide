@@ -1,16 +1,28 @@
-angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService','$location',
-    function($scope, loginService, $location) {
+angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'poiService',
+    function($scope, loginService, poiService) {
 
-        //$scope.userName = loginService.firstName;
-        $scope.userName = "Guest"
-        $scope.isLogged = loginService.loggedIn; //change according to service
         $scope.faveCounter = 8
-        $scope.isAdmin = loginService.isAdmin
+        $scope.loginService = loginService;
+        $scope.isLoggedInObject = {
+            isLogged: false,
+            firstName: "Guest"
+        };
+        $scope.favePois = []
 
-        $scope.popup = function(){
-           console.log("indexCtrls username: " + $scope.userName)
-           console.log("But the service username is: " + loginService.firstName)
-        }
+        $scope.$watch('loginService.isLoggedInObject', (newvalue, oldValue) => { //logged in or logged out will be caught here
+            if(newvalue !== undefined){
+                $scope.isLoggedInObject.isLogged = newvalue.isLoggedin;
+                $scope.isLoggedInObject.firstName = newvalue.firstName;
+            }
+            if($scope.isLoggedInObject.isLogged){
+                var faves = poiService.getFavoritePois()
+                faves.then(function(result){
+                    $scope.favePois = result.POIs
+                }, function(response){
+                    console.log("Couldn't get faves :*( ")
+                });
+            }
+        })
 
         $scope.icreaseFaveCount = function(){
             $scope.faveCounter = $scope.faveCounter + 1

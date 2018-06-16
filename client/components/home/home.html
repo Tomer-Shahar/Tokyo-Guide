@@ -13,7 +13,7 @@
                 <div id="first-caption" class="carousel-caption text-left">
                   <h1>Welcome to Tokyo.</h1>
                   <p>Welcome to the official Tokyo travelling guide site. Help yourself discover all of the marvel known as Tokyo.</p>
-                  <p><a class="btn btn-lg btn-primary" href="#/register" role="button">Register today</a></p>
+                  <p><a class="btn btn-lg btn-primary" href="#/register" role="button" ng-show="loggedIn">Register today</a></p>
                 </div>
               </div>
             </div>
@@ -151,11 +151,11 @@
                </h2>
               <div class="row featurette modal-featurette">
                 <div class="col-md-7">
-                  <p class="lead">Number of views: {{Pois[currPoi].Views}}</p>
-                  <p class="lead">Rating:  {{Pois[currPoi].Rating}}</p>
-                  <p class="lead">Description: {{Pois[currPoi].Description}}</p>
+                  <p class="lead"><b>Number of views: </b>{{Pois[currPoi].Views}}</p>
+                  <p class="lead"><b>Rating:</b>  {{Pois[currPoi].Rating.toFixed(3)}}</p>
+                  <p class="lead"><b>Description:</b> {{Pois[currPoi].Description}}</p>
                   <hr class="featurette-divider poi-divider">
-                  <p class="lead">Latest reviews:</p>
+                  <p class="lead"><b>Latest reviews:</b></p>
                   <p class="lead">1) {{poiReviews[currPoi][0].Description}}.</p> </br>
                   <p class="lead">Date Written: {{poiReviews[currPoi][0].Date}}.</p> </br>
                   <p class="lead">2) {{poiReviews[currPoi][1].Description}}.</p></br>
@@ -172,15 +172,15 @@
               <!-- Map will go here-->
               IMAGINE THERE'S A MAP HERE </br>
               </div>
-              <div ng-show="{{loggedIn}}" class="container">
+              <div ng-show="isLoggedInObject.isLogged" class="container">
                 <hr class="featurette-divider" id="map-review-divider">
                 <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
                   <!-- Review Form -->
                   <form name="poiReview" class="form-group" id="formDiv" novalidate ng-model="showReview" ng-show="showReview" ng-submit="submitReview()" >
                     <div class="form-inline mt-2 mt-md-0 inline-div">
-                        <p>Enter a rating between 0 and 5:</p>
-                        <input type="number" name="rating" ng-model="poiRating" ng-required="true" placeholder="Your rating" min="0" max="5">
-                        <small class="help-block" id="help-msg" ng-show="poiReview.rating.$touched && poiReview.rating.$invalid">Invalid rating: mandatory field, between 0 to 5</small>
+                        <p>Enter a rating between 1 and 5:</p>
+                        <input type="number" name="rating" ng-model="poiRating" ng-required="true" placeholder="Your rating" min="1" max="5">
+                        <small class="help-block" id="help-msg" ng-show="poiReview.rating.$touched && poiReview.rating.$invalid">Invalid rating: mandatory field, between 1 to 5</small>
                     </div> 
                     <textarea class="form-control" id="poiTextReview" rows="3" placeholder="You may write a review here - at least 50 characters" ng-model="textReview" ng-minlength="50"></textarea>
                     <button type="submit" class="btn btn-primary btn-lg" ng-disabled="poiReview.$invalid">Submit</button>
