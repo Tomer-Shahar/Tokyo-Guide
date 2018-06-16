@@ -17,12 +17,11 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
         .when("/pois", {
             templateUrl: "components/pois/pois.html",
             controller: "poisCtrl",
-            /*resolve: {
+            resolve: {
               allPois: function(poiService){
-                console.log("in the resolve")
                 return poiService.getAllPoi();
               }
-            } */
+            }
           })
           .when("/register", {
             templateUrl: "components/register/register.html",
@@ -37,7 +36,7 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
             templateUrl: "components/favePois/favePois.html",
             controller: "favePoisCtrl",
             resolve: {
-              message: function(poiService){
+              favePois: function(poiService){
                 return poiService.getFavoritePois();
               }
             }

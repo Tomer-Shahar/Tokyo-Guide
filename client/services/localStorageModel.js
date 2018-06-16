@@ -5,7 +5,6 @@ angular.module("tokyoApp")
 
         self.addLocalStorage = function (key, value) {
             var dataVal = localStorageService.get(key);
-            console.log(dataVal)
             if (!dataVal)
                 if (localStorageService.set(key, value)) {
                     console.log("data added")

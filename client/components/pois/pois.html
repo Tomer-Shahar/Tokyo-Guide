@@ -22,19 +22,19 @@
     <table class="table table-dark table-striped" ng-show="filteredPois.length">
       <thead>
         <tr ng-click="openPoiTab(poi)">
-            <th class="headerProperty" ng-click="order = 'name'; reverseSort = !reverseSort">Name</th>
-            <th class="headerProperty" ng-click="order = 'category'; reverseSort = !reverseSort">Category</th>
-            <th class="headerProperty" ng-click="order = '-views'; reverseSort = !reverseSort">Views</th>
-            <th class="headerProperty" ng-click="order = '-rating'; reverseSort = !reverseSort">Rating</th>
+            <th class="headerProperty" ng-click="order = 'Name'; reverseSort = !reverseSort">Name</th>
+            <th class="headerProperty" ng-click="order = 'CategoryName'; reverseSort = !reverseSort">Category</th>
+            <th class="headerProperty" ng-click="order = 'Views'; reverseSort = !reverseSort">Views</th>
+            <th class="headerProperty" ng-click="order = 'Rating'; reverseSort = !reverseSort">Rating</th>
             <th ng-show={{loggedIn}}>Favorite?</th>
         </tr>
       </thead> 
       <tbody> 
         <tr ng-repeat="poi in filteredPois = (pois | orderBy: order : reverseSort | filter: search)"> 
-          <td>{{poi.name}}</td>
-          <td>{{poi.category}}</td>
-          <td>{{poi.views}}</td>
-          <td>{{poi.rating}}</td>
+          <td>{{poi.Name}}</td>
+          <td>{{poi.CategoryName}}</td>
+          <td>{{poi.Views}}</td>
+          <td>{{poi.Rating.toFixed(3)}}</td>
           <td ng-show="{{loggedIn}} && faveList[poi.PID]"> <img ng-click="unFave(poi)" class="fave" src="resources/images/isFavorite.png"></td>
           <td ng-show="{{loggedIn}} && !faveList[poi.PID]"><img ng-click="addToFave(poi)" class="fave" src="resources/images/notFavorite.png"></td>
           </tr>

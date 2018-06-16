@@ -3,8 +3,10 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'logi
     $scope.loggedIn = $scope.$parent.isLogged
     $scope.forgotPass= false
     $scope.userVerified = false
-    console.log("Login controller constructed")
-    console.log("username of loginCtrl: " + $scope.userName);
+    $scope.userName = $scope.$parent.userName
+    $scope.user = {}
+    $scope.user.username = "tomer"
+    $scope.user.password = "tomer123"
     
     $scope.verifyUserName = function(){
         //Verify the username with the server..
@@ -12,20 +14,16 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'logi
     }
 
     $scope.login = function () { 
-        console.log("Entered login function of login controller!")
         var userData = loginService.login($scope.user);
         userData.then(function(result){
             $scope.user = result;
-            console.log("Name: "+$scope.user.firstName);
-            $scope.$parent.userName = $scope.user.firstName;
-            console.log("parents username: " + $scope.$parent.userName)
+            $scope.$parent.userName = $scope.userName;
             $location.path('/home')
         });
-        console.log("Back at loginCtrl - after the promise")
     }
 
     $scope.getQuestions = function(){
-        var questions = restoreService.getQuestions($scope.user.username)
+        var questions = restoreService.getQuestions($scope.userName)
         questions.then(function(result){
             $scope.questions = result;
             console.log($scope.questions[0].QuestionText)
