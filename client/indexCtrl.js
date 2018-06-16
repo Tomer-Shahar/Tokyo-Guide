@@ -13,7 +13,7 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
             if(newvalue !== undefined){
                 $scope.isLoggedInObject.isLogged = newvalue.isLoggedin;
                 $scope.isLoggedInObject.firstName = newvalue.firstName;
-            }
+            }/*
             if($scope.isLoggedInObject.isLogged){
                 var faves = poiService.getFavoritePois()
                 faves.then(function(result){
@@ -21,7 +21,7 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                 }, function(response){
                     console.log("Couldn't get faves :*( ")
                 });
-            }
+            } */
         })
 
         $scope.icreaseFaveCount = function(){
