@@ -28,10 +28,10 @@
         </li>
         <li>
         <li class="nav-item">
-            <a class="nav-link" href="#/admin" ng-model="isLoggedInObject.isLogged" ng-show="true">Administrator</a>
+            <a class="nav-link" href="#/admin" ng-model="isLoggedInObject.isLogged" ng-show="true" isLoggedInObject.isLogged>Administrator</a>
         </li>
         <li>
-          <a class="nav-link" ng-model="indexCtrl.userName" ng-click="popup()" >Hello, {{isLoggedInObject.firstName}}</a>
+          <a class="nav-link">Hello, {{isLoggedInObject.firstName}}</a>
         </li>
       </ul>
         <a id="register-btn" class="btn btn-outline-success my-2 my-sm-0" href="#/register" ng-show="!isLoggedInObject.isLogged" >Sign Up</a>

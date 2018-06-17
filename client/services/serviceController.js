@@ -18,6 +18,7 @@ angular.module('tokyoApp')
         if(token && user) {
             this.isLoggedInObject.isLoggedin = true;
             this.isLoggedInObject.firstName = user;
+            $http.defaults.headers.common['authorization'] = "Bearer " + token
         }
     };
     this.checkLogIn();
@@ -41,8 +42,7 @@ angular.module('tokyoApp')
     }
 
     this.login = function (user) {
-        // register user
-        //this.logout();
+
         return $http.post(serverUrl + "/auth/login", user)
             .then(function (response) {
                 //First function handles success
@@ -51,19 +51,18 @@ angular.module('tokyoApp')
                 localStorageModel.addLocalStorage( "token" , response.data.token);
                 localStorageModel.addLocalStorage( "name" , response.data.firstName);
 
-
                 let tmpObj = {
                     firstName: response.data.firstName,
                     isLoggedin: true
                 }
                 self.isLoggedInObject = tmpObj;
                 console.log("loginService: The user " + self.isLoggedInObject.firstName + " has logged in." )
-                return response.data;
+                return response;
 
             }, function (response) {
                 //Second function handles error
-                var x = "Something went wrong";
                 console.log(response)
+                return response;
          });
     }
     
@@ -87,29 +86,37 @@ angular.module('tokyoApp')
     let serverUrl = 'http://localhost:3000/api'
 
     this.getRegisterParams = function(){
-        console.log("in the register service")
         return $http.get(serverUrl + "/auth/register")
         .then(function(response){
             return response.data
         }, function(response){
             console.log("Something went wrong :-(")
+            return response;
         });
     }
+
+    this.register = function(params){
+        return $http.post(serverUrl + "/auth/register", params)
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
 }])
 .service('poiService',['$http','$location', function( $http, $location){
 
     let serverUrl = 'http://localhost:3000/api'
 
     this.getFavoritePois = function(){
-        console.log("Entered fave poi service")
         return $http.post(serverUrl + "/auth/protected/poi/userFavorites")
         .then(function(response){
-            debugger;
-            console.log("Getting fave POIs")
-            return response.data
+            return response
         }, function(response){
-            debugger;
             console.log("Something went wrong :-()")
+            return response
         });
     }
 
@@ -122,6 +129,39 @@ angular.module('tokyoApp')
         });
     }
 
+    this.getAllReviews = function(poiID){
+        return $http.get(serverUrl + "/guests/review/" + poiID )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    //rankObj = { PID, ranking}
+    this.postRank = function(rankObj){
+        return $http.post(serverUrl + "/auth/protected/poi/ranking", rankObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+        //reviewObj = { PID, review}
+        this.postReview = function(reviewObj){
+            return $http.post(serverUrl + "/auth/protected/poi/review", reviewObj )
+            .then(function(response){
+                return response
+            }, function(response){
+                console.log("Something went wrong :-(")
+                return response
+            });
+        }
+
+
     this.getAllPoi = function(){
         return $http.get(serverUrl + "/guests/poi" )
         .then(function(response){
@@ -130,6 +170,57 @@ angular.module('tokyoApp')
             console.log("Something went wrong :-(")
         });
     }
+
+    this.incrementViews = function(pid){
+        return $http.get(serverUrl + "/guests/" + pid )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.addFavePoi = function(pidObj){
+        return $http.post(serverUrl + "/auth/protected/poi/favorite", pidObj)
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.deleteFavePoi = function(pidObj){
+        return $http.delete(serverUrl + "/auth/protected/poi/favorite", pidObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.countFaves = function(pidObj){
+        return $http.post(serverUrl + "/auth/protected/poi/countUserFavorites/", pidObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.getPopularPoi = function(){
+        return $http.post(serverUrl + "/auth/protected/poi/popular")
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
 
 }])
 .service('adminService',['$http','$location', function( $http, $location){
@@ -150,14 +241,22 @@ angular.module('tokyoApp')
     let serverUrl = 'http://localhost:3000/api'
 
     this.getQuestions = function(userName){
-        console.log("Saved Token:" + self.token)
-        return $http.post(serverUrl + "/auth/protected/question", userName)
+        return $http.post(serverUrl + "/auth/question", userName)
         .then(function(response){
-            console.log("Getting questions")
-            return response.data
+            return response
         }, function(response){
             console.log("Something went wrong :-(")
-            console.log(response.data)
+            return response
+        });
+    }
+
+    this.sendAnswers = function(answerObj){
+        return $http.post(serverUrl + "/auth/forgetPassword", answerObj)
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
         });
     }
 }])

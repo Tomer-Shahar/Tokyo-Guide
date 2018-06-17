@@ -1,2 +1,2 @@
 SELECT *
-FROM reviews
+FROM user_qa

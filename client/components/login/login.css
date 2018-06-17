@@ -90,3 +90,9 @@ input[disabled="disabled"] {
 .mx-auto.forgot-page > button{
     width: 10rem;
 }
+
+#loginAgainBtn{
+    color: #ffffff;
+    background-color: #007bff;
+    width: 90%;
+}

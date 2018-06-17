@@ -1,17 +1,17 @@
-<div class="content sign-in">         
+<div class="content sign-in" ng-hide = "registerSuccess">         
         <form name="registerForm" class="outerForm" ng-submit="submitForm(registerForm.$valid)" novalidate >
             <h1> Please enter your details</h1>            
     
-            <input type="text" name="firstName" placeholder="First name" ng-model="user.firstName" ng-required="true" class="input-field" autocomplete="name">
+            <input type="text" name="firstName" placeholder="First name" ng-model="user.firstName" ng-required="true" class="input-field" autocomplete="name" ng-minlength="3" ng-maxlength="60">
             <div ng-show="registerForm.firstName.$touched && registerForm.firstName.$invalid">
                 <small class="help-block">Enter your name.</small>
             </div>
     
-            <input type="text" name="lastName" placeholder="Last name" ng-model="user.lastName" ng-required="true" class="input-field" autocomplete="family-name">
+            <input type="text" name="lastName" placeholder="Last name" ng-model="user.lastName" ng-required="true" class="input-field" autocomplete="family-name" ng-minlength="3" ng-maxlength="60">
             <div ng-show="registerForm.lastName.$touched && registerForm.lastName.$invalid">
                 <small class="help-block">Enter your last name.</small>
             </div>
-
+            
             <input type="email" name="email" autocomplete='email' placeholder="Email" ng-model="user.email" ng-required="true" class="input-field" autocomplete="email">
             <div ng-show="registerForm.email.$touched && registerForm.email.$invalid">
                 <small class="help-block">Enter a valid email.</small>
@@ -19,17 +19,17 @@
 
             <input type="text" name="userName" placeholder="User name" ng-model="user.userName" ng-required="true" class="input-field" ng-minlength="3" ng-maxlength="8" autocomplete="username">
             <div ng-show="registerForm.userName.$touched && registerForm.userName.$invalid">
-                <small class="help-block"">Enter a valid username: between 3-8 characters.</small>
+                <small class="help-block">Enter a valid username: between 3-8 characters.</small>
             </div>
 
             <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10" autocomplete="new-password">
             <div ng-show="registerForm.password.$touched && registerForm.password.$invalid">
-                <small class="help-block">Invalid password: Must contain 5-10 alpha-numeric characters..</small>
+                <small class="help-block">Invalid password: Must contain BOTH letters and numbers, and be of length 5-10 characters.</small>
             </div>
 
-            <input type="password" name="rePassword" placeholder="Repeat your password" ng-model="user.rePassword" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10" autocomplete="new-password">
+            <input type="password" name="rePassword" ng-disabled="registerForm.password.$invalid"  placeholder="Repeat your password" ng-model="user.rePassword" ng-required="true" class="input-field" ng-minlength="5" ng-maxlength="10" autocomplete="new-password">
             <div ng-show="registerForm.rePassword.$touched && registerForm.rePassword.$invalid">
-                <small class="help-block">Incorrect password: must match previous password.</small>
+                <small class="help-block">Please repeat your password.</small>
             </div>
 
             <!-- Country - dropdown menu - from XML -->
@@ -37,9 +37,8 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect01">Country</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect01" autocomplete="country-name">
-                    <option selected>Choose...</option>
-                    <option ng-repeat="country in countries" ng-model="user.country">{{country}}</option>
+                <select class="custom-select" ng-model="user.country" id="inputGroupSelect01" autocomplete="country-name">
+                    <option ng-repeat="country in countries">{{country}}</option>
                 </select>
             </div>
 
@@ -50,9 +49,18 @@
 
             <h5>Please choose at least 2 categories you like.</h5>
             <div class="categories">
-                <div class="checkbox inline-field" ng-repeat="c in categories">
+                <div class="checkbox inline-field">
                     <label>
-                        <input type="checkbox"><span>{{c.CategoryName}}</span>
+                        <input type="checkbox" ng-model="user.cat1" ng-true-value="1" ng-false-value="0"><span>Sights & Landmarks</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" ng-model="user.cat2" ng-true-value="2" ng-false-value="0"><span>Concerts & Shows</span>
+                    </label>
+                    <label>
+                            <input type="checkbox" ng-model="user.cat3" ng-true-value="4" ng-false-value="0"><span>Food & Drink</span>
+                    </label>
+                    <label>
+                            <input type="checkbox" ng-model="user.cat4" ng-true-value="8" ng-false-value="0"><span>Nightlife</span>
                     </label>
                 </div>
              </div>
@@ -63,8 +71,8 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect02">Question 1</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect02">
-                    <option ng-repeat="q in questions" ng-model="questions">{{q.QuestionText}}</option>
+                <select class="custom-select" id="inputGroupSelect02" ng-model="user.question1" ng-options="q as q.QuestionText for q in questions">
+                   <!-- <option ng-repeat="q in questions">{{q.QuestionText}}</option> -->
                 </select>
             </div>
             <input type="text" name="answer1" placeholder="Your answer.." ng-model="user.answer1" ng-required="true" class="input-field">
@@ -77,16 +85,43 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect03">Question 2</label>
                 </div>
-                <select class="custom-select" id="inputGroupSelect03">
-                    <option ng-repeat="q in questions" ng-model="questions">{{q.QuestionText}}</option>
+                <select class="custom-select" id="inputGroupSelect03" ng-model="user.question2" ng-options="q as q.QuestionText for q in questions">
                 </select>
             </div>
             <input type="text" name="answer2" placeholder="Your answer.." ng-model="user.answer2" ng-required="true" class="input-field">
             <div ng-show="registerForm.answer2.$touched && registerForm.answer2.$invalid">
                 <small class="help-block">Please insert your answer.</small>
             </div>
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn-lg" ng-disabled="registerForm.$invalid">Submit</button>
+        
+            <input type="submit" class="btn btn-primary btn-lg" ng-disabled="registerForm.$invalid" value="Submit">
+            <div class="container" ng-show="showError" >
+                <h1>Uh oh.</h1>
+                <p>Some of your input fields are invalid:</p>
+                <pre style="color: red; " >{{errorMessage}}</pre>
+            </div>
         </form>
+</div>
+<div class="jumbotron jumbotron-fluid" ng-show="$scope.registerSuccess" id="success-jumbotron">
+    <div class="container">
+        <form class="form-inline mt-2 mt-md-0">
+            <h1 class="display-4">Awwww
+                <img src="resources/images/fuji-mountain.svg" id="fuji-svg">
+            Yeah!</h1>
+        </form>
+        <hr class="my-4">
+        <p class="lead">Registration was successful. You'll shortly be transferred to the login page.</p>
+    </div>
+</div>
+
+<!-- Already logged in div -->
+<div class="jumbotron jumbotron-fluid" ng-show="loggedIn">
+    <div class="container">
+        <h1 class="display-4">You're already logged in.</h1>
+        <hr class="my-4">
+        <p class="lead">If you <i>really</i> want to sign up again, please log out first.</p> </br></br>
+    </div>
+</div>
+
+
 
     
