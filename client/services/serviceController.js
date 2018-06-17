@@ -1,5 +1,5 @@
 angular.module('tokyoApp')
-.service('loginService', ['$http', /*'$httpProvider', */ '$location','localStorageModel', function ($http, /* $httpProvider, */ $location, localStorageModel){
+.service('loginService', ['$http', '$location','localStorageModel', function ($http, $location, localStorageModel){
 
     let serverUrl = 'http://localhost:3000/api'
     var self = this
@@ -19,6 +19,7 @@ angular.module('tokyoApp')
             this.isLoggedInObject.isLoggedin = true;
             this.isLoggedInObject.firstName = user;
             $http.defaults.headers.common['authorization'] = "Bearer " + token
+            $http.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
         }
     };
     this.checkLogIn();
@@ -26,6 +27,7 @@ angular.module('tokyoApp')
     this.setToken = function (t) {
         token = t
         $http.defaults.headers.common['authorization'] = "Bearer " + t
+        $http.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
     }
 
     this.logout = function(){
@@ -106,7 +108,7 @@ angular.module('tokyoApp')
     }
 
 }])
-.service('poiService',['$http','$location', function( $http, $location){
+.service('poiService',['$http','$location','localStorageModel', function( $http, $location, localStorageModel){
 
     let serverUrl = 'http://localhost:3000/api'
 
@@ -192,7 +194,10 @@ angular.module('tokyoApp')
     }
 
     this.deleteFavePoi = function(pidObj){
-        return $http.delete(serverUrl + "/auth/protected/poi/favorite", pidObj )
+        return $http({
+            url: serverUrl + "/auth/protected/poi/favorite", 
+            method: 'delete', 
+            data: pidObj})
         .then(function(response){
             return response
         }, function(response){
@@ -202,7 +207,7 @@ angular.module('tokyoApp')
     }
 
     this.countFaves = function(pidObj){
-        return $http.post(serverUrl + "/auth/protected/poi/countUserFavorites/", pidObj )
+        return $http.post(serverUrl + "/auth/protected/poi/countUserFavorites", pidObj )
         .then(function(response){
             return response
         }, function(response){
@@ -221,6 +226,17 @@ angular.module('tokyoApp')
         });
     }
 
+    this.updateLocalFaves = function(favePois){
+        localStorageModel.updateLocalStorage("faves", favePois);
+    }
+    
+    this.getLocalFaves = function(){
+        return localStorageModel.getLocalStorage("faves");
+    }
+
+    this.insertFaves = function(favePois){
+        localStorage.addLocalStorage("faves", favePois );
+    }
 
 }])
 .service('adminService',['$http','$location', function( $http, $location){

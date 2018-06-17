@@ -6,17 +6,16 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
         $scope.poiReviews = []
         $scope.showReview = false
         $scope.faveList = {}
-        $scope.poiReviews = [0, 0, 0];
+        $scope.poiReviews = {};
         $scope.userReview = {}
         $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged 
 
-
         $scope.setCurrPoi = function(poi){
             $scope.currPoi = poi;
-            var review = poiService.getNewReviews(poi.PID)
             $scope.showReviewError = false;
             $scope.poiRating = 1
             $scope.textReview = undefined
+            var review = poiService.getNewReviews(poi.PID)
             review.then(function(result){
                 $scope.poiReviews[poi.PID] = result;
                 $scope.poiReviews[poi.PID][0].Date =  $scope.poiReviews[poi.PID][0].Date.substring(0,10);
@@ -30,18 +29,15 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
         }
       
         $scope.calcFaves();
-      
-        $scope.icreaseFaveCount = function(){
-            $scope.faveCounter = $scope.faveCounter + 1
-        }
-      
+            
         $scope.unFave = function(poi){
+            $scope.$parent.unFave(poi)
             $scope.faveList[poi.PID] = false;
         }
       
         $scope.addToFave = function(poi){
+            $scope.$parent.addToFave(poi)
             $scope.faveList[poi.PID] = true;
-            poiService.addToFavorites($scope.userName, poi.PID)
         }
 
         $scope.submitReview = function(){

@@ -19,6 +19,7 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                     if(result.status === 200){
                         $scope.favePois = result.data.userFavorites
                         $scope.faveCounter = $scope.favePois.length
+                        poiService.insertFaves($scope.favePois)
                     }
                     else{
                         console.log("Couldnt get favorite POIs.")
@@ -32,7 +33,7 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
         }
 
         $scope.unFave = function(poi){
-            let removeObj = {"id": poi.PID};
+            let removeObj = {id: poi.PID};
             var removeResult = poiService.deleteFavePoi(removeObj)
             removeResult.then(function(result){
                 if(result.status === 200){
@@ -47,13 +48,12 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
           }
         
           $scope.addToFave = function(poi){
-            let addObj = {"id": poi.PID};
+            let addObj = {id: poi.PID};
             var addResult = poiService.addFavePoi(addObj)
             addResult.then(function(result){
                 if(result.status === 200){
                     $scope.faveCounter += 1
                     return true
-
                 }
                 else{
                     console.log("Didn't add to favorites.")

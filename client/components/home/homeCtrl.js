@@ -34,9 +34,8 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
   }
 
   $scope.unFave = function(poi){
-    if($scope.$parent.unFave(poi)){
-      $scope.faveList[poi.PID] = false;
-    }
+    $scope.$parent.unFave(poi)
+    $scope.faveList[poi.PID] = false;
   }
 
   $scope.addToFave = function(poi){
@@ -48,14 +47,12 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
       $scope.currPoi = num;
       $scope.currImg = $scope.imgs[num]
       $scope.showReviewError = false;
-      if($scope.poiReviews[num] === 0){  //To not get the same review twice
-        var review = poiService.getNewReviews($scope.Pois[num].PID)
-        review.then(function(result){
-            $scope.poiReviews[num] = result;
-            $scope.poiReviews[num][0].Date =  $scope.poiReviews[num][0].Date.substring(0,10);
-            $scope.poiReviews[num][1].Date =  $scope.poiReviews[num][1].Date.substring(0,10);
-        });
-      }
+      var review = poiService.getNewReviews($scope.Pois[num].PID)
+      review.then(function(result){
+          $scope.poiReviews[num] = result;
+          $scope.poiReviews[num][0].Date =  $scope.poiReviews[num][0].Date.substring(0,10);
+          $scope.poiReviews[num][1].Date =  $scope.poiReviews[num][1].Date.substring(0,10);
+      });
     }
 
     $scope.submitReview = function(){

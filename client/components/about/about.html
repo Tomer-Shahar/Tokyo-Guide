@@ -94,8 +94,8 @@
                 <div class="col-md-5">
                   <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">
                   <h4 style="text-align: center"><span class="text-muted">{{currPoi.CategoryName}}</span></h4>
-                  <p ng-show="loggedIn && faveList[currPoi.PID]"><img class="fave" src="resources/images/isFavorite.png"></p>
-                  <p ng-show="loggedIn && !faveList[currPoi.PID]"><img class="fave" src="resources/images/notFavorite.png"></p>
+                  <p ng-show="loggedIn && faveList[currPoi.PID]"><img ng-click="unFave(currPoi)" class="fave" src="resources/images/isFavorite.png"></p>
+                  <p ng-show="loggedIn && !faveList[currPoi.PID]"><img ng-click="addToFave(currPoi)" class="fave" src="resources/images/notFavorite.png"></p>
                 </div>
               </div>
             </div>
