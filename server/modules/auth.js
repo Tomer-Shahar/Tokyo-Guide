@@ -263,9 +263,9 @@ function validateForgetPassword(user){
     const schema = {
        username: Joi.string().alphanum().min(3).required(),
        questionID1: Joi.number().required(),
-       answer1: Joi.string().alphanum().min(3).required(),
+       answer1: Joi.string().min(3).required(),
        questionID2: Joi.number().required(),
-       answer2: Joi.string().alphanum().min(3).required()
+       answer2: Joi.string().min(3).required()
     };
 
     return Joi.validate(user, schema);
@@ -294,15 +294,15 @@ function validateUser(user){
         //must be accompanied by birthyear
         username: Joi.string().alphanum().min(3).max(8).regex(/^[a-zA-Z]+$/).required(),
         password: Joi.string().min(5).max(10).regex(/^[a-zA-Z0-9]+$/).required(),
-        firstName: Joi.string().alphanum().min(3).required(),
-        lastName: Joi.string().alphanum().min(3).required(),
-        city: Joi.string().alphanum().min(3).required(),
+        firstName: Joi.string().min(3).required(),
+        lastName: Joi.string().min(3).required(),
+        city: Joi.string().min(3).required(),
         country: Joi.string().valid(optionalCountries).required(),
         email: Joi.string().email().required(),
         questionID1: Joi.number().required(),
-        answer1: Joi.string().alphanum().min(3).required(),
+        answer1: Joi.string().min(3).required(),
         questionID2: Joi.number().required(),
-        answer2: Joi.string().alphanum().min(3).required(),
+        answer2: Joi.string().min(3).required(),
         category1: Joi.number().required(),
         category2: Joi.number().required(),
         category3: Joi.number().optional(),

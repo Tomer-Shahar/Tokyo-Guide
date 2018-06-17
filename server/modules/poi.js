@@ -411,7 +411,7 @@ function execOrder(checkPIDQuery, res, numberOfPID, checkPIDQueryWithUsernameQue
 function validReview(Ranking){
     const schema = {
        id: Joi.number().min(1).required(),
-       description: Joi.string().alphanum().min(50).required()
+       description: Joi.string()
     };
 
     return Joi.validate(Ranking, schema);
