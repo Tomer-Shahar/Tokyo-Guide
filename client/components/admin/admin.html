@@ -1,28 +1,42 @@
 <br />
 <br />
-<div class="container" ng-show="status">
-    <div class="row">
-      <div class="col">
-        Hello Admin!
-      </div>
-      <div class="col">
-            <canvas id="counteries"></canvas>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <canvas id="favoritePOI"></canvas>
-      </div>
-      <div class="col">
-        <canvas id="ranking"></canvas>
-      </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <canvas id="viewsPOI"></canvas>
-        </div>
-        <div class="col">
-            <canvas id="categories"></canvas>
-        </div>
+<div class="container" ng-show="status===200">
+  <div class="jumbotron jumbotron-fluid" id="admin-jumbotron">
+      <div class="container">
+          <h1 class="display-4">Admin Dashboard <img id="graph-icon" src="resources/images/graph.svg"></h1>
+          <hr class="my-4">
+          <p class="lead">Here you can view a summary of the NT Tokyo Travel Guide app. </br></br>
       </div>
   </div>
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+          <canvas id="counteries"></canvas>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <canvas id="favoritePOI"></canvas>
+    </div>
+    <div class="col">
+      <canvas id="ranking"></canvas>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col">
+          <canvas id="viewsPOI"></canvas>
+      </div>
+      <div class="col">
+          <canvas id="categories"></canvas>
+      </div>
+    </div>
+</div>
+
+<div class="jumbotron jumbotron-fluid" ng-show="status!==200">
+    <div class="container">
+        <h1 class="display-4">Sorry, but this page is for admins only.</h1>
+        <hr class="my-4">
+        <p class="lead">Here, have some consolation sushi: <img src="resources/images/sushi.svg"></p> </br></br>
+    </div>
+</div>

@@ -3,7 +3,6 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     
     $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
     $scope.reverseSort = false;
-    $scope.faveList = {};
     $scope.pois = allPois.POIs
     $scope.showReview = false
     $scope.poiReviews = {};
@@ -17,16 +16,15 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     }
     
     //Save which of the POIs are favorites or not
-    $scope.calcFaves = function(){
-        for(poi of $scope.pois){
-            $scope.faveList[poi.PID] = false; //init all values with false.
-        }
-        for(fave of $scope.favePois){
-            $scope.faveList[fave.PID] = true; //change fave ones to true.         
-        }
+    $scope.calcFaves();
+
+    $scope.saveChanges = function(){
+        $scope.$parent.saveFaves()
+        $scope.saved = true
     }
 
     $scope.setCurrPoi = function(poi){
+         $scope.incrementViews(poi);
         $scope.currPoi = poi;
         $scope.showReviewError = false;
         $scope.poiRating = 1
@@ -54,7 +52,7 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
                     if(result.status === 200){ //succeeded ranking AND text reviewing
                       $scope.userReview[currPoi.PID] = true
                       $scope.showReviewError = true;
-                      $scope.poiRating = 1
+                      $scope.poiRating = undefined
                       $scope.textReview = undefined
                     }
                     else{ //text review failed
@@ -66,7 +64,7 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
               else{ // No text review, success
                 $scope.userReview[$scope.currPoi.PID] = true
                 $scope.showReviewError = false;
-                $scope.poiRating = 1
+                $scope.poiRating = undefined
                 $scope.textReview = undefined
               }
             }
@@ -84,11 +82,13 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     $scope.unFave = function(poi){
         $scope.faveList[poi.PID] = false;
         $scope.$parent.unFave(poi);
+        $scope.saved = false
     }
 
     $scope.addToFave = function(poi){
         $scope.$parent.addToFave(poi);
         $scope.faveList[poi.PID] = true;
+        $scope.saved = false
     }
 
     $scope.calcFaves();

@@ -1,7 +1,6 @@
 angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'loginService','restoreService', function($scope, $location, loginService, restoreService) {
 
     $scope.userName = $scope.$parent.userName
-    $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
     $scope.user = {}
     $scope.showLogin = true
     $scope.forgotPass= false

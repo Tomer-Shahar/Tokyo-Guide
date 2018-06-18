@@ -3,7 +3,7 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
 
         $scope.Pois = randomPois.POIs
         $scope.currPoi = $scope.Pois[0] // The POI shown in the modal will be stored here.
-        $scope.poiReviews = []
+        $scope.poiReviews = {}
         $scope.showReview = false
         $scope.faveList = {}
         $scope.poiReviews = {};
@@ -12,6 +12,7 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
 
         $scope.setCurrPoi = function(poi){
             $scope.currPoi = poi;
+            $scope.incrementViews(poi);
             $scope.showReviewError = false;
             $scope.poiRating = 1
             $scope.textReview = undefined
@@ -21,11 +22,6 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
                 $scope.poiReviews[poi.PID][0].Date =  $scope.poiReviews[poi.PID][0].Date.substring(0,10);
                 $scope.poiReviews[poi.PID][1].Date =  $scope.poiReviews[poi.PID][1].Date.substring(0,10);
             });
-        }
-        $scope.calcFaves = function(){
-            for(fave of $scope.favePois){
-                $scope.faveList[fave.PID] = true; //change fave ones to true.         
-            }
         }
       
         $scope.calcFaves();
@@ -49,11 +45,11 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
               debugger;
                 if(result.status === 200){
                   if($scope.textReview !== undefined){
-                    reviewObj = {id: $scope.Pois[$scope.currPoi].PID, description: $scope.textReview}
+                    reviewObj = {id: $scope.currPoi.PID, description: $scope.textReview}
                     var review = poiService.postReview(reviewObj)
                     review.then(function(result){
                         if(result.status === 200){ //succeeded ranking AND text reviewing
-                          $scope.userReview[currPoi.PID] = true
+                          $scope.userReview[$scope.currPoi.PID] = true
                           $scope.showReviewError = true;
                           $scope.poiRating = 1
                           $scope.textReview = undefined
@@ -76,7 +72,7 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
                   $scope.showReviewError = true;
                 }
             });
-          }
+        }
 
         $scope.flipReview = function(){
           $scope.showReview = !$scope.showReview

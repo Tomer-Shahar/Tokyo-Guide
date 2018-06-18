@@ -35,11 +35,6 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
           .when("/favePois", {
             templateUrl: "components/favePois/favePois.html",
             controller: "favePoisCtrl",
-            resolve: {
-              favePois: function(poiService){
-                return poiService.getFavoritePois();
-              }
-            }
           })
           .when("/login", {
             templateUrl: "components/login/login.html",

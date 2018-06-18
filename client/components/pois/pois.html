@@ -13,6 +13,8 @@
           <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
           <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
           <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
+          <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
+          <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
         </div>
     </form>
     <hr class="my-4" id="geisha-divider">
@@ -23,6 +25,7 @@
       <thead>
         <tr ng-click="openPoiTab(poi)">
             <th class="headerProperty" ng-click="order = 'Name'; reverseSort = !reverseSort">Name</th>
+            <th class="headerProperty">Image</th>
             <th class="headerProperty" ng-click="order = 'CategoryName'; reverseSort = !reverseSort">Category</th>
             <th class="headerProperty" ng-click="order = 'Views'; reverseSort = !reverseSort">Views</th>
             <th class="headerProperty" ng-click="order = 'Rating'; reverseSort = !reverseSort">Rating</th>
@@ -30,14 +33,15 @@
         </tr>
       </thead> 
       <tbody> 
-        <tr ng-repeat="poi in filteredPois = (pois | orderBy: order : reverseSort | filter: search)"> 
+        <tr id="poi-row" ng-repeat="poi in filteredPois = (pois | orderBy: order : reverseSort | filter: search)"> 
           <td ng-click="setCurrPoi(poi)" data-toggle="modal" data-target="#poiModal" >{{poi.Name}}</td>
+          <td><img id="poi-img" ng-click="setCurrPoi(poi)" ng-src="resources/images/poi/{{poi.Image}}" data-toggle="modal" data-target="#poiModal"></td>
           <td>{{poi.CategoryName}}</td>
           <td>{{poi.Views}}</td>
           <td>{{poi.Rating.toFixed(3)}}</td>
-          <td ng-show="{{loggedIn}} && faveList[poi.PID]"> <img ng-click="unFave(poi)" class="fave" src="resources/images/isFavorite.png"></td>
-          <td ng-show="{{loggedIn}} && !faveList[poi.PID]"><img ng-click="addToFave(poi)" class="fave" src="resources/images/notFavorite.png"></td>
-          </tr>
+          <td ng-show="loggedIn && faveList[poi.PID]"> <img ng-click="unFave(poi)" class="fave" src="resources/images/isFavorite.png"></td>
+          <td ng-show="loggedIn && !faveList[poi.PID]"><img ng-click="addToFave(poi)" class="fave" src="resources/images/notFavorite.png"></td>
+        </tr>
       </tbody>
     </table>
   <div class="container no-results" ng-hide="filteredPois.length">
@@ -62,15 +66,15 @@
         <h2 class="featurette-heading poi-details"><span class="text-muted poi-muted-text">Additional Details:</span></h2>
         <div class="row featurette modal-featurette">
           <div class="col-md-7">
-            <p class="lead">Number of views: {{currPoi.Views}}</p>
-            <p class="lead">Rating:  {{currPoi.Rating.toFixed(3)}}</p>
-            <p class="lead">Description: {{currPoi.Description}}</p>
-            <hr class="featurette-divider poi-divider">
-            <p class="lead">Latest reviews:</p>
-            <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
-            <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}.</p> </br>
-            <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
-            <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}.</p>
+              <p class="lead"><b>Number of views:</b> {{currPoi.Views}}</p>
+              <p class="lead"><b>Rating:</b> {{ (100*currPoi.Rating/5).toFixed(3) }}%</p>
+              <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
+              <hr class="featurette-divider poi-divider">
+              <p class="lead"><b>Latest reviews:</b></p>
+              <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
+              <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}.</p> </br>
+              <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
+              <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}.</p>
         </div>
         <div class="col-md-5">
           <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">

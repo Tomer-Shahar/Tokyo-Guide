@@ -1,11 +1,12 @@
 angular.module('tokyoApp')
-.service('loginService', ['$http', '$location','localStorageModel', function ($http, $location, localStorageModel){
+.service('loginService', ['$http', '$location','localStorageModel','poiService', function ($http, $location, localStorageModel, poiService){
 
     let serverUrl = 'http://localhost:3000/api'
     var self = this
     this.isLoggedInObject = {
         isLoggedin: false,
-        firstName: "Guest"
+        firstName: "Guest",
+        favePois: {}
     };
 
     this.checkLogIn = function(){
@@ -14,15 +15,17 @@ angular.module('tokyoApp')
         
         const token = localStorageModel.getLocalStorage(token_key);
         const user = localStorageModel.getLocalStorage(name_key);
+        const faves = localStorageModel.getLocalStorage("faves");
 
-        if(token && user) {
+        if(token && user && faves) {
             this.isLoggedInObject.isLoggedin = true;
             this.isLoggedInObject.firstName = user;
+            this.isLoggedInObject.favePois = faves;
             $http.defaults.headers.common['authorization'] = "Bearer " + token
             $http.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
         }
     };
-    this.checkLogIn();
+    this.checkLogIn(); //done once when opening website.
 
     this.setToken = function (t) {
         token = t
@@ -35,16 +38,17 @@ angular.module('tokyoApp')
         $http.defaults.headers.common['authorization'] = ""
         let obj = {
             isLoggedin : false,
-            firstName: "Guest"
+            firstName: "Guest",
+            favePois: {}
         }
         this.isLoggedInObject = obj;
 
         localStorageModel.removeItem("token")
         localStorageModel.removeItem("name")
+        localStorageModel.removeItem("faves")
     }
 
     this.login = function (user) {
-
         return $http.post(serverUrl + "/auth/login", user)
             .then(function (response) {
                 //First function handles success
@@ -52,10 +56,30 @@ angular.module('tokyoApp')
                 self.setToken(self.token)
                 localStorageModel.addLocalStorage( "token" , response.data.token);
                 localStorageModel.addLocalStorage( "name" , response.data.firstName);
+                favePoisTmp = {}
+                var faves = poiService.getFavoritePois()
+                faves.then(function(result){
+                    if(result.status === 200){
+                        for (fave of result.data.userFavorites){ //if user logged in, create the faves dictionary
+                            favePoisTmp[fave.PID] = fave
+                        }
+                        poiService.insertFaves(favePoisTmp)
+                        let obj = {
+                            isLoggedin: true,
+                            firstName: self.isLoggedInObject.firstName,
+                            favePois: favePoisTmp
+                        }
+                        self.isLoggedInObject = obj
+                    }
+                    else{
+                        console.log("Couldnt get favorite POIs.")
+                    }
+                });
 
                 let tmpObj = {
                     firstName: response.data.firstName,
-                    isLoggedin: true
+                    isLoggedin: true,
+                    favePois: favePoisTmp
                 }
                 self.isLoggedInObject = tmpObj;
                 console.log("loginService: The user " + self.isLoggedInObject.firstName + " has logged in." )
@@ -152,16 +176,16 @@ angular.module('tokyoApp')
         });
     }
 
-        //reviewObj = { PID, review}
-        this.postReview = function(reviewObj){
-            return $http.post(serverUrl + "/auth/protected/poi/review", reviewObj )
-            .then(function(response){
-                return response
-            }, function(response){
-                console.log("Something went wrong :-(")
-                return response
-            });
-        }
+    //reviewObj = { PID, review}
+    this.postReview = function(reviewObj){
+        return $http.post(serverUrl + "/auth/protected/poi/review", reviewObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
 
 
     this.getAllPoi = function(){
@@ -174,7 +198,7 @@ angular.module('tokyoApp')
     }
 
     this.incrementViews = function(pid){
-        return $http.get(serverUrl + "/guests/" + pid )
+        return $http.get(serverUrl + "/guests/poi/" + pid )
         .then(function(response){
             return response
         }, function(response){
@@ -235,7 +259,18 @@ angular.module('tokyoApp')
     }
 
     this.insertFaves = function(favePois){
-        localStorage.addLocalStorage("faves", favePois );
+        localStorageModel.addLocalStorage("faves", favePois );
+    }
+
+    this.updateDatabaseFaves = function(addedPois, deletedPois){
+        for(newFave in addedPois){
+            newObj = {"id": newFave} 
+            this.addFavePoi(newObj)
+        }
+        for(deletedFave in deletedPois){
+            deletedObj = { "id": deletedFave }
+            this.deleteFavePoi( deletedObj)
+        }
     }
 
 }])
@@ -246,9 +281,10 @@ angular.module('tokyoApp')
     this.getAdminData = function(){
         return $http.post(serverUrl + "/auth/protected/admin")
         .then((response) =>{
-            return response.data
+            return response
         }, (err)=>{
             console.log("Something went wrong :-( ----> adminService " + err)
+            return err
         });
     }
 }])

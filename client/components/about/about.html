@@ -80,16 +80,15 @@
                </h2>
               <div class="row featurette modal-featurette">
                 <div class="col-md-7">
-                  <p class="lead">Number of views: {{currPoi.Views}}</p>
-                  <p class="lead">Rating:  {{currPoi.Rating.toFixed(3)}}</p>
-                  <p class="lead">Description: {{currPoi.Description}}</p>
+                  <p class="lead"><b>Number of views:</b> {{currPoi.Views}}</p>
+                  <p class="lead"><b>Rating:</b> {{ (100*currPoi.Rating/5).toFixed(3) }}%</p>
+                  <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
                   <hr class="featurette-divider poi-divider">
-                  <p class="lead">Latest reviews:</p>
+                  <p class="lead"><b>Latest reviews:</b></p>
                   <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
                   <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}.</p> </br>
                   <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
                   <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}.</p>
-                  <!-- <button ng-click="showDesc(poi)"> Click me</button> -->
                 </div>
                 <div class="col-md-5">
                   <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">

@@ -1,23 +1,34 @@
-angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'favePois',
-    function($scope, poiService, favePois) {
+angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService',
+    function($scope, poiService) {
     
     $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
     $scope.reverseSort = false;
-    $scope.faveList = {};
     $scope.showReview = false
     $scope.poiReviews = {};
     $scope.userReview = {}
-    $scope.favePois = favePois.data.userFavorites;
-    $scope.currPoi = $scope.favePois[0] // The POI shown in the modal will be stored here.
+    $scope.favePoisArray = []
 
     //Save which of the POIs are favorites or not
-    $scope.calcFaves = function(){
-        for(fave of $scope.favePois){
-            $scope.faveList[fave.PID] = true; //change fave ones to true.         
+    $scope.calcFaves();
+
+    $scope.createFaveArray = function() {
+      for(const favePID in $scope.favePois){
+        if( $scope.favePois.hasOwnProperty(favePID)){
+            $scope.favePoisArray.push( $scope.favePois[favePID]);
         }
+      }
+    }
+
+  $scope.createFaveArray();
+  $scope.currPoi = $scope.favePoisArray[0] // The POI shown in the modal will be stored here.
+
+    $scope.saveChanges = function(){
+        $scope.$parent.saveFaves()
+        $scope.saved = true
     }
 
     $scope.setCurrPoi = function(poi){
+        $scope.incrementViews(poi);
         $scope.currPoi = poi;
         $scope.showReviewError = false;
         $scope.poiRating = 1
@@ -31,42 +42,41 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'f
     }
 
     $scope.submitReview = function(){
-        $scope.showReviewError = false;
-        $scope.userReview[$scope.currPoi.PID] = false;
-        rankObj = {id: $scope.currPoi.PID, ranking: $scope.poiRating}
-        var ranking = poiService.postRank(rankObj)
-        ranking.then(function(result){
-          debugger;
-            if(result.status === 200){
-              if($scope.textReview !== undefined){
-                reviewObj = {id: $scope.Pois[$scope.currPoi].PID, description: $scope.textReview}
-                var review = poiService.postReview(reviewObj)
-                review.then(function(result){
-                    if(result.status === 200){ //succeeded ranking AND text reviewing
-                      $scope.userReview[currPoi.PID] = true
-                      $scope.showReviewError = true;
-                      $scope.poiRating = 1
-                      $scope.textReview = undefined
-                    }
-                    else{ //text review failed
-                      $scope.reviewErrorMessage = result.data.message
-                      $scope.showReviewError = true;
-                    }
-                });
-              }
-              else{ // No text review, success
-                $scope.userReview[$scope.currPoi.PID] = true
-                $scope.showReviewError = false;
-                $scope.poiRating = 1
-                $scope.textReview = undefined
-              }
+      $scope.showReviewError = false;
+      $scope.userReview[$scope.currPoi.PID] = false;
+      rankObj = {id: $scope.currPoi.PID, ranking: $scope.poiRating}
+      var ranking = poiService.postRank(rankObj)
+      ranking.then(function(result){
+          if(result.status === 200){
+            if($scope.textReview !== undefined){
+              reviewObj = {id: $scope.currPoi.PID, description: $scope.textReview}
+              var review = poiService.postReview(reviewObj)
+              review.then(function(result){
+                  if(result.status === 200){ //succeeded ranking AND text reviewing
+                    $scope.userReview[$scope.currPoi.PID] = true
+                    $scope.showReviewError = true;
+                    $scope.poiRating = undefined
+                    $scope.textReview = undefined
+                  }
+                  else{ //text review failed
+                    $scope.reviewErrorMessage = result.data.message
+                    $scope.showReviewError = true;
+                  }
+              });
             }
-            else{ //ranking failed
-              $scope.reviewErrorMessage = result.data.message
-              $scope.showReviewError = true;
+            else{ // No text review, success
+              $scope.userReview[$scope.currPoi.PID] = true
+              $scope.showReviewError = false;
+              $scope.poiRating = undefined
+              $scope.textReview = undefined
             }
-        });
-      }
+          }
+          else{ //ranking failed
+            $scope.reviewErrorMessage = result.data.message
+            $scope.showReviewError = true;
+          }
+      });
+    }
 
     $scope.flipReview = function(){
       $scope.showReview = !$scope.showReview
@@ -75,6 +85,7 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'f
     $scope.unFave = function(poi){
         $scope.faveList[poi.PID] = false;
         $scope.$parent.unFave(poi);
+        $scope.saved = false
     }
 
     $scope.calcFaves();

@@ -1,2 +1,3 @@
 SELECT *
-FROM user_qa
+FROM favorites
+WHERE Username = 'tomer'

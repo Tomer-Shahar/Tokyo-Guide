@@ -10,10 +10,22 @@
   }
   
   #first-caption{
-    height: 17rem;
+    height: 18rem;
     font-weight: bold;
     
     text-shadow: rgb(15, 13, 6) 1px 0 10px;
+  }
+
+  #first-caption p{
+    margin: 0 0 1.5rem 0;
+  }
+
+  .button-toolbar{
+    margin: 4rem 0 0 0;
+  }
+
+  .first-cap-btn{
+    font-family: electroHarmonix;
   }
   
   #second-caption{

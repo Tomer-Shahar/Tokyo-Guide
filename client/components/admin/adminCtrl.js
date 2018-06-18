@@ -1,7 +1,8 @@
 angular.module('tokyoApp').controller('adminCtrl', ["$scope", 'data' , function($scope, data) {
 
-$scope.status = true;
-$scope.data = data;
+debugger;
+$scope.status = data.status
+$scope.data = data.data;
 console.log($scope.data);
 $scope.counteries = document.getElementById("counteries");
 $scope.favoritePOI = document.getElementById("favoritePOI");
