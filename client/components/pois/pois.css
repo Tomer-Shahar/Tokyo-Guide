@@ -61,3 +61,15 @@
 .lead img{
     width: 4rem;
 }
+
+#poi-row td{
+    vertical-align: inherit;
+}
+
+#poi-img{
+    width: 6rem;
+}
+
+#poi-row td img:hover{
+    cursor: pointer;
+}

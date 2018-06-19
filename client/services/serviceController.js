@@ -1,11 +1,12 @@
 angular.module('tokyoApp')
-.service('loginService', ['$http', /*'$httpProvider', */ '$location','localStorageModel', function ($http, /* $httpProvider, */ $location, localStorageModel){
+.service('loginService', ['$http', '$location','localStorageModel','poiService', function ($http, $location, localStorageModel, poiService){
 
     let serverUrl = 'http://localhost:3000/api'
     var self = this
     this.isLoggedInObject = {
         isLoggedin: false,
-        firstName: "Guest"
+        firstName: "Guest",
+        favePois: {}
     };
 
     this.checkLogIn = function(){
@@ -14,17 +15,43 @@ angular.module('tokyoApp')
         
         const token = localStorageModel.getLocalStorage(token_key);
         const user = localStorageModel.getLocalStorage(name_key);
+       // const faves = localStorageModel.getLocalStorage("faves");
 
-        if(token && user) {
+        if(token && user /*&& faves */) {
             this.isLoggedInObject.isLoggedin = true;
             this.isLoggedInObject.firstName = user;
+            //this.isLoggedInObject.favePois = faves;
+            $http.defaults.headers.common['authorization'] = "Bearer " + token
+            $http.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
+
+            //If a token is stored ---> Get favorites from server!
+            favePoisTmp = {} 
+            var faves = poiService.getFavoritePois()
+            faves.then(function(result){
+                if(result.status === 200){
+                    for (fave of result.data.userFavorites){ //if user logged in, create the faves dictionary
+                        favePoisTmp[fave.PID] = fave
+                    }
+                    poiService.insertFaves(favePoisTmp)
+                    let obj = {
+                        isLoggedin: true,
+                        firstName: self.isLoggedInObject.firstName,
+                        favePois: favePoisTmp
+                    }
+                    self.isLoggedInObject = obj
+                }
+                else{
+                    console.log("Couldnt get favorite POIs.")
+                }
+            });
         }
     };
-    this.checkLogIn();
+    this.checkLogIn(); //done once when opening website.
 
     this.setToken = function (t) {
         token = t
         $http.defaults.headers.common['authorization'] = "Bearer " + t
+        $http.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
     }
 
     this.logout = function(){
@@ -32,43 +59,64 @@ angular.module('tokyoApp')
         $http.defaults.headers.common['authorization'] = ""
         let obj = {
             isLoggedin : false,
-            firstName: "Guest"
+            firstName: "Guest",
+            favePois: {}
         }
         this.isLoggedInObject = obj;
 
         localStorageModel.removeItem("token")
         localStorageModel.removeItem("name")
+        //localStorageModel.removeItem("faves")
+        //localStorageModel.removeItem("order")
     }
 
     this.login = function (user) {
-        // register user
-        //this.logout();
         return $http.post(serverUrl + "/auth/login", user)
             .then(function (response) {
                 //First function handles success
                 self.token = response.data.token
+                debugger;
                 self.setToken(self.token)
                 localStorageModel.addLocalStorage( "token" , response.data.token);
                 localStorageModel.addLocalStorage( "name" , response.data.firstName);
-
+                favePoisTmp = {}
+                var faves = poiService.getFavoritePois()
+                faves.then(function(result){
+                    if(result.status === 200){
+                        for (fave of result.data.userFavorites){ //if user logged in, create the faves dictionary
+                            favePoisTmp[fave.PID] = fave
+                        }
+                        poiService.insertFaves(favePoisTmp)
+                        let obj = {
+                            isLoggedin: true,
+                            firstName: self.isLoggedInObject.firstName,
+                            favePois: favePoisTmp
+                        }
+                        self.isLoggedInObject = obj
+                    }
+                    else{
+                        console.log("Couldnt get favorite POIs.")
+                    }
+                });
 
                 let tmpObj = {
                     firstName: response.data.firstName,
-                    isLoggedin: true
+                    isLoggedin: true,
+                    favePois: favePoisTmp
                 }
                 self.isLoggedInObject = tmpObj;
                 console.log("loginService: The user " + self.isLoggedInObject.firstName + " has logged in." )
-                return response.data;
+                return response;
 
             }, function (response) {
                 //Second function handles error
-                var x = "Something went wrong";
                 console.log(response)
+                return response;
          });
     }
     
 }])
-.service('randomPoiService',['$http','$location', function( $http, $location){
+.service('randomPoiService',['$http', function( $http){
 
     let serverUrl = 'http://localhost:3000/api'
 
@@ -87,29 +135,38 @@ angular.module('tokyoApp')
     let serverUrl = 'http://localhost:3000/api'
 
     this.getRegisterParams = function(){
-        console.log("in the register service")
         return $http.get(serverUrl + "/auth/register")
         .then(function(response){
             return response.data
         }, function(response){
             console.log("Something went wrong :-(")
+            return response;
         });
     }
+
+    this.register = function(params){
+        return $http.post(serverUrl + "/auth/register", params)
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
 }])
-.service('poiService',['$http','$location', function( $http, $location){
+.service('poiService',['$http','localStorageModel', function( $http, localStorageModel){
 
     let serverUrl = 'http://localhost:3000/api'
+    let sessionFaves = {}
 
     this.getFavoritePois = function(){
-        console.log("Entered fave poi service")
         return $http.post(serverUrl + "/auth/protected/poi/userFavorites")
         .then(function(response){
-            debugger;
-            console.log("Getting fave POIs")
-            return response.data
+            return response
         }, function(response){
-            debugger;
             console.log("Something went wrong :-()")
+            return response
         });
     }
 
@@ -122,6 +179,38 @@ angular.module('tokyoApp')
         });
     }
 
+    this.getAllReviews = function(poiID){
+        return $http.get(serverUrl + "/guests/review/" + poiID )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    //rankObj = { PID, ranking}
+    this.postRank = function(rankObj){
+        return $http.post(serverUrl + "/auth/protected/poi/ranking", rankObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    //reviewObj = { PID, review}
+    this.postReview = function(reviewObj){
+        return $http.post(serverUrl + "/auth/protected/poi/review", reviewObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
     this.getAllPoi = function(){
         return $http.get(serverUrl + "/guests/poi" )
         .then(function(response){
@@ -131,35 +220,207 @@ angular.module('tokyoApp')
         });
     }
 
+    this.incrementViews = function(pid){
+        return $http.get(serverUrl + "/guests/poi/" + pid )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.addFavePoi = function(pidObj){
+        return $http.post(serverUrl + "/auth/protected/poi/favorite", pidObj)
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.deleteFavePoi = function(pidObj){
+        return $http({
+            url: serverUrl + "/auth/protected/poi/favorite", 
+            method: 'delete', 
+            data: pidObj})
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.countFaves = function(pidObj){
+        return $http.post(serverUrl + "/auth/protected/poi/countUserFavorites", pidObj )
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.getPopularPoi = function(){
+        return $http.post(serverUrl + "/auth/protected/poi/popular")
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.getUsersLastFaves = function(){
+        return $http.post(serverUrl + "/auth/protected/poi/favorites/2")
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.updateLocalFaves = function(favePois){
+       // localStorageModel.updateLocalStorage("faves", favePois);
+       sessionFaves = favePois
+    }
+    
+    this.getLocalFaves = function(){
+        //return localStorageModel.getLocalStorage("faves");
+        return sessionFaves
+    }
+
+    this.insertFaves = function(favePois){
+        //localStorageModel.addLocalStorage("faves", favePois );
+        sessionFaves = favePois
+
+    }
+
+    this.updateDatabaseFaves = function(addedPois, deletedPois){
+        for(newFave in addedPois){
+            newObj = {"id": newFave} 
+            this.addFavePoi(newObj)
+        }
+        for(deletedFave in deletedPois){
+            deletedObj = { "id": deletedFave }
+            this.deleteFavePoi( deletedObj)
+        }
+    }
+
 }])
-.service('adminService',['$http','$location', function( $http, $location){
+.service('adminService',['$http', function( $http){
 
     let serverUrl = 'http://localhost:3000/api'
 
     this.getAdminData = function(){
         return $http.post(serverUrl + "/auth/protected/admin")
         .then((response) =>{
-            return response.data
+            return response
         }, (err)=>{
             console.log("Something went wrong :-( ----> adminService " + err)
+            return err
         });
     }
 }])
-.service('restoreService',['$http','$location', function( $http, $location){
+.service('restoreService',['$http', function($http){
 
     let serverUrl = 'http://localhost:3000/api'
 
     this.getQuestions = function(userName){
-        console.log("Saved Token:" + self.token)
-        return $http.post(serverUrl + "/auth/protected/question", userName)
+        return $http.post(serverUrl + "/auth/question", userName)
         .then(function(response){
-            console.log("Getting questions")
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.sendAnswers = function(answerObj){
+        return $http.post(serverUrl + "/auth/forgetPassword", answerObj)
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+}]) 
+.service('orderService',['$http','localStorageModel', function($http,localStorageModel){
+
+    let serverUrl = 'http://localhost:3000/api'
+
+    var sessionOrder = {}
+
+    this.getUserOrder = function(){
+        return $http.post(serverUrl + "/auth/protected/poi/userOrder")
+        .then(function(response){
+            return response
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+    this.updateLocalOrder = function(poiOrder){
+        //localStorageModel.updateLocalStorage("order", poiOrder );
+        sessionOrder = poiOrder
+    }
+
+    this.addLocalOrder = function(poiOrder){
+        //localStorageModel.addLocalStorage("order", poiOrder );
+        sessionOrder = poiOrder
+    }
+
+    this.getLocalOrder = function(){
+       // return result = localStorageModel.getLocalStorage("order")
+       return sessionOrder
+    }
+
+    this.deleteLocalOrder = function(){
+       // localStorageModel.removeItem("order")
+       sessionOrder = null
+    }
+
+    this.updateServerOrder = function(poiOrder){
+        let orderArray = []
+        debugger
+        for(poi in poiOrder){
+            orderArray.push({ PID: poi, position: poiOrder[poi] })
+        }
+        let orderObj = { "orders": orderArray}
+
+        return $http.put(serverUrl + "/auth/protected/poi/order", orderObj)
+        .then(function(response){
             return response.data
         }, function(response){
             console.log("Something went wrong :-(")
-            console.log(response.data)
+            return response
         });
     }
-}])
+
+    this.insertServerOrder = function(poiOrder){
+        let orderArray = []
+        debugger
+        for(poi in poiOrder){
+            orderArray.push({ PID: poi, position: poiOrder[poi] })
+        }
+        let orderObj = { "orders": orderArray}
+
+        return $http.post(serverUrl + "/auth/protected/poi/order", orderObj)
+        .then(function(response){
+            return response.data
+        }, function(response){
+            console.log("Something went wrong :-(")
+            return response
+        });
+    }
+
+
+}]);
+
 
 

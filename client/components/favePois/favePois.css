@@ -6,3 +6,15 @@
     padding: 0 0 2rem 0;
     text-align: center;
 }
+
+.poi-name:hover{
+    cursor: pointer;
+}
+
+.list-group img{
+    width: 2rem;
+    margin: 0.5rem 0 0.5rem 0;
+}
+.list-group > img:hover{
+    cursor: pointer;
+}

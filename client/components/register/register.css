@@ -112,3 +112,11 @@ input[disabled="disabled"] {
   cursor: not-allowed !important;
   opacity: .4;
 }
+
+#fuji-svg{
+  width: 5rem;
+}
+
+#success-jumbotron{
+  margin-bottom: 3rem;
+}

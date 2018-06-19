@@ -36,8 +36,8 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
             templateUrl: "components/favePois/favePois.html",
             controller: "favePoisCtrl",
             resolve: {
-              favePois: function(poiService){
-                return poiService.getFavoritePois();
+              order: function(orderService){
+                return orderService.getUserOrder();
               }
             }
           })

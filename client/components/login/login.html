@@ -1,23 +1,67 @@
-<div class="content sign-in" ng-hide="forgotPass">
-    <form name="loginForm" class="outerForm" novalidate ng-submit="login()" >
-        <h1> Please sign in</h1>            
-
-        <input type="text" name="name" placeholder="User name" ng-model="user.username" ng-required="true" class="input-field" autocomplete="username">
-        <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" autocomplete="current-password">
-        <input type="submit" value="Login" ng-disabled="loginForm.$invalid">
-        <button type="button" id="forgot-btn" class="btn btn-primary" ng-click="flipPassRestore()">Forgot Password?</button>
-    </form>
-</div> <!-- Login div-->
-
-<div class="content sign-in" ng-show="forgotPass" ng-model="forgotPass">
-    <form name="restoreForm" class="outerForm" novalidate ng-submit="getQuestions()" >
-        <h1> Restore Password</h1>     
-        <h5>Please enter your username and click Next.</h4>       
-        <input type="text" name="name" placeholder="User name" ng-model="user.username" ng-required="true" class="input-field">
-        <div ng-show="restoreForm.name.$touched && restoreForm.name.$invalid">
-            <small style="color: red;display: block;text-align: center;">Enter a valid username</small>
+ <div ng-show = "!isLoggedInObject.isLogged">
+    <!-- Login div-->
+    <div class="content sign-in" ng-show="!forgotPass && showLogin">
+        <form name="loginForm" class="outerForm" novalidate ng-submit="login()" >
+            <h1> Please sign in</h1>            
+            <div ng-show="wrongNameOrPass">
+                <small style="color: red;display: block;text-align: center;">Incorrect Username or Password</small>
+            </div>
+            <input type="text" name="name" placeholder="User name" ng-model="user.username" ng-required="true" class="input-field" autocomplete="username">
+            <input type="password" name="password" placeholder="Password" ng-model="user.password" ng-required="true" class="input-field" autocomplete="current-password">
+            <input type="submit" value="Login" ng-disabled="loginForm.$invalid">
+            <button type="button" id="forgot-btn" class="btn btn-primary" ng-click="flipPassRestore()">Forgot Password?</button>
+        </form>
+    </div>
+    
+    <!-- Restore password div-->
+    <div class="content sign-in" ng-show="forgotPass && !showQuestions" ng-model="forgotPass">
+        <form name="restoreForm" class="outerForm" novalidate ng-submit="getUserQuestions()" >
+            <h1> Restore Password</h1>     
+            <h5>Please enter your username and click Next.</h4>       
+            <input type="text" name="name" placeholder="User name" ng-model="user.username" ng-required="true" class="input-field">
+            <div ng-show="restoreForm.name.$touched && restoreForm.name.$invalid">
+                <small style="color: red;display: block;text-align: center;">Enter a valid username</small>
+            </div>
+            <div ng-show="wrongUsername">
+                <small style="color: red;display: block;text-align: center;">Username not found. Sorry.</small>
+            </div>
+                <input type="submit" class="btn btn-primary" ng-disabled="restoreForm.$invalid" value="next →">
+                <button type="button" id="back-to-login" class="btn btn-primary" ng-click="flipPassRestore()">← back</button>
+        </form>
+    </div>
+    
+    <!-- Questions div-->
+    <div class="content sign-in" ng-show="showQuestions" ng-model="forgotPass">
+        <form name="questionForm" class="outerForm" novalidate ng-submit="answerQuestions()" >
+            <h1> Security Questions</h1>     
+            <h5>Please answer these 2 questions and click "Submit"</h4>
+            <h5>Question 1: {{questions[0].QuestionText}}</h4>     
+            <input type="text" name="name" placeholder="First Answer" ng-model="answer1" ng-required="true" class="input-field">
+            <h5>Question 2: {{questions[1].QuestionText}}</h4>     
+            <input type="text" name="name" placeholder="Second Answer" ng-model="answer2" ng-required="true" class="input-field">
+            <div ng-show="wrongAnswers">
+                <small style="color: red;display: block;text-align: center;">Incorrect answers. Please try again.</small>
+            </div>
+                <input type="submit" class="btn btn-primary" ng-disabled="questionForm.$invalid" value="next →">
+        </form>
+    </div>
+    
+    <!-- Password Div-->
+    <form class="outerForm" novalidate ng-show="showPassword" >
+        <div class="content sign-in">
+                <h1> Success!</h1>     
+                <h5>Your password is:</h4>
+                <h5>{{user.password}}</h4>  
+                <button type="button" class="btn btn-primary" ng-click="backToLogin()" id="loginAgainBtn">Back to Login</button>   
         </div>
-            <input type="submit" class="btn btn-primary" ng-disabled="restoreForm.$invalid" value="next →">
-            <button type="button" id="back-to-login" class="btn btn-primary" ng-click="flipPassRestore()">← back</button>
-    </form>
+    </form>   
+</div>
+
+<!-- Already logged in div -->
+<div class="jumbotron jumbotron-fluid" ng-show="isLoggedInObject.isLogged">
+    <div class="container">
+        <h1 class="display-4">You're already logged in.</h1>
+        <hr class="my-4">
+        <p class="lead">If you <i>really</i> want to log in again, please log out first.</p> </br></br>
+    </div>
 </div>

@@ -36,15 +36,7 @@
         
             L.marker([35.6896, 139.6921]).addTo(mymap).bindPopup('Tokyo City Center').openPopup();
         
-            /*
-            L.circle([35.68, 139.7], {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 22000
-            }).addTo(mymap); */
-      
-            </script>
+                </script>
             </div>
         </div>
 
@@ -61,7 +53,7 @@
                   <p class="card-text">{{poi.Name}}</p>
                   <p class="cardCategory" >{{poi.CategoryName}}</p>
                   <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted" id="small-average" >Average Rating: {{poi.Rating}}</small>
+                    <small class="text-muted" id="small-average" >Average Rating: {{poi.Rating.toFixed(3)}}</small>
                   </div>
                 </div>
               </div>
@@ -88,21 +80,21 @@
                </h2>
               <div class="row featurette modal-featurette">
                 <div class="col-md-7">
-                  <p class="lead">Number of views: {{currPoi.Views}}</p>
-                  <p class="lead">Rating:  {{currPoi.Rating}}</p>
-                  <p class="lead">Description: {{currPoi.Description}}</p>
+                  <p class="lead"><b>Number of views:</b> {{currPoi.Views}}</p>
+                  <p class="lead"><b>Rating:</b> {{ (100*currPoi.Rating/5).toFixed(3) }}%</p>
+                  <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
                   <hr class="featurette-divider poi-divider">
-                  <p class="lead">Latest reviews:</p>
+                  <p class="lead"><b>Latest reviews:</b></p>
                   <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
                   <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}.</p> </br>
                   <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
                   <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}.</p>
-                  <!-- <button ng-click="showDesc(poi)"> Click me</button> -->
                 </div>
                 <div class="col-md-5">
                   <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">
                   <h4 style="text-align: center"><span class="text-muted">{{currPoi.CategoryName}}</span></h4>
-                  <p ng-show="{{loggedIn}}"><img class="fave" src="resources/images/isFavorite.png"></p>
+                  <p ng-show="loggedIn && faveList[currPoi.PID]"><img ng-click="unFave(currPoi)" class="fave" src="resources/images/isFavorite.png"></p>
+                  <p ng-show="loggedIn && !faveList[currPoi.PID]"><img ng-click="addToFave(currPoi)" class="fave" src="resources/images/notFavorite.png"></p>
                 </div>
               </div>
             </div>
@@ -110,11 +102,13 @@
               <!-- Map will go here-->
               IMAGINE THERE'S A MAP HERE </br>
               </div>
-              <hr class="featurette-divider" id="map-review-divider">
-              <div ng-show="{{loggedIn}}" class="container">
+              <div ng-show="loggedIn && !userReview[currPoi.PID]" class="container">
                 <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
                   <!-- Review Form -->
                   <form name="poiReview" class="form-group" id="formDiv" novalidate ng-model="showReview" ng-show="showReview" ng-submit="submitReview()" >
+                    <div ng-show="showReviewError">
+                        <small style="color: red;display: block;text-align: center;">Error: {{reviewErrorMessage}}. Perhaps you've reviewed this attraction already?</small>
+                    </div>
                     <div class="form-inline mt-2 mt-md-0 inline-div">
                         <p>Enter a rating between 1 and 5:</p>
                         <input type="number" name="rating" ng-model="poiRating" ng-required="true" placeholder="Your rating" min="1" max="5">
@@ -124,6 +118,13 @@
                     <button type="submit" class="btn btn-primary btn-lg" ng-disabled="poiReview.$invalid">Submit</button>
                   </form>
                   <!-- End Review Form-->
+              </div>
+              <div class="modal-body" ng-show="userReview[currPoi.PID]">
+                  <h1 class="featurette-heading poi-details">
+                    <span class="text-muted poi-muted-text">
+                        Review successfully added!
+                    </span>
+                  </h1>
               </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

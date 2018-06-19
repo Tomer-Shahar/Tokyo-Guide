@@ -1,38 +1,127 @@
-<div class="poi-page">
-        <div class="jumbotron jumbotron-fluid">
-          <div class="container">
-            <h1 class="display-4">Here you can view your ❤ attractions.</h1>
-            <hr class="my-4">
-            <p id="fave-lead" class="lead">You can manage your favorite points of interest around Tokyo.  </p>
+<div class="poi-page" ng-show="isLoggedInObject.isLogged">
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">Here you can view your ❤ attractions.</h1>
+      <hr class="my-4">
+      <p id="fave-lead" class="lead">You can manage your favorite points of interest around Tokyo.  </p>
+    </div>
+  </div>
+  <div class="container poi-container">     
+      <form class="form-inline mt-2 mt-md-0">
+          <div class="filter-search">
+              <img src="resources/images/ninja.svg" onerror="this.src='../../resources/images/wave-circle.png'">
+              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
+              <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
+              <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
+              <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
+          </div>
+        </form>
+        <hr class="my-4">    
+      <table class="table table-dark table-striped" ng-show="filteredPois.length">
+        <thead>
+          <tr ng-click="openPoiTab(poi)">
+              <th class="headerProperty" ng-click="order = 'Name'; reverseSort = !reverseSort">Name</th>
+              <th class="headerProperty">Image</th>
+              <th class="headerProperty" ng-click="order = 'CategoryName'; reverseSort = !reverseSort">Category</th>
+              <th class="headerProperty" ng-click="order = 'Views'; reverseSort = !reverseSort">Views</th>
+              <th class="headerProperty" ng-click="order = 'Rating'; reverseSort = !reverseSort">Rating</th>
+              <th class="headerProperty" ng-click="order = 'position';">Order</th>
+              <th ng-show="loggedIn">Remove</th>
+          </tr>
+        </thead> 
+        <tbody> 
+          <tr id="poi-row" ng-repeat="poi in filteredPois = (favePoisArray | orderBy: order : reverseSort | filter: search)" ng-show="faveList[poi.PID]"> 
+            <td class="poi-name" ng-click="setCurrPoi(poi)" data-toggle="modal" data-target="#poiModal" >{{poi.Name}}</td>
+            <td><img id="poi-img" ng-click="setCurrPoi(poi)" ng-src="resources/images/poi/{{poi.Image}}" data-toggle="modal" data-target="#poiModal"></td>
+            <td>{{poi.CategoryName}}</td>
+            <td>{{poi.Views}}</td>
+            <td>{{poi.Rating.toFixed(3)}}</td>
+            <td>
+              <ul class="list-group">
+                  <img ng-click="moveUp(poi)" src="resources/images/up.png">
+                  <img ng-click="moveDown(poi)" src="resources/images/down.png">
+              </ul>
+            </td>
+            <td><img ng-click="unFave(poi)" class="fave" src="resources/images/remove_icon.png"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="container no-results" ng-hide="filteredPois.length">
+        <h1 class="display-4">Woops. Sorry</h1>
+        <p class="lead">Looks like there isn't any attraction with the name you searched for. Perhaps you haven't added any favorite attractions yet?</p>
+        <p class="lead">Here, have this bowl of rice instead: <img src="resources/images/rice2.svg"> </p>
+      </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade bd-example-modal-lg" id="poiModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="featurette-heading poi-details" id="poiModalLabel">{{currPoi.Name}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h2 class="featurette-heading poi-details"><span class="text-muted poi-muted-text">Additional Details:</span></h2>
+          <div class="row featurette modal-featurette">
+            <div class="col-md-7">
+                <p class="lead"><b>Number of views:</b> {{currPoi.Views}}</p>
+                <p class="lead"><b>Rating:</b> {{ (100*currPoi.Rating/5).toFixed(3) }}%</p>
+                <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
+                <hr class="featurette-divider poi-divider">
+                <p class="lead"><b>Latest reviews:</b></p>
+                <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
+                <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}.</p> </br>
+                <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
+                <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}.</p>
+          </div>
+          <div class="col-md-5">
+            <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">
+            <h4 style="text-align: center"><span class="text-muted">{{currPoi.CategoryName}}</span></h4>
+            <p ng-show="loggedIn && faveList[currPoi.PID]"><img class="fave" ng-click="unFave(currPoi)" src="resources/images/isFavorite.png"></p>
+            <p ng-show="loggedIn && !faveList[currPoi.PID]"><img class="fave" ng-click="addToFave(currPoi)" src="resources/images/notFavorite.png"></p>
+          </div>
+        </div> <!-- modal body end-->
+        </div>
+        <div class="container">
+          <!-- Map will go here-->
+          IMAGINE THERE'S A MAP HERE </br>
+          </div>
+          <div ng-show="loggedIn && !userReview[currPoi.PID]" class="container">
+            <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
+            <!-- Review Form -->
+            <form name="poiReview" class="form-group" id="formDiv" novalidate ng-model="showReview" ng-show="showReview" ng-submit="submitReview()" >
+              <div ng-show="showReviewError">
+                <small style="color: red;display: block;text-align: center;">Error: {{reviewErrorMessage}}. Perhaps you've reviewed this attraction already?</small>
+              </div>
+              <div class="form-inline mt-2 mt-md-0 inline-div">
+                <p>Enter a rating between 1 and 5:</p>
+                <input type="number" name="rating" ng-model="poiRating" ng-required="true" placeholder="Your rating" min="1" max="5">
+                <small class="help-block" id="help-msg" ng-show="poiReview.rating.$touched && poiReview.rating.$invalid">Invalid rating: mandatory field, between 1 to 5</small>
+              </div> 
+              <textarea class="form-control" id="poiTextReview" rows="3" placeholder="You may write a review here - at least 50 characters" ng-model="textReview" ng-minlength="50"></textarea>
+              <button type="submit" class="btn btn-primary btn-lg" ng-disabled="poiReview.$invalid">Submit</button>
+            </form> <!-- End Review Form-->
+          </div>
+          <div class="modal-body" ng-show="userReview[currPoi.PID]">
+            <h1 class="featurette-heading poi-details"><span class="text-muted poi-muted-text">Review successfully added!</span></h1>
+          </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
-        <div class="container poi-container">     
-            <form class="form-inline mt-2 mt-md-0">
-                <div class="filter-search">
-                    <img src="resources/images/ninja.svg" onerror="this.src='../../resources/images/wave-circle.png'">
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
-                    <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
-                </div>
-              </form>
-              <hr class="my-4">    
-          <table class="table table-dark table-striped">
-            <thead>
-              <tr ng-click="openPoiTab(poi)">
-                  <th class="headerProperty" ng-click="order = 'name'">Name</th>
-                  <th class="headerProperty" ng-click="order = 'category'">Category</th>
-                  <th class="headerProperty" ng-click="order = 'views'">Views</th>
-                  <th class="headerProperty" ng-click="order = 'rating'">Rating</th>
-                  <th ng-show={{loggedIn}}>Favorite?</th>
-              </tr>
-            </thead> 
-            <tbody> 
-              <tr ng-repeat="poi in pois | orderBy: order | filter: search"> 
-                <td>{{poi.name}}</td>
-                <td>{{poi.category}}</td>
-                <td>{{poi.views}}</td>
-                <td>{{poi.rating}}</td>
-                <td ng-show="{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/isFavorite.png"></td>
-                <td ng-show="!{{poi.isFave}} && {{loggedIn}}"><img class="fave" src="resources/images/notFavorite.png"></td>
-            </tbody>
-          </table>
-        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Not logged in div -->
+<div class="jumbotron jumbotron-fluid" ng-show="!isLoggedInObject.isLogged">
+    <div class="container">
+        <h1 class="display-4">You're aren't logged in.</h1>
+        <h1 class="display-4">This page is for signed members only!</h1>
+        <hr class="my-4">
+        <p class="lead">Please sign in first if you'd like to enjoy this section.</p> </br></br>
+    </div>
+</div>

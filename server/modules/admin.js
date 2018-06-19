@@ -11,11 +11,11 @@ router.post('/', (req, res) => {
         return res.status(403).send("You don\'t have premission to access /admin on this server");
     }
 
-    let topFavoritePOIQuery = `SELECT TOP(5) PID, COUNT(PID) as Number FROM favorites GROUP BY PID ORDER BY COUNT(PID) DESC`;
+    let topFavoritePOIQuery = `SELECT TOP(5) f.PID,  p.Name, COUNT(f.PID) as Number FROM favorites as f INNER JOIN poi p on f.PID = p.PID GROUP BY f.PID, p.Name ORDER BY COUNT(f.PID) DESC`;
     let topViewsPOIQuery = `SELECT TOP(5) * FROM poi ORDER BY Views DESC`;
     let rankingDistributionPOIQuery = `SELECT Ranking, COUNT(Ranking) as Number FROM ranking GROUP BY Ranking ORDER BY Ranking`;
-    let countryDistributionPOIQuery = `SELECT Country, COUNT(Country) as Number FROM users GROUP BY Country ORDER BY Country DESC`;
-    let favoriteCategoriesQuery = `SELECT TOP(5) f.PID, p.Name, p.Description, p.CategoryID, c.CategoryName, p.Views, p.Rating, COUNT(f.PID) as Number FROM favorites f INNER JOIN poi p on f.PID = p.PID INNER JOIN categories c on p.CategoryID = c.CategoryID GROUP BY f.PID,p.Name, p.Description, p.CategoryID, c.CategoryName, p.Views, p.Rating ORDER BY COUNT(f.PID) DESC`
+    let countryDistributionPOIQuery = `SELECT TOP(5) Country, COUNT(Country) as Number FROM users GROUP BY Country ORDER BY COUNT(Country) DESC`;
+    let favoriteCategoriesQuery = `SELECT uc.CategoryID, c.CategoryName, COUNT(uc.CategoryID) as Number FROM user_categories as uc INNER JOIN categories c on uc.CategoryID = c.CategoryID GROUP BY uc.CategoryID, c.CategoryName ORDER BY uc.CategoryID`
 
     DButilsAzure.execQuery(topFavoritePOIQuery).then((response)=>{
         let topFavorite = response;
