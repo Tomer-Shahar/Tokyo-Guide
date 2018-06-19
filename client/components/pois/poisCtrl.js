@@ -9,6 +9,18 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     $scope.userReview = {}
 
     $scope.currPoi = $scope.pois[0] // The POI shown in the modal will be stored here.
+    
+    $scope.categories = {
+      "Sights & Landmarks" : true,
+      "Concerts & Shows" : true,
+      "Food & Drink" : true,
+      "Nightlife": true
+    }
+
+    $scope.cat1 = true;
+    $scope.cat2 = true;
+    $scope.cat3 = true;
+    $scope.cat4 = true;
 
 
     if($scope.loggedIn){
@@ -35,6 +47,15 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
             $scope.poiReviews[poi.PID][0].Date =  $scope.poiReviews[poi.PID][0].Date.substring(0,10);
             $scope.poiReviews[poi.PID][1].Date =  $scope.poiReviews[poi.PID][1].Date.substring(0,10);
         });
+    }
+    
+    $scope.boxClicked = function(){
+      $scope.categories = {
+        "Sights & Landmarks" : $scope.cat1,
+        "Concerts & Shows" : $scope.cat2,
+        "Food & Drink" : $scope.cat3,
+        "Nightlife": $scope.cat4
+      }
     }
 
     $scope.submitReview = function(){

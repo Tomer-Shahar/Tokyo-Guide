@@ -13,23 +13,60 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
       $scope.userOrder = []
     $scope.poiOrder = {} //a dictionary mapping PID to POSITION    \ 
     $scope.orderToPoi = {} //a dictionary mapping POSITION to PID  /
+    $scope.categories = {
+      "Sights & Landmarks" : true,
+      "Concerts & Shows" : true,
+      "Food & Drink" : true,
+      "Nightlife": true
+    }
+
+    $scope.cat1 = true;
+    $scope.cat2 = true;
+    $scope.cat3 = true;
+    $scope.cat4 = true;
+
+    $scope.boxClicked = function(){
+      
+      $scope.categories = {
+        "Sights & Landmarks" : $scope.cat1,
+        "Concerts & Shows" : $scope.cat2,
+        "Food & Drink" : $scope.cat3,
+        "Nightlife": $scope.cat4
+      }
+    }
+
+    $scope.addPositions = function(){
+      debugger
+      for(poi in $scope.favePois){
+        if(!(poi in $scope.poiOrder) ){
+          let newPosition = Object.keys($scope.poiOrder).length+1
+          $scope.poiOrder[poi] = newPosition
+          $scope.orderToPoi[newPosition] = poi
+        }
+      }
+      orderService.updateLocalOrder($scope.poiOrder)
+    }
     
-    debugger
     let localOrder = orderService.getLocalOrder()
+
+    for(poi in $scope.deletedPois){ //remove from the local Order the POIs that were deleted!
+      delete localOrder[poi]
+    }
     if(Object.keys(localOrder).length !== 0){ //we have a local order -> We assume local order takes preference over server order.
       $scope.poiOrder = localOrder
       for(pid in $scope.poiOrder){
         position = $scope.poiOrder[pid]
         $scope.orderToPoi[position] = pid 
       }
+      $scope.addPositions(); 
     }
     else if($scope.userOrder.length !== 0){ //We DO NOT have a local order, and we received an order from the server. 
-      debugger;
       //let orderObj = {}
       for(const fave of $scope.userOrder){ //It should iterate based on position value
         $scope.poiOrder[fave.PID] = fave.Position //We need to rearrange poiOrder to be dictionary such as { PID, position}
         $scope.orderToPoi[fave.Position] = fave.PID
       }
+      $scope.addPositions(); 
       orderService.addLocalOrder($scope.poiOrder)
     }
     else{  // User has no local storage order or preferred order, assign default values
@@ -40,9 +77,10 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
           $scope.orderToPoi[i] = favePID
           i++
       }
+      $scope.addPositions(); 
       orderService.addLocalOrder($scope.poiOrder)
     }
-    
+   
     $scope.order = "position"
 
     //Save which of the POIs are favorites or not

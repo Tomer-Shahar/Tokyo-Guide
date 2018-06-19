@@ -18,3 +18,16 @@
 .list-group > img:hover{
     cursor: pointer;
 }
+
+#category-boxes > div{
+    height: 3rem;
+}
+
+#category-boxes div.col-sm-6 *{
+    vertical-align: top;
+}
+
+.col-sm-3{
+    flex: 0;
+}
+

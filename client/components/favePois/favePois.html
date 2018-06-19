@@ -8,16 +8,30 @@
   </div>
   <div class="container poi-container">     
       <form class="form-inline mt-2 mt-md-0">
-          <div class="filter-search">
-              <img src="resources/images/ninja.svg" onerror="this.src='../../resources/images/wave-circle.png'">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
-              <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
-              <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
-              <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
+          <div class="filter-search container">
+            <div class="row">
+              <div class="col-sm-6">
+                  <img src="resources/images/ninja.svg" onerror="this.src='../../resources/images/wave-circle.png'">
+                  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
+                  <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
+                  <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
+                  <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
+              </div>
+              <div class="col-sm-6" id="category-boxes">
+                  <div class="row" >
+                      <div class="col-sm-6"><input type="checkbox" ng-change="boxClicked()" ng-model="cat1" ng-true-value="true" ng-false-value="false"><span>Sights & Landmarks</span></div>
+                      <div class="col-sm-6"><input type="checkbox" ng-change="boxClicked()" ng-model="cat2" ng-true-value="true" ng-false-value="false"><span>Concerts & Shows</span></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-6"><input type="checkbox" ng-change="boxClicked()" ng-model="cat3" ng-true-value="true" ng-false-value="false"><span>Food & Drink</span></div>
+                      <div class="col-sm-6"><input type="checkbox" ng-change="boxClicked()" ng-model="cat4" ng-true-value="true" ng-false-value="false"><span>Nightlife</span></div>
+                  </div>
+              </div>
+            </div>
           </div>
         </form>
         <hr class="my-4">    
-      <table class="table table-dark table-striped" ng-show="filteredPois.length">
+      <table class="table table-dark table-striped" ng-show="filteredPois.length  && (cat1 || cat2 || cat3 || cat4)">
         <thead>
           <tr ng-click="openPoiTab(poi)">
               <th class="headerProperty" ng-click="order = 'Name'; reverseSort = !reverseSort">Name</th>
@@ -25,12 +39,12 @@
               <th class="headerProperty" ng-click="order = 'CategoryName'; reverseSort = !reverseSort">Category</th>
               <th class="headerProperty" ng-click="order = 'Views'; reverseSort = !reverseSort">Views</th>
               <th class="headerProperty" ng-click="order = 'Rating'; reverseSort = !reverseSort">Rating</th>
-              <th class="headerProperty" ng-click="order = 'position';">Order</th>
+              <th class="headerProperty" ng-click="order = 'position'; reverseSort=false">Order</th>
               <th ng-show="loggedIn">Remove</th>
           </tr>
         </thead> 
         <tbody> 
-          <tr id="poi-row" ng-repeat="poi in filteredPois = (favePoisArray | orderBy: order : reverseSort | filter: search)" ng-show="faveList[poi.PID]"> 
+          <tr id="poi-row" ng-repeat="poi in filteredPois = (favePoisArray | orderBy: order : reverseSort | filter: search)" ng-show="faveList[poi.PID] && categories[poi.CategoryName]"> 
             <td class="poi-name" ng-click="setCurrPoi(poi)" data-toggle="modal" data-target="#poiModal" >{{poi.Name}}</td>
             <td><img id="poi-img" ng-click="setCurrPoi(poi)" ng-src="resources/images/poi/{{poi.Image}}" data-toggle="modal" data-target="#poiModal"></td>
             <td>{{poi.CategoryName}}</td>
@@ -50,6 +64,11 @@
         <h1 class="display-4">Woops. Sorry</h1>
         <p class="lead">Looks like there isn't any attraction with the name you searched for. Perhaps you haven't added any favorite attractions yet?</p>
         <p class="lead">Here, have this bowl of rice instead: <img src="resources/images/rice2.svg"> </p>
+      </div>
+      <div class="container no-results" ng-show="!cat1 && !cat2 && !cat3 && !cat4 && filteredPois.length">
+          <h1 class="display-4">Woops. Sorry</h1>
+          <p class="lead">Looks like there isn't any attraction with the categories you chose.</p>
+          <p class="lead">Here, have this bowl of rice instead: <img src="resources/images/rice2.svg"> </p>
       </div>
   </div>
 
