@@ -84,6 +84,7 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         }
 
         orderService.updateLocalOrder($scope.poiOrder);
+        $scope.saved = false
       }
     }
 
@@ -111,6 +112,7 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         }
 
         orderService.updateLocalOrder($scope.poiOrder);
+        $scope.saved = false
       }
     }
 
