@@ -1,5 +1,3 @@
-<br />
-<br />
 <div class="container" ng-show="status===200">
   <div class="jumbotron jumbotron-fluid" id="admin-jumbotron">
       <div class="container">
@@ -9,28 +7,26 @@
       </div>
   </div>
   <div class="row">
-    <div class="col">
-    </div>
-    <div class="col">
-          <canvas id="counteries"></canvas>
-    </div>
-  </div>
+        <div class="col">
+          <canvas id="favoritePOI"></canvas>
+        </div>
+        <div class="col">
+          <canvas id="ranking"></canvas>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col">
+              <canvas id="viewsPOI"></canvas>
+          </div>
+          <div class="col">
+            <canvas id="counteries"></canvas>  
+          </div>
+        </div>
   <div class="row">
     <div class="col">
-      <canvas id="favoritePOI"></canvas>
-    </div>
-    <div class="col">
-      <canvas id="ranking"></canvas>
+        <canvas id="categories"></canvas>
     </div>
   </div>
-  <div class="row">
-      <div class="col">
-          <canvas id="viewsPOI"></canvas>
-      </div>
-      <div class="col">
-          <canvas id="categories"></canvas>
-      </div>
-    </div>
 </div>
 
 <div class="jumbotron jumbotron-fluid" ng-show="status!==200">
