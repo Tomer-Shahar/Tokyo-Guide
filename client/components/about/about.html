@@ -24,7 +24,7 @@
 
         <div id="mapid">
             <script>
-            var mymap = L.map('mapid').setView([35.6316, 139.7420],8);
+            var mymap = L.map('mapid').setView([35.6896, 139.6921],8);
         
             L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 maxZoom: 18,
@@ -34,7 +34,7 @@
                 id: 'mapbox.streets'
             }).addTo(mymap);
         
-            L.marker([35.68, 139.756]).addTo(mymap).bindPopup('Tokyo City Center').openPopup();
+            L.marker([35.6896, 139.6921]).addTo(mymap).bindPopup('Tokyo City Center').openPopup();
         
             /*
             L.circle([35.68, 139.7], {
