@@ -10,3 +10,11 @@
 .poi-name:hover{
     cursor: pointer;
 }
+
+.list-group img{
+    width: 2rem;
+    margin: 0.5rem 0 0.5rem 0;
+}
+.list-group > img:hover{
+    cursor: pointer;
+}

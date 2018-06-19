@@ -1,5 +1,5 @@
-angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService',
-    function($scope, poiService) {
+angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'orderService', 'order',
+    function($scope, poiService, orderService, order) {
     
     $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
     $scope.reverseSort = false;
@@ -7,23 +7,120 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService',
     $scope.poiReviews = {};
     $scope.userReview = {}
     $scope.favePoisArray = []
+    if(order.status === 200)
+      $scope.userOrder = order.data.userOrder
+    else
+      $scope.userOrder = []
+    $scope.poiOrder = {} //a dictionary mapping PID to POSITION    \ 
+    $scope.orderToPoi = {} //a dictionary mapping POSITION to PID  /
+    
+    debugger
+    let localOrder = orderService.getLocalOrder()
+    if(Object.keys(localOrder).length !== 0){ //we have a local order -> We assume local order takes preference over server order.
+      $scope.poiOrder = localOrder
+      for(pid in $scope.poiOrder){
+        position = $scope.poiOrder[pid]
+        $scope.orderToPoi[position] = pid 
+      }
+    }
+    else if($scope.userOrder.length !== 0){ //We DO NOT have a local order, and we received an order from the server. 
+      debugger;
+      //let orderObj = {}
+      for(const fave of $scope.userOrder){ //It should iterate based on position value
+        $scope.poiOrder[fave.PID] = fave.Position //We need to rearrange poiOrder to be dictionary such as { PID, position}
+        $scope.orderToPoi[fave.Position] = fave.PID
+      }
+      orderService.addLocalOrder($scope.poiOrder)
+    }
+    else{  // User has no local storage order or preferred order, assign default values
+      $scope.poiOrder = {}
+      let i = 1
+      for(favePID in $scope.favePois){
+          $scope.poiOrder[favePID] = i
+          $scope.orderToPoi[i] = favePID
+          i++
+      }
+      orderService.addLocalOrder($scope.poiOrder)
+    }
+    
+    $scope.order = "position"
 
     //Save which of the POIs are favorites or not
     $scope.calcFaves();
 
-    $scope.createFaveArray = function() {
+    $scope.createFaveArray = function() { //create an array of Pois for the ng-repeat directive
       for(const favePID in $scope.favePois){
         if( $scope.favePois.hasOwnProperty(favePID)){
-            $scope.favePoisArray.push( $scope.favePois[favePID]);
+          $scope.favePois[favePID].position = $scope.poiOrder[favePID]
+          $scope.favePoisArray.push( $scope.favePois[favePID]);
         }
       }
     }
 
-  $scope.createFaveArray();
-  $scope.currPoi = $scope.favePoisArray[0] // The POI shown in the modal will be stored here.
+    $scope.createFaveArray();
+    $scope.currPoi = $scope.favePoisArray[0] // The POI shown in the modal will be stored here.
+
+    $scope.moveUp = function(poi){
+      $scope.order = "position"
+      if($scope.poiOrder[poi.PID] !== 1){ //top of the list -> cant move up!
+        let botPosition = $scope.poiOrder[poi.PID] // The position of the poi being moved up
+        let topPosition = botPosition-1 //the position of the poi above 
+        let movedUp = poi.PID //the PID of the poi being moved up
+        let movedDown = $scope.orderToPoi[ $scope.poiOrder[poi.PID] -1] //the PID of the poi below the one being moved down.
+
+
+        $scope.poiOrder[movedUp]--
+        $scope.poiOrder[movedDown]++
+        $scope.orderToPoi[topPosition] = movedUp
+        $scope.orderToPoi[botPosition] = movedDown
+
+        for(favePoi of $scope.favePoisArray){
+          if(favePoi.PID == movedUp){
+            favePoi.position--
+          }
+          else if(favePoi.PID == movedDown){
+            favePoi.position++
+          }
+        }
+
+        orderService.updateLocalOrder($scope.poiOrder);
+      }
+    }
+
+    $scope.moveDown = function(poi){
+      $scope.order = "position"
+      if($scope.poiOrder[poi.PID] !== Object.keys($scope.poiOrder).length){ //bottom of the list -> cant move down!
+
+        let topPosition = $scope.poiOrder[poi.PID]
+        let botPosition = topPosition+1
+        let movedUp = $scope.orderToPoi[ $scope.poiOrder[poi.PID] +1] //the PID of the poi below the one being moved up.
+        let movedDown = poi.PID //the PID of the poi being moved down
+
+        $scope.poiOrder[movedUp]--
+        $scope.poiOrder[movedDown]++
+        $scope.orderToPoi[topPosition] = movedUp
+        $scope.orderToPoi[botPosition] = movedDown
+
+        for(favePoi of $scope.favePoisArray){
+          if(favePoi.PID == movedUp){
+            favePoi.position--
+          }
+          else if(favePoi.PID == movedDown){
+            favePoi.position++
+          }
+        }
+
+        orderService.updateLocalOrder($scope.poiOrder);
+      }
+    }
 
     $scope.saveChanges = function(){
         $scope.$parent.saveFaves()
+        if($scope.userOrder.length === 0) //DB has no order for this user
+          orderService.insertServerOrder($scope.poiOrder)
+        else{
+          orderService.updateServerOrder($scope.poiOrder)
+        }
         $scope.saved = true
     }
 
@@ -83,6 +180,28 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService',
     }
 
     $scope.unFave = function(poi){
+      
+       let deletedPoiPosition = $scope.poiOrder[poi.PID]
+       for(fave of $scope.favePoisArray){ //We must decrease the position of all Pois below the one being deleted!!
+         if(fave.PID !== poi.PID){
+           if(fave.position > deletedPoiPosition){ //means it's below
+              fave.position-- //bump it up
+              $scope.poiOrder[fave.PID]--
+              $scope.orderToPoi[fave.position] = fave.PID
+           }
+         }
+       }
+
+       delete $scope.poiOrder[poi.PID]
+       delete $scope.orderToPoi[$scope.favePoisArray.length]
+
+       let len = $scope.favePoisArray.length
+        for (i=0; i<len; ++i) {
+          if($scope.favePoisArray[i].PID === poi.PID){
+            $scope.favePoisArray.splice(i,1)
+            break;
+          }
+        }
         $scope.faveList[poi.PID] = false;
         $scope.$parent.unFave(poi);
         $scope.saved = false

@@ -16,7 +16,7 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'logi
         userData.then(function(result){
             if(result.status === 200){
                 $scope.user = result.data;
-                $scope.$parent.userName = $scope.userName;
+                //$scope.$parent.userName = $scope.userName;
                 $location.path('/home')
             }
             else{

@@ -1,6 +1,5 @@
 angular.module('tokyoApp').controller('adminCtrl', ["$scope", 'data' , function($scope, data) {
 
-debugger;
 $scope.status = data.status
 $scope.data = data.data;
 console.log($scope.data);

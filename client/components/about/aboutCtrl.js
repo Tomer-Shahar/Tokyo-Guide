@@ -42,7 +42,6 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
             rankObj = {id: $scope.currPoi.PID, ranking: $scope.poiRating}
             var ranking = poiService.postRank(rankObj)
             ranking.then(function(result){
-              debugger;
                 if(result.status === 200){
                   if($scope.textReview !== undefined){
                     reviewObj = {id: $scope.currPoi.PID, description: $scope.textReview}

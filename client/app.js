@@ -35,6 +35,11 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
           .when("/favePois", {
             templateUrl: "components/favePois/favePois.html",
             controller: "favePoisCtrl",
+            resolve: {
+              order: function(orderService){
+                return orderService.getUserOrder();
+              }
+            }
           })
           .when("/login", {
             templateUrl: "components/login/login.html",

@@ -15,6 +15,37 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
 
     $scope.showReview = false
 
+    //If the user is logged in, get the most popular POIs and the last 2 saved POIs.
+    if($scope.isLoggedInObject.isLogged){
+      var popular = poiService.getPopularPoi();
+      popular.then(function(result){
+        if(result.status === 200){ //Got the popular Pois.
+          $scope.popularPois = result.data.userOrder
+        }
+        else{ //text review failed
+          $scope.popularPois = []
+        }
+      });
+
+      var latestPois = poiService.getUsersLastFaves();
+      latestPois.then(function(result){
+        if(result.status === 200){ //Got the popular Pois.
+          $scope.latestPois = result.data.userOrder
+        }
+        else{ //text review failed
+          $scope.latestPois = []
+          $scope.latestPois = [$scope.Pois[0], $scope.Pois[1]]
+        }
+      });
+
+      $scope.categories = {
+        1 : "Sights & Landmarks",
+        2 : "Concerts & Shows",
+        3 : "Food & Drink",
+        4 : "Nightlife"
+      };
+    }
+
     $scope.flipReview = function(){
       $scope.showReview = !$scope.showReview
     }
@@ -33,6 +64,20 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
 
     $scope.setCurrPoi = function(num){
       $scope.currPoi = $scope.Pois[num]
+      $scope.incrementViews($scope.currPoi);
+      $scope.currImg = $scope.imgs[num]
+      $scope.showReviewError = false;
+      $scope.reviewSuccess = false;
+      var review = poiService.getNewReviews($scope.Pois[num].PID)
+      review.then(function(result){
+          $scope.poiReviews[$scope.currPoi.PID] = result;
+          $scope.poiReviews[$scope.currPoi.PID][0].Date =  $scope.poiReviews[$scope.currPoi.PID][0].Date.substring(0,10);
+          $scope.poiReviews[$scope.currPoi.PID][1].Date =  $scope.poiReviews[$scope.currPoi.PID][1].Date.substring(0,10);
+      });
+    }
+
+    $scope.setCurrPopularPoi = function(poi){
+      $scope.currPoi = poi
       $scope.incrementViews($scope.currPoi);
       $scope.currImg = $scope.imgs[num]
       $scope.showReviewError = false;

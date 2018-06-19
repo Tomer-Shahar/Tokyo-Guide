@@ -5,7 +5,7 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
         $scope.isLoggedInObject = {
             isLogged: false,
             firstName: "Guest",
-            favePois: {}
+           // favePois: {}
         };
         $scope.favePois = {} //An updated dict of all favorites
         $scope.deletedPois = {} //A dict of all pois deleted this session
@@ -44,7 +44,6 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
         }
 
         $scope.saveFaves = function(){
-            debugger;
             poiService.updateDatabaseFaves($scope.addedPois, $scope.deletedPois)
         }
 
@@ -109,7 +108,6 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
             };
             
             if(ratingObj.rank !== undefined){
-                debugger;
                 rankObj = {id: poi.PID, ranking: ratingObj.rank}
                 var ranking = poiService.postRank(rankObj)
                 ranking.then(function(result){
@@ -124,7 +122,6 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                 });
             }
             if(ratingObj.textReview !== undefined){
-                debugger;
                 reviewObj = {id: poi.PID, description: ratingObj.textReview}
                 var review = poiService.postReview(reviewObj)
                 review.then(function(result){
