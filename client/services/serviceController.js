@@ -311,6 +311,24 @@ angular.module('tokyoApp')
             return response
         });
     }
-}])
+}]) /*
+.service('orderService',['$http', function($http){
+
+    let serverUrl = 'http://localhost:3000/api'
+
+    this.getUserOrder = function(){
+        return $http.post(serverUrl + "/auth/protected/poi/userOrder")
+        .then(function(response){
+            debugger;
+            return response;
+        }), function(response){
+            debugger
+            console.log("Something went wrong :-(")
+            return response;
+        }
+    }
+
+}]); */
+
 
 
