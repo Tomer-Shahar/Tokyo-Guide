@@ -64,20 +64,6 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
       orderService.updateLocalOrder($scope.poiOrder)
     }
 
-    $scope.sortDeletedPosition = function(){
-        if($scope.poiWasDeleted){ //if a poi was deleted, the positions might be messed up.
-        let newPosition = 1
-        let tempOrderToPoi = {}
-        for(position in $scope.orderToPoi){
-          let pid = $scope.orderToPoi[position]
-          tempOrderToPoi[newPosition] = pid
-          $scope.poiOrder[pid] = newPosition
-          newPosition++
-        }
-        $scope.orderToPoi = tempOrderToPoi
-      }
-    }
-    
     let localOrder = orderService.getLocalOrder()
     $scope.poiWasDeleted = false
     for(poi in $scope.deletedPois){ //remove from the local Order the POIs that were deleted!
@@ -90,6 +76,20 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         $scope.userOrder.splice(i,1)
       }
     }
+
+    $scope.sortDeletedPosition = function(){
+      if($scope.poiWasDeleted){ //if a poi was deleted, the positions might be messed up.
+      let newPosition = 1
+      let tempOrderToPoi = {}
+      for(position in $scope.orderToPoi){
+        let pid = $scope.orderToPoi[position]
+        tempOrderToPoi[newPosition] = pid
+        $scope.poiOrder[pid] = newPosition
+        newPosition++
+      }
+      $scope.orderToPoi = tempOrderToPoi
+    }
+  }
 
     if(Object.keys(localOrder).length !== 0){ //we have a local order -> We assume local order takes preference over server order.
       $scope.poiOrder = localOrder
