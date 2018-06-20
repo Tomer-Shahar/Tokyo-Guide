@@ -1,4 +1,4 @@
-angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiService', function($scope, randomPois, poiService) {
+angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiService','$timeout', function($scope, randomPois, poiService, $timeout) {
 
     $scope.Pois = randomPois.POIs
     var path = "resources/images/poi/"
@@ -14,6 +14,16 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
     $scope.userReview = {}
 
     $scope.showReview = false
+    var mymap = L.map('homeMap').setView([35.6896, 139.6921],8);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      maxZoom: 18,
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      id: 'mapbox.streets'
+      }).addTo(mymap);
+    var layer = L.marker([35.6896, 139.6921]).addTo(mymap).bindPopup('Tokyo City Center').openPopup();
+    layer.addTo(mymap)
 
     //If the user is logged in, get the most popular POIs and the last 2 saved POIs.
     if($scope.isLoggedInObject.isLogged){
@@ -64,6 +74,7 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
 
     $scope.setCurrPoi = function(num){
       $scope.currPoi = $scope.Pois[num]
+      $scope.setCoordinates($scope.currPoi)
       $scope.incrementViews($scope.currPoi);
       $scope.currImg = $scope.imgs[num]
       $scope.showReviewError = false;
@@ -78,6 +89,7 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
 
     $scope.setCurrPoiObject = function(poi){
       $scope.currPoi = poi
+      $scope.setCoordinates($scope.currPoi)
       $scope.incrementViews($scope.currPoi);
       $scope.showReviewError = false;
       $scope.reviewSuccess = false;
@@ -125,6 +137,28 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
             $scope.showReviewError = true;
           }
       });
+    }
+
+    $scope.setCoordinates = function(poi){
+      let x = poi.XCoordinate
+      let y = poi.YCoordinate
+     // mymap = L.map('homeMap').setView([x, y],8);
+      mymap.setView([x, y],10);
+      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox.streets'
+        }).addTo(mymap);
+        layer.remove()
+        mymap.closePopup();
+        layer = L.marker([x, y]).addTo(mymap).bindPopup(poi.Name);
+
+        $timeout(function(){
+          mymap.invalidateSize();
+          },
+        400)
     }
 
     /* Carousel fixing functions */

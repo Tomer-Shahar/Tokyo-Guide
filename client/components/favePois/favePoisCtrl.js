@@ -1,5 +1,5 @@
-angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'orderService', 'order',
-    function($scope, poiService, orderService, order) {
+angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'orderService', 'order','$timeout',
+    function($scope, poiService, orderService, order, $timeout) {
     
     $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
     $scope.reverseSort = false;
@@ -25,6 +25,17 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     $scope.cat3 = true;
     $scope.cat4 = true;
 
+    var favesMap = L.map('favesMap').setView([35.6896, 139.6921],8);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      maxZoom: 18,
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      id: 'mapbox.streets'
+      }).addTo(favesMap);
+    var layer = L.marker([35.6896, 139.6921]).addTo(favesMap).bindPopup('Tokyo City Center').openPopup();
+    layer.addTo(favesMap)
+
     $scope.boxClicked = function(){
       
       $scope.categories = {
@@ -36,7 +47,6 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     }
 
     $scope.addPositions = function(){
-      debugger
       for(poi in $scope.favePois){
         if(!(poi in $scope.poiOrder) ){
           let newPosition = Object.keys($scope.poiOrder).length+1
@@ -52,7 +62,7 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     for(poi in $scope.deletedPois){ //remove from the local Order the POIs that were deleted!
       delete localOrder[poi]
     }
-    
+
     for(i=0; i<$scope.userOrder.length; i++){ //remove from the server's order the POIs that were deleted!
       if($scope.userOrder[i].PID in $scope.deletedPois){
         $scope.userOrder.splice(i,1)
@@ -174,6 +184,7 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     $scope.setCurrPoi = function(poi){
         $scope.incrementViews(poi);
         $scope.currPoi = poi;
+        $scope.setCoordinates(poi)
         $scope.showReviewError = false;
         $scope.poiRating = 1
         $scope.textReview = undefined
@@ -252,6 +263,26 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         $scope.faveList[poi.PID] = false;
         $scope.$parent.unFave(poi);
         $scope.saved = false
+    }
+
+    $scope.setCoordinates = function(poi){
+      let x = poi.XCoordinate
+      let y = poi.YCoordinate
+      favesMap.setView([x, y],10);
+      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox.streets'
+        }).addTo(favesMap);
+        layer.remove()
+        layer = L.marker([x, y]).addTo(favesMap).bindPopup(poi.Name);
+
+        $timeout(function(){
+          favesMap.invalidateSize();
+          },
+        400)
     }
 
     $scope.calcFaves();

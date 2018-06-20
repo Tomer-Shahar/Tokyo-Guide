@@ -75,7 +75,6 @@ angular.module('tokyoApp')
             .then(function (response) {
                 //First function handles success
                 self.token = response.data.token
-                debugger;
                 self.setToken(self.token)
                 localStorageModel.addLocalStorage( "token" , response.data.token);
                 localStorageModel.addLocalStorage( "name" , response.data.firstName);

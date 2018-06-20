@@ -56,9 +56,16 @@
       height: 232px;  
   }
 
-  #mapid{
+  #aboutMap{
     height: 400px;
     width: 660px; 
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }
+
+  #cardMap{
+    height: 300px;
+    width: 600px; 
     margin: 0 auto;
     margin-bottom: 2rem;
   }

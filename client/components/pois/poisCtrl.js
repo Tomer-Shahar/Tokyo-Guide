@@ -1,5 +1,5 @@
-angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPois', 
-    function($scope, poiService, allPois) {
+angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPois', '$timeout',
+    function($scope, poiService, allPois, $timeout) {
     
     $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
     $scope.reverseSort = false;
@@ -22,6 +22,17 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     $scope.cat3 = true;
     $scope.cat4 = true;
 
+    var poisMap = L.map('poisMap').setView([35.6896, 139.6921],8);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      maxZoom: 18,
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      id: 'mapbox.streets'
+      }).addTo(poisMap);
+    var layer = L.marker([35.6896, 139.6921]).addTo(poisMap).bindPopup('Tokyo City Center').openPopup();
+    layer.addTo(poisMap)
+
 
     if($scope.loggedIn){
         $scope.favePois = $scope.$parent.favePois
@@ -36,8 +47,9 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     }
 
     $scope.setCurrPoi = function(poi){
-         $scope.incrementViews(poi);
+        $scope.incrementViews(poi);
         $scope.currPoi = poi;
+        $scope.setCoordinates(poi)
         $scope.showReviewError = false;
         $scope.poiRating = 1
         $scope.textReview = undefined
@@ -110,6 +122,26 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
         $scope.$parent.addToFave(poi);
         $scope.faveList[poi.PID] = true;
         $scope.saved = false
+    }
+
+    $scope.setCoordinates = function(poi){
+      let x = poi.XCoordinate
+      let y = poi.YCoordinate
+      poisMap.setView([x, y],10);
+      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox.streets'
+        }).addTo(poisMap);
+        layer.remove()
+        layer = L.marker([x, y]).addTo(poisMap).bindPopup(poi.Name);
+
+        $timeout(function(){
+          poisMap.invalidateSize();
+          },
+        400)
     }
 
     $scope.calcFaves();

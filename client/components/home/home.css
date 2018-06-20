@@ -148,3 +148,10 @@
   .modal-footer button{
     margin: 0 auto;
   }
+
+  #homeMap{
+    height: 300px;
+    width: 600px; 
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }

@@ -1,5 +1,5 @@
-angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiService', 
-    function($scope, randomPois, poiService) {
+angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiService', '$timeout',
+    function($scope, randomPois, poiService, $timeout) {
 
         $scope.Pois = randomPois.POIs
         $scope.currPoi = $scope.Pois[0] // The POI shown in the modal will be stored here.
@@ -10,8 +10,20 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
         $scope.userReview = {}
         $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged 
 
+        var cardMap = L.map('cardMap').setView([35.6896, 139.6921],8);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox.streets'
+            }).addTo(cardMap);
+          var layer = L.marker([35.6896, 139.6921]).addTo(cardMap).bindPopup('Tokyo City Center').openPopup();
+          layer.addTo(cardMap)
+
         $scope.setCurrPoi = function(poi){
             $scope.currPoi = poi;
+            $scope.setCoordinates($scope.currPoi)
             $scope.incrementViews(poi);
             $scope.showReviewError = false;
             $scope.poiRating = 1
@@ -76,5 +88,26 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
         $scope.flipReview = function(){
           $scope.showReview = !$scope.showReview
         }
+
+        $scope.setCoordinates = function(poi){
+            let x = poi.XCoordinate
+            let y = poi.YCoordinate
+           // mymap = L.map('homeMap').setView([x, y],8);
+            cardMap.setView([x, y],10);
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+              maxZoom: 18,
+              attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                  '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                  'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+              id: 'mapbox.streets'
+              }).addTo(cardMap);
+              layer.remove()
+              layer = L.marker([x, y]).addTo(cardMap).bindPopup(poi.Name);
+      
+              $timeout(function(){
+                cardMap.invalidateSize();
+                },
+              400)
+          }
     }
 ]);

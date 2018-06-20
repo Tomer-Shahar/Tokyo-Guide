@@ -144,30 +144,29 @@
     <div ng-show="isLoggedInObject.isLogged">
       <body>
         <div class="container"> <!-- Popular Pois -->
-                <header class="blog-header py-3">
-                    <div class="row flex-nowrap justify-content-between align-items-center">
-                        <div class="col-4 text-center">
-                        <a class="blog-header-logo text-dark" href="#">Your personal page</a>
-                        </div>
-                    </div>
-                </header>
-            <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
-                <h1>Here we'll show you the most popular attractions based on your personal preferences
-                </h1>
-                <p class="lead my-3">Based on your interests and user reviews, these are the most popular sites for you to visit in Tokyo:</p>
-            </div>
-    
-            <div class="row mb-2">
-              <div class="col-md-6" ng-click="setCurrPoiObject(popularPois[0])" data-toggle="modal" data-target="#poiModal">
-                  <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                    <div class="card-body d-flex flex-column align-items-start">
-                      <strong class="d-inline-block mb-2 text-primary">{{categories[popularPois[0].CategoryID]}}</strong>
-                      <p class="card-text mb-auto">{{popularPois[0].Name}}</p>
-                      <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[0].Views}} </div>
-                    </div>
-                    <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[0].Image}}" alt="Card image cap">
+          <header class="blog-header py-3">
+              <div class="row flex-nowrap justify-content-between align-items-center">
+                  <div class="col-4 text-center">
+                  <a class="blog-header-logo text-dark" href="#">Your personal page</a>
                   </div>
               </div>
+          </header>
+          <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
+              <h1>Here we'll show you the most popular attractions based on your personal preferences
+              </h1>
+              <p class="lead my-3">Based on your interests and user reviews, these are the most popular sites for you to visit in Tokyo:</p>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-6" ng-click="setCurrPoiObject(popularPois[0])" data-toggle="modal" data-target="#poiModal">
+                <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                  <div class="card-body d-flex flex-column align-items-start">
+                    <strong class="d-inline-block mb-2 text-primary">{{categories[popularPois[0].CategoryID]}}</strong>
+                    <p class="card-text mb-auto">{{popularPois[0].Name}}</p>
+                    <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[0].Views}} </div>
+                  </div>
+                  <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[0].Image}}" alt="Card image cap">
+                </div>
+            </div>
             <div class="col-md-6" ng-click="setCurrPoiObject(popularPois[1])" data-toggle="modal" data-target="#poiModal">
                 <div class="card flex-md-row mb-4 box-shadow h-md-250">
                 <div class="card-body d-flex flex-column align-items-start">
@@ -218,7 +217,8 @@
                   <div class="card-body d-flex flex-column align-items-start">
                     <strong class="d-inline-block mb-2 text-primary">{{latestPois[0].CategoryName}}</strong>
                     <p class="card-text mb-auto">{{latestPois[0].Name}}</p>
-                    <div class="mb-1 text-muted"><b>Date Added: </b> {{latestPois[0].Date.substring(0,10)}} </div>
+                    <div class="mb-1 text-muted"><b>Date Added: </b></div>
+                    <div class="mb-1 text-muted">{{latestPois[0].Date.substring(0,10)}} </div>
                   </div>
                   <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{latestPois[0].Image}}" alt="Card image cap">
                 </div>
@@ -230,7 +230,8 @@
                   <h3 class="mb-0">
                   </h3>
                   <p class="card-text mb-auto">{{latestPois[1].Name}}</p>
-                  <div class="mb-1 text-muted"><b>Date Added: </b> {{latestPois[1].Date.substring(0,10)}} </div>
+                  <div class="mb-1 text-muted"><b>Date Added: </b></div>
+                  <div class="mb-1 text-muted">{{latestPois[1].Date.substring(0,10)}} </div>
               </div>
               <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{latestPois[1].Image}}" alt="Card image cap">
               </div>
@@ -238,8 +239,8 @@
           </div>
           <div class="container no-results" ng-hide="latestPois.length">
             <h1 class="display-4">Woops. Sorry</h1>
-            <p class="lead">Looks like you haven't added any favorite attractions yet! Go to the attractions page and add some to your list.</p>
-            <p class="lead">Here, have this bowl of rice instead: <img src="resources/images/rice2.svg"> </p>
+            <p class="lead">Looks like you haven't added any favorite attractions yet! Go to the attractions page and add some to your list.
+            Here, have this bowl of rice instead: <img src="resources/images/rice.svg"> </p>
           </div>
         </div>
       </body>
@@ -250,7 +251,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 class="featurette-heading poi-details" id="poiModalLabel">{{Pois[currPoi].Name}}</h5>
+          <h2 class="featurette-heading poi-details" id="poiModalLabel">{{currPoi.Name}}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
@@ -275,9 +276,8 @@
               </div>
             </div>
         </div>
-        <div class="container">
         <!-- Map will go here-->
-        IMAGINE THERE'S A MAP HERE </br>
+        <div id="homeMap">
         </div>
         <div ng-show="isLoggedInObject.isLogged" class="container">
           <hr class="featurette-divider" id="map-review-divider">

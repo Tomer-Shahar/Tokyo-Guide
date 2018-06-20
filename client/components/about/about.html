@@ -10,7 +10,6 @@
 
   <body>
     <main role="main">
-
       <section class="jumbotron text-center">
         <div class="container form-inline mt-2 mt-md-0">
           <h1 class="jumbotron-heading"> <img id="header-img" src="resources/images/shinto.svg" onerror="this.src='resources/images/wave-circle.png'">  Tokyo - Additional Details</h1>
@@ -21,10 +20,9 @@
             <a href="#/pois" class="btn btn-primary my-2">View all attractions</a>
             <a href="#/register" class="btn btn-info my-2">Register</a>
         </p>
-
-        <div id="mapid">
+        <div id="aboutMap">
             <script>
-            var mymap = L.map('mapid').setView([35.6896, 139.6921],8);
+            var mymap = L.map('aboutMap').setView([35.6896, 139.6921],8);
         
             L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 maxZoom: 18,
@@ -37,9 +35,7 @@
             L.marker([35.6896, 139.6921]).addTo(mymap).bindPopup('Tokyo City Center').openPopup();
         
                 </script>
-            </div>
         </div>
-
         <p class="lead">below are several images of the points of interest featured in this guide. Click them to discover more!</p>
       </section>
       <div class="album py-5 bg-light">
@@ -98,10 +94,8 @@
                 </div>
               </div>
             </div>
-              <div class="container">
-              <!-- Map will go here-->
-              IMAGINE THERE'S A MAP HERE </br>
-              </div>
+            <div id="cardMap">
+            </div>
               <div ng-show="loggedIn && !userReview[currPoi.PID]" class="container">
                 <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
                   <!-- Review Form -->
