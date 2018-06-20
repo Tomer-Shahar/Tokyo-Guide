@@ -20,6 +20,13 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
       "Nightlife": true
     }
 
+    $scope.categoryNums = { //map category numbers to their names
+      1 : "Sights & Landmarks",
+      2 : "Concerts & Shows",
+      3 : "Food & Drink",
+      4 : "Nightlife"
+    }
+
     $scope.cat1 = true;
     $scope.cat2 = true;
     $scope.cat3 = true;
@@ -56,10 +63,25 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
       }
       orderService.updateLocalOrder($scope.poiOrder)
     }
+
+    $scope.sortDeletedPosition = function(){
+        if($scope.poiWasDeleted){ //if a poi was deleted, the positions might be messed up.
+        let newPosition = 1
+        let tempOrderToPoi = {}
+        for(position in $scope.orderToPoi){
+          let pid = $scope.orderToPoi[position]
+          tempOrderToPoi[newPosition] = pid
+          $scope.poiOrder[pid] = newPosition
+          newPosition++
+        }
+        $scope.orderToPoi = tempOrderToPoi
+      }
+    }
     
     let localOrder = orderService.getLocalOrder()
-
+    $scope.poiWasDeleted = false
     for(poi in $scope.deletedPois){ //remove from the local Order the POIs that were deleted!
+      $scope.poiWasDeleted = true
       delete localOrder[poi]
     }
 
@@ -75,7 +97,9 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         position = $scope.poiOrder[pid]
         $scope.orderToPoi[position] = pid 
       }
-      $scope.addPositions(); 
+      $scope.sortDeletedPosition()
+      $scope.addPositions();
+      orderService.addLocalOrder($scope.poiOrder)
     }
     else if($scope.userOrder.length !== 0){ //We DO NOT have a local order, and we received an order from the server. 
       //let orderObj = {}
@@ -83,7 +107,8 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         $scope.poiOrder[fave.PID] = fave.Position //We need to rearrange poiOrder to be dictionary such as { PID, position}
         $scope.orderToPoi[fave.Position] = fave.PID
       }
-      $scope.addPositions(); 
+      $scope.addPositions();
+      $scope.sortDeletedPosition() 
       orderService.addLocalOrder($scope.poiOrder)
     }
     else{  // User has no local storage order or preferred order, assign default values
@@ -94,7 +119,8 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
           $scope.orderToPoi[i] = favePID
           i++
       }
-      $scope.addPositions(); 
+      $scope.addPositions();
+      $scope.sortDeletedPosition(); 
       orderService.addLocalOrder($scope.poiOrder)
     }
    
@@ -107,6 +133,8 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
       for(const favePID in $scope.favePois){
         if( $scope.favePois.hasOwnProperty(favePID)){
           $scope.favePois[favePID].position = $scope.poiOrder[favePID]
+          faveCategory = $scope.favePois[favePID].CategoryID
+          $scope.favePois[favePID].CategoryName = $scope.categoryNums[faveCategory]
           $scope.favePoisArray.push( $scope.favePois[favePID]);
         }
       }

@@ -49,7 +49,6 @@ angular.module('tokyoApp').controller('registerCtrl', ["$scope", 'registerServic
     
                 var message = registerService.register(registrationObj)
                 message.then(function(result){
-                    debugger
                     if(result.status !== 200){
                         if(result.data.message !== undefined){
                             $scope.errorMessage = "• " + result.data.message + "\n"

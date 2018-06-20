@@ -351,7 +351,7 @@ angular.module('tokyoApp')
         });
     }
 }]) 
-.service('orderService',['$http','localStorageModel', function($http,localStorageModel){
+.service('orderService',['$http', function($http){
 
     let serverUrl = 'http://localhost:3000/api'
 
@@ -389,7 +389,6 @@ angular.module('tokyoApp')
 
     this.updateServerOrder = function(poiOrder){
         let orderArray = []
-        debugger
         for(poi in poiOrder){
             orderArray.push({ PID: poi, position: poiOrder[poi] })
         }
@@ -406,7 +405,6 @@ angular.module('tokyoApp')
 
     this.insertServerOrder = function(poiOrder){
         let orderArray = []
-        debugger
         for(poi in poiOrder){
             orderArray.push({ PID: poi, position: poiOrder[poi] })
         }
