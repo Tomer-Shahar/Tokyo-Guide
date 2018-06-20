@@ -155,3 +155,9 @@
     margin: 0 auto;
     margin-bottom: 2rem;
   }
+
+  /* Image card Sizes */
+
+  .card img{
+    max-width: 23rem;
+  }

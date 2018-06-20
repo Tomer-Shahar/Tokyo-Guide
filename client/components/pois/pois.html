@@ -49,7 +49,7 @@
           <td><img id="poi-img" ng-click="setCurrPoi(poi)" ng-src="resources/images/poi/{{poi.Image}}" data-toggle="modal" data-target="#poiModal"></td>
           <td>{{poi.CategoryName}}</td>
           <td>{{poi.Views}}</td>
-          <td>{{poi.Rating.toFixed(3)}}</td>
+          <td>{{(100 * poi.Rating/5).toFixed(2)}}%</td>
           <td ng-show="loggedIn && faveList[poi.PID]"> <img ng-click="unFave(poi)" class="fave" src="resources/images/isFavorite.png"></td>
           <td ng-show="loggedIn && !faveList[poi.PID]"><img ng-click="addToFave(poi)" class="fave" src="resources/images/notFavorite.png"></td>
         </tr>
@@ -87,9 +87,9 @@
               <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
               <hr class="featurette-divider poi-divider">
               <p class="lead"><b>Latest reviews:</b></p>
-              <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p>
+              <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}</p>
               <p class="lead"><b>Date Written: </b>{{poiReviews[currPoi.PID][0].Date}}.</p> </br>
-              <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p>
+              <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}</p>
               <p class="lead"><b>Date Written: </b>{{poiReviews[currPoi.PID][1].Date}}.</p>
         </div>
         <div class="col-md-5">
