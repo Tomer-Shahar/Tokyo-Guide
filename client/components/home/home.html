@@ -64,7 +64,7 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="sr-only">Next</span>
         </a>
-      </div>
+    </div>
 
     <!-- Marketing messaging and featurettes
     ================================================== -->
@@ -97,9 +97,7 @@
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 
-
       <!-- START THE FEATURETTES -->
-
       <hr class="featurette-divider">
 
       <div class="row featurette" ng-click="setCurrPoi('0')" data-toggle="modal" data-target="#poiModal">
@@ -139,258 +137,178 @@
         </div>
       </div>
       <hr class="featurette-divider" id="home-end-div">
+    </div>
       <!-- /END THE FEATURETTES -->
-
-      <!-- Modal -->
-      <div class="modal fade bd-example-modal-lg" id="poiModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 class="featurette-heading poi-details" id="poiModalLabel">{{Pois[currPoi].Name}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <h2 class="featurette-heading poi-details">
-                  <span class="text-muted poi-muted-text">
-                    Additional Details:
-                  </span>
-                </h2>
-                <div class="row featurette modal-featurette">
-                  <div class="col-md-7">
-                    <p class="lead"><b>Number of views: </b>{{currPoi.Views}}</p>
-                    <p class="lead"><b>Rating:</b> {{ (100*currPoi.Rating/5).toFixed(3) }}%</p>
-                    <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
-                    <hr class="featurette-divider poi-divider">
-                    <p class="lead"><b>Latest reviews:</b></p>
-                    <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
-                    <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}</p> </br>
-                    <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
-                    <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}</p>
+  
+  <!-- When user is logged in screen -->
+    <div ng-show="isLoggedInObject.isLogged">
+      <body>
+        <div class="container"> <!-- Popular Pois -->
+                <header class="blog-header py-3">
+                    <div class="row flex-nowrap justify-content-between align-items-center">
+                        <div class="col-4 text-center">
+                        <a class="blog-header-logo text-dark" href="#">Your personal page</a>
+                        </div>
+                    </div>
+                </header>
+            <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
+                <h1>Here we'll show you the most popular attractions based on your personal preferences
+                </h1>
+                <p class="lead my-3">Based on your interests and user reviews, these are the most popular sites for you to visit in Tokyo:</p>
+            </div>
+    
+            <div class="row mb-2">
+              <div class="col-md-6" ng-click="setCurrPoiObject(popularPois[0])" data-toggle="modal" data-target="#poiModal">
+                  <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                      <strong class="d-inline-block mb-2 text-primary">{{categories[popularPois[0].CategoryID]}}</strong>
+                      <p class="card-text mb-auto">{{popularPois[0].Name}}</p>
+                      <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[0].Views}} </div>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[0].Image}}" alt="Card image cap">
                   </div>
-                <div class="col-md-5">
-                  <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">
-                  <h4 style="text-align: center"><span class="text-muted">{{Pois[currPoi].CategoryName}}</span></h4>
-                  <p ng-show="isLoggedInObject.isLogged && faveList[currPoi.PID]"><img class="fave"  ng-click="unFave(currPoi)" src="resources/images/isFavorite.png"></p>
-                  <p ng-show="isLoggedInObject.isLogged && !faveList[currPoi.PID]"><img class="fave" ng-click="addToFave(currPoi)"  src="resources/images/notFavorite.png"></p>
+              </div>
+            <div class="col-md-6" ng-click="setCurrPoiObject(popularPois[1])" data-toggle="modal" data-target="#poiModal">
+                <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                <div class="card-body d-flex flex-column align-items-start">
+                    <strong class="d-inline-block mb-2 text-success">{{categories[popularPois[1].CategoryID]}}</strong>
+                    <h3 class="mb-0">
+                    </h3>
+                    <p class="card-text mb-auto">{{popularPois[1].Name}}</p>
+                    <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[1].Views}} </div>
                 </div>
-              </div>
+                <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[1].Image}}" alt="Card image cap">
+                </div>
             </div>
-            <div class="container">
-            <!-- Map will go here-->
-            IMAGINE THERE'S A MAP HERE </br>
-            </div>
-            <div ng-show="isLoggedInObject.isLogged" class="container">
-              <hr class="featurette-divider" id="map-review-divider">
-              <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
-                <!-- Review Form -->
-                <form name="poiReview" class="form-group" id="formDiv" novalidate ng-model="showReview" ng-show="showReview" ng-submit="submitReview()" >
-                  <div ng-show="showReviewError">
-                      <small style="color: red;display: block;text-align: center;">Error: {{reviewErrorMessage}}. Perhaps you've reviewed this attraction already?</small>
+          </div>
+          <div class="row mb-2" ng-show="popularPois[2]" ng-click="setCurrPoiObject(popularPois[2])" data-toggle="modal" data-target="#poiModal">
+              <div class="col-md-6">
+                  <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <strong class="d-inline-block mb-2 text-info">{{categories[popularPois[2].CategoryID]}}</strong>
+                        <hr class="mb-0">
+                        <p class="card-text mb-auto">{{popularPois[2].Name}}</p>
+                        <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[2].Views}} </div>
+                    </div>
+                    <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[2].Image}}" alt="Card image cap">
                   </div>
-                  <div class="form-inline mt-2 mt-md-0 inline-div">
-                      <p>Enter a rating between 1 and 5:</p>
-                      <input type="number" name="rating" ng-model="poiRating" placeholder="Your rating" min="1" max="5">
-                      <small class="help-block" id="help-msg" ng-show="poiReview.rating.$touched && poiReview.rating.$invalid">Invalid rating: mandatory field, between 1 to 5</small>
-                  </div> 
-                  <textarea class="form-control" name="textReview" id="poiTextReview" rows="3" placeholder="You may write a review here - at least 50 characters" ng-model="textReview" ng-minlength="50"></textarea>
-                  <button type="submit" class="btn btn-primary btn-lg" ng-disabled="poiReview.$invalid">Submit</button>
-                </form>
-                <!-- End Review Form-->
               </div>
-              <div class="modal-body" ng-show="userReview[currPoi.PID]">
-                  <h1 class="featurette-heading poi-details">
-                    <span class="text-muted poi-muted-text">
-                        Review successfully added!
-                    </span>
-                  </h1>
+            <div class="col-md-6" ng-show="popularPois[3]" ng-click="setCurrPoiObject(popularPois[3])" data-toggle="modal" data-target="#poiModal">
+                <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                <div class="card-body d-flex flex-column align-items-start">
+                    <strong class="d-inline-block mb-2 text-danger">{{categories[popularPois[3].CategoryID]}}</strong>
+                    <p class="card-text mb-auto">{{popularPois[3].Name}}</p>
+                    <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[3].Views}} </div>
+                </div>
+                <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[3].Image}}" alt="Card image cap">
+                </div>
+            </div>
+          </div>
+        </div> <!-- //Popular Pois -->
+        <hr class="featurette-divider" id="map-review-divider">
+        <div class="container"> <!-- Latest POIs -->
+          <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
+              <h1>Here you can view the last two attractions you've added to your favorites!
+              </h1>
+          </div>
+
+          <div class="row mb-2" ng-show="latestPois.length">
+            <div class="col-md-6" ng-click="setCurrPoiObject(latestPois[0])" data-toggle="modal" data-target="#poiModal">
+                <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                  <div class="card-body d-flex flex-column align-items-start">
+                    <strong class="d-inline-block mb-2 text-primary">{{latestPois[0].CategoryName}}</strong>
+                    <p class="card-text mb-auto">{{latestPois[0].Name}}</p>
+                    <div class="mb-1 text-muted"><b>Date Added: </b> {{latestPois[0].Date.substring(0,10)}} </div>
+                  </div>
+                  <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{latestPois[0].Image}}" alt="Card image cap">
+                </div>
+            </div>
+            <div class="col-md-6" ng-show="latestPois[1]" ng-click="setCurrPoiObject(latestPois[1])" data-toggle="modal" data-target="#poiModal">
+              <div class="card flex-md-row mb-4 box-shadow h-md-250">
+              <div class="card-body d-flex flex-column align-items-start">
+                  <strong class="d-inline-block mb-2 text-success">{{latestPois[1].CategoryName}}</strong>
+                  <h3 class="mb-0">
+                  </h3>
+                  <p class="card-text mb-auto">{{latestPois[1].Name}}</p>
+                  <div class="mb-1 text-muted"><b>Date Added: </b> {{latestPois[1].Date.substring(0,10)}} </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{latestPois[1].Image}}" alt="Card image cap">
               </div>
             </div>
           </div>
+          <div class="container no-results" ng-hide="latestPois.length">
+            <h1 class="display-4">Woops. Sorry</h1>
+            <p class="lead">Looks like you haven't added any favorite attractions yet! Go to the attractions page and add some to your list.</p>
+            <p class="lead">Here, have this bowl of rice instead: <img src="resources/images/rice2.svg"> </p>
+          </div>
+        </div>
+      </body>
+    </div>
+  
+  <!-- Modal -->
+  <div class="modal fade bd-example-modal-lg" id="poiModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="featurette-heading poi-details" id="poiModalLabel">{{Pois[currPoi].Name}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <h2 class="featurette-heading poi-details"><span class="text-muted poi-muted-text">Additional Details:</span></h2>
+            <div class="row featurette modal-featurette">
+              <div class="col-md-7">
+                <p class="lead"><b>Number of views: </b>{{currPoi.Views}}</p>
+                <p class="lead"><b>Rating:</b> {{ (100*currPoi.Rating/5).toFixed(3) }}%</p>
+                <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
+                <hr class="featurette-divider poi-divider">
+                <p class="lead"><b>Latest reviews:</b></p>
+                <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}.</p> </br>
+                <p class="lead">Date Written: {{poiReviews[currPoi.PID][0].Date}}</p> </br>
+                <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}.</p></br>
+                <p class="lead">Date Written: {{poiReviews[currPoi.PID][1].Date}}</p>
+              </div>
+              <div class="col-md-5">
+                <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{currPoi.Image}}">
+                <h4 style="text-align: center"><span class="text-muted">{{Pois[currPoi].CategoryName}}</span></h4>
+                <p ng-show="isLoggedInObject.isLogged && faveList[currPoi.PID]"><img class="fave"  ng-click="unFave(currPoi)" src="resources/images/isFavorite.png"></p>
+                <p ng-show="isLoggedInObject.isLogged && !faveList[currPoi.PID]"><img class="fave" ng-click="addToFave(currPoi)"  src="resources/images/notFavorite.png"></p>
+              </div>
+            </div>
+        </div>
+        <div class="container">
+        <!-- Map will go here-->
+        IMAGINE THERE'S A MAP HERE </br>
+        </div>
+        <div ng-show="isLoggedInObject.isLogged" class="container">
+          <hr class="featurette-divider" id="map-review-divider">
+          <button type="button" class="btn btn-info btn-block" ng-click="flipReview()">Write a review</button> <!-- Triggers the review form-->
+            <!-- Review Form -->
+            <form name="poiReview" class="form-group" id="formDiv" novalidate ng-model="showReview" ng-show="showReview" ng-submit="submitReview()" >
+              <div ng-show="showReviewError">
+                  <small style="color: red;display: block;text-align: center;">Error: {{reviewErrorMessage}}. Perhaps you've reviewed this attraction already?</small>
+              </div>
+              <div class="form-inline mt-2 mt-md-0 inline-div">
+                  <p>Enter a rating between 1 and 5:</p>
+                  <input type="number" name="rating" ng-model="poiRating" placeholder="Your rating" min="1" max="5">
+                  <small class="help-block" id="help-msg" ng-show="poiReview.rating.$touched && poiReview.rating.$invalid">Invalid rating: mandatory field, between 1 to 5</small>
+              </div> 
+              <textarea class="form-control" name="textReview" id="poiTextReview" rows="3" placeholder="You may write a review here - at least 50 characters" ng-model="textReview" ng-minlength="50"></textarea>
+              <button type="submit" class="btn btn-primary btn-lg" ng-disabled="poiReview.$invalid">Submit</button>
+            </form>
+            <!-- End Review Form-->
+        </div>
+        <div class="modal-body" ng-show="userReview[currPoi.PID]">
+          <h1 class="featurette-heading poi-details">
+            <span class="text-muted poi-muted-text">
+                Review successfully added!
+            </span>
+          </h1>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
-  </div>
-  
-  <!-- When user is logged in screen -->
-  <div ng-show="isLoggedInObject.isLogged">
-      <body>
-          <div class="container"> <!-- Popular Pois -->
-              <header class="blog-header py-3">
-                  <div class="row flex-nowrap justify-content-between align-items-center">
-                      <div class="col-4 text-center">
-                      <a class="blog-header-logo text-dark" href="#">Your personal page</a>
-                      </div>
-                  </div>
-              </header>
-          <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
-              <h1 class="display-4">Here we'll show you the most popular attractions </br> based on your personal preferences
-              </h1>
-              <p class="lead my-3">Based on thousands of user reviews, these are the most popular sites to visit in Tokyo according to your interests:</p>
-          </div>
-  
-          <div class="row mb-2">
-            <div class="col-md-6">
-                <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                  <div class="card-body d-flex flex-column align-items-start">
-                    <strong class="d-inline-block mb-2 text-primary">{{categories[popularPois[0].CategoryID]}}</strong>
-                    <p class="card-text mb-auto">{{popularPois[0].Name}}</p>
-                    <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[0].Views}} </div>
-                  </div>
-                  <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[0].Image}}" alt="Card image cap">
-                </div>
-            </div>
-          <div class="col-md-6">
-              <div class="card flex-md-row mb-4 box-shadow h-md-250">
-              <div class="card-body d-flex flex-column align-items-start">
-                  <strong class="d-inline-block mb-2 text-success">{{categories[popularPois[1].CategoryID]}}</strong>
-                  <h3 class="mb-0">
-                  </h3>
-                  <p class="card-text mb-auto">{{popularPois[1].Name}}</p>
-                  <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[1].Views}} </div>
-              </div>
-              <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[1].Image}}" alt="Card image cap">
-              </div>
-          </div>
-        </div>
-        <div class="row mb-2" ng-show="popularPois[2]">
-            <div class="col-md-6">
-                <div class="card flex-md-row mb-4 box-shadow h-md-250">
-                  <div class="card-body d-flex flex-column align-items-start">
-                      <strong class="d-inline-block mb-2 text-info">{{categories[popularPois[2].CategoryID]}}</strong>
-                      <hr class="mb-0">
-                      <p class="card-text mb-auto">{{popularPois[2].Name}}</p>
-                      <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[2].Views}} </div>
-                  </div>
-                  <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[2].Image}}" alt="Card image cap">
-                </div>
-            </div>
-          <div class="col-md-6" ng-show="popularPois[3]">
-              <div class="card flex-md-row mb-4 box-shadow h-md-250">
-              <div class="card-body d-flex flex-column align-items-start">
-                  <strong class="d-inline-block mb-2 text-danger">{{categories[popularPois[3].CategoryID]}}</strong>
-                  <p class="card-text mb-auto">{{popularPois[3].Name}}</p>
-                  <div class="mb-1 text-muted"><b>Views: </b> {{popularPois[3].Views}} </div>
-              </div>
-              <img class="card-img-right flex-auto d-none d-lg-block" ng-src="resources/images/poi/{{popularPois[3].Image}}" alt="Card image cap">
-              </div>
-          </div>
-        </div>
-      </div> <!-- Popular Pois -->
-  
-      <main role="main" class="container">
-          <div class="row">
-          <div class="col-md-8 blog-main">
-              <h3 class="pb-3 mb-4 font-italic border-bottom">
-              From the Firehose
-              </h3>
-  
-              <div class="blog-post">
-              <h2 class="blog-post-title">Sample blog post</h2>
-              <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
-  
-              <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
-              <hr>
-              <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
-              <blockquote>
-                  <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              </blockquote>
-              <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-              <h2>Heading</h2>
-              <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-              <h3>Sub-heading</h3>
-              <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-              <pre><code>Example code block</code></pre>
-              <p>Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
-              <h3>Sub-heading</h3>
-              <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-              <ul>
-                  <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li>
-                  <li>Donec id elit non mi porta gravida at eget metus.</li>
-                  <li>Nulla vitae elit libero, a pharetra augue.</li>
-              </ul>
-              <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
-              <ol>
-                  <li>Vestibulum id ligula porta felis euismod semper.</li>
-                  <li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li>
-                  <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
-              </ol>
-              <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>
-              </div><!-- /.blog-post -->
-  
-              <div class="blog-post">
-              <h2 class="blog-post-title">Another blog post</h2>
-              <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
-  
-              <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
-              <blockquote>
-                  <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              </blockquote>
-              <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-              <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-              </div><!-- /.blog-post -->
-  
-              <div class="blog-post">
-              <h2 class="blog-post-title">New feature</h2>
-              <p class="blog-post-meta">December 14, 2013 by <a href="#">Chris</a></p>
-  
-              <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-              <ul>
-                  <li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li>
-                  <li>Donec id elit non mi porta gravida at eget metus.</li>
-                  <li>Nulla vitae elit libero, a pharetra augue.</li>
-              </ul>
-              <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-              <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
-              </div><!-- /.blog-post -->
-  
-              <nav class="blog-pagination">
-              <a class="btn btn-outline-primary" href="#">Older</a>
-              <a class="btn btn-outline-secondary disabled" href="#">Newer</a>
-              </nav>
-  
-          </div><!-- /.blog-main -->
-  
-          <aside class="col-md-4 blog-sidebar">
-              <div class="p-3 mb-3 bg-light rounded">
-              <h4 class="font-italic">About</h4>
-              <p class="mb-0">Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-              </div>
-  
-              <div class="p-3">
-              <h4 class="font-italic">Archives</h4>
-              <ol class="list-unstyled mb-0">
-                  <li><a href="#">March 2014</a></li>
-                  <li><a href="#">February 2014</a></li>
-                  <li><a href="#">January 2014</a></li>
-                  <li><a href="#">December 2013</a></li>
-                  <li><a href="#">November 2013</a></li>
-                  <li><a href="#">October 2013</a></li>
-                  <li><a href="#">September 2013</a></li>
-                  <li><a href="#">August 2013</a></li>
-                  <li><a href="#">July 2013</a></li>
-                  <li><a href="#">June 2013</a></li>
-                  <li><a href="#">May 2013</a></li>
-                  <li><a href="#">April 2013</a></li>
-              </ol>
-              </div>
-  
-              <div class="p-3">
-              <h4 class="font-italic">Elsewhere</h4>
-              <ol class="list-unstyled">
-                  <li><a href="#">GitHub</a></li>
-                  <li><a href="#">Twitter</a></li>
-                  <li><a href="#">Facebook</a></li>
-              </ol>
-              </div>
-          </aside><!-- /.blog-sidebar -->
-        </div><!-- /.row -->
-      </main><!-- /.container -->
-    </body>
   </div>
 </main>
 

@@ -30,7 +30,7 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
       var latestPois = poiService.getUsersLastFaves();
       latestPois.then(function(result){
         if(result.status === 200){ //Got the popular Pois.
-          $scope.latestPois = result.data.userOrder
+          $scope.latestPois = result.data.userFavorites
         }
         else{ //text review failed
           $scope.latestPois = []
@@ -76,13 +76,12 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
       });
     }
 
-    $scope.setCurrPopularPoi = function(poi){
+    $scope.setCurrPoiObject = function(poi){
       $scope.currPoi = poi
       $scope.incrementViews($scope.currPoi);
-      $scope.currImg = $scope.imgs[num]
       $scope.showReviewError = false;
       $scope.reviewSuccess = false;
-      var review = poiService.getNewReviews($scope.Pois[num].PID)
+      var review = poiService.getNewReviews(poi.PID)
       review.then(function(result){
           $scope.poiReviews[$scope.currPoi.PID] = result;
           $scope.poiReviews[$scope.currPoi.PID][0].Date =  $scope.poiReviews[$scope.currPoi.PID][0].Date.substring(0,10);

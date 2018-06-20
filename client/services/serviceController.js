@@ -159,10 +159,12 @@ angular.module('tokyoApp')
 
     let serverUrl = 'http://localhost:3000/api'
     let sessionFaves = {}
+    let serverFaves = {}
 
     this.getFavoritePois = function(){
         return $http.post(serverUrl + "/auth/protected/poi/userFavorites")
         .then(function(response){
+            serverFaves = response.data.userFavorites
             return response
         }, function(response){
             console.log("Something went wrong :-()")
@@ -241,6 +243,7 @@ angular.module('tokyoApp')
     }
 
     this.deleteFavePoi = function(pidObj){
+        //We must not try to delete POIs that were deleted in the session only.
         return $http({
             url: serverUrl + "/auth/protected/poi/favorite", 
             method: 'delete', 

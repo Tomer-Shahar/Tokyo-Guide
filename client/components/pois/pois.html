@@ -11,14 +11,14 @@
     <form class="form-inline mt-2 mt-md-0">
       <div class="filter-search container">
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-7">
               <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
               <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
               <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
               <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
               <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
           </div>
-          <div class="col-sm-6" id="category-boxes">
+          <div class="col-sm-5" id="category-boxes">
             <div class="row" >
               <div class="col-sm-6"><input type="checkbox" ng-change="boxClicked()" ng-model="cat1" ng-true-value="true" ng-false-value="false"><span>Sights & Landmarks</span></div>
               <div class="col-sm-6"><input type="checkbox" ng-change="boxClicked()" ng-model="cat2" ng-true-value="true" ng-false-value="false"><span>Concerts & Shows</span></div>

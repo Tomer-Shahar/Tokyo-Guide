@@ -52,6 +52,13 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     for(poi in $scope.deletedPois){ //remove from the local Order the POIs that were deleted!
       delete localOrder[poi]
     }
+    
+    for(i=0; i<$scope.userOrder.length; i++){ //remove from the server's order the POIs that were deleted!
+      if($scope.userOrder[i].PID in $scope.deletedPois){
+        $scope.userOrder.splice(i,1)
+      }
+    }
+
     if(Object.keys(localOrder).length !== 0){ //we have a local order -> We assume local order takes preference over server order.
       $scope.poiOrder = localOrder
       for(pid in $scope.poiOrder){

@@ -12,12 +12,18 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
         $scope.addedPois = {} //A dict of all pois added this session
         $scope.updateSuccess = false;
         $scope.faveList = {}
+        $scope.serverFaveList = {} //An object that will keep the original POIs that were in the server.
 
         $scope.$watch('loginService.isLoggedInObject', (newvalue, oldValue) => { //logged in or logged out will be caught here
             if(newvalue !== undefined){
                 $scope.isLoggedInObject.isLogged = newvalue.isLoggedin;
                 $scope.isLoggedInObject.firstName = newvalue.firstName;
                 $scope.favePois = newvalue.favePois
+
+                for(const favePID in $scope.favePois)
+                    if( $scope.favePois.hasOwnProperty(favePID))
+                        $scope.serverFaveList[favePID] = true //Just to keep track of who was originally in the server.
+
             }
             if($scope.favePois !== undefined){
                 $scope.faveCounter = Object.keys($scope.favePois).length;
@@ -44,6 +50,15 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
         }
 
         $scope.saveFaves = function(){
+            for(pid in $scope.deletedPois){
+                if(!(pid in $scope.serverFaveList))
+                    delete $scope.deletedPois[pid]
+            }
+            for(pid in $scope.addedPois){
+                if(pid in $scope.serverFaveList){
+                    delete $scope.addedPois[pid]
+                }
+            }
             poiService.updateDatabaseFaves($scope.addedPois, $scope.deletedPois)
         }
 
