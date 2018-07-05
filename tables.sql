@@ -1,2 +1,2 @@
 SELECT *
-FROM poi
+FROM users

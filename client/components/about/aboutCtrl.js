@@ -61,19 +61,25 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
                     review.then(function(result){
                         if(result.status === 200){ //succeeded ranking AND text reviewing
                           $scope.userReview[$scope.currPoi.PID] = true
-                          $scope.showReviewError = true;
+                          $scope.showReviewError = false;
                           $scope.poiRating = 1
                           $scope.textReview = undefined
+                          var review = poiService.getNewReviews(poi.PID)
+                          review.then(function(result){
+                              $scope.poiReviews[poi.PID] = result;
+                              $scope.poiReviews[poi.PID][0].Date =  $scope.poiReviews[poi.PID][0].Date.substring(0,10);
+                              $scope.poiReviews[poi.PID][1].Date =  $scope.poiReviews[poi.PID][1].Date.substring(0,10);
+                          });
                         }
                         else{ //text review failed
                           $scope.reviewErrorMessage = result.data.message
-                          $scope.showReviewError = true;
+                          $scope.showReviewError = true
                         }
                     });
                   }
                   else{ // No text review, success
                     $scope.userReview[$scope.currPoi.PID] = true
-                    $scope.showReviewError = false;
+                    $scope.showReviewError = false
                     $scope.poiRating = 1
                     $scope.textReview = undefined
                   }

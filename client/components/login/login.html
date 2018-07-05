@@ -34,7 +34,7 @@
     <div class="content sign-in" ng-show="showQuestions" ng-model="forgotPass">
         <form name="questionForm" class="outerForm" novalidate ng-submit="answerQuestions()" >
             <h1> Security Questions</h1>     
-            <h5>Please answer these 2 questions and click "Submit"</h4>
+            <h5>Please answer your personal security questions and click "Next"</h4>
             <h5>Question 1: {{questions[0].QuestionText}}</h4>     
             <input type="text" name="name" placeholder="First Answer" ng-model="answer1" ng-required="true" class="input-field">
             <h5>Question 2: {{questions[1].QuestionText}}</h4>     
@@ -43,6 +43,7 @@
                 <small style="color: red;display: block;text-align: center;">Incorrect answers. Please try again.</small>
             </div>
                 <input type="submit" class="btn btn-primary" ng-disabled="questionForm.$invalid" value="next →">
+                <button type="button" id="back-to-login2" class="btn btn-primary" ng-click="backToLogin()">← back</button>
         </form>
     </div>
     

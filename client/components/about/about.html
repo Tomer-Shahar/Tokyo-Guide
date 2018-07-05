@@ -49,7 +49,7 @@
                   <p class="card-text">{{poi.Name}}</p>
                   <p class="cardCategory" >{{poi.CategoryName}}</p>
                   <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted" id="small-average" >Average Rating: {{poi.Rating.toFixed(3)}}</small>
+                    <small class="text-muted" id="small-average" >Average Rating: {{(100 * poi.Rating/5).toFixed(2)}}%</small>
                   </div>
                 </div>
               </div>

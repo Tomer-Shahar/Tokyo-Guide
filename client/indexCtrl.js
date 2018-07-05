@@ -76,79 +76,17 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
     
         $scope.logOut = function(){
             loginService.logout();
+            $scope.cleanDictionaries(); //An object that will keep the original POIs that were in the server.
+        }
+
+        $scope.cleanDictionaries = function () {
+            $scope.faveList = {};
+            $scope.favePois = {}; //An updated dict of all favorites
+            $scope.deletedPois = {}; //A dict of all pois deleted this session
+            $scope.addedPois = {}; //A dict of all pois added this session
+            $scope.updateSuccess = false;
+            $scope.faveList = {};
+            $scope.serverFaveList = {};
         }
     }
 ]);
-
-        /*
-        $scope.unFave = function(poi){
-            let removeObj = {id: poi.PID};
-            var removeResult = poiService.deleteFavePoi(removeObj)
-            removeResult.then(function(result){
-                if(result.status === 200){
-                    $scope.faveCounter -= 1
-                    return true
-                }
-                else{
-                    console.log("Didn't remove from favorites.")
-                    return false
-                }
-            });
-          } 
-          
-        $scope.updateDatabaseFaves = function(){
-            let addObj = {id: poi.PID};
-            var addResult = poiService.addFavePoi(addObj)
-            addResult.then(function(result){
-                if(result.status === 200){
-                    $scope.faveCounter += 1
-                    return true
-                }
-                else{
-                    console.log("Didn't add to favorites.")
-                    return false
-                }
-            });
-        }
-          */
-
-        /*
-        $scope.submitReview = function(poi, ratingObj){
-            let resultObj = {
-                showReviewError: false,
-                userReviewed: true, //change to false if there's an error
-                reviewErrorMessage: "",
-                rank: ratingObj.rank,
-                textReview: ratingObj.textReview //change to "" if succeeded
-            };
-            
-            if(ratingObj.rank !== undefined){
-                rankObj = {id: poi.PID, ranking: ratingObj.rank}
-                var ranking = poiService.postRank(rankObj)
-                ranking.then(function(result){
-                    if(result.status === 200){
-                        resultObj.rank = 1
-                    }
-                    else{
-                        resultObj.reviewErrorMessage = result.data.message;
-                        resultObj.showReviewError = true;
-                        resultObj.userReviewed = false;
-                    }
-                });
-            }
-            if(ratingObj.textReview !== undefined){
-                reviewObj = {id: poi.PID, description: ratingObj.textReview}
-                var review = poiService.postReview(reviewObj)
-                review.then(function(result){
-                    if(result.status === 200){ //succeeded text reviewing
-                        resultObj.textReview = ""
-                    }
-                    else{
-                        resultObj.reviewErrorMessage = result.data.message;
-                        resultObj.showReviewError = true;
-                        resultObj.userReviewed = false;
-                    }
-                });
-            }
-          }
-          */

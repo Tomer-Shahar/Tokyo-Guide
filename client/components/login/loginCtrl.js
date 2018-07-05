@@ -72,6 +72,8 @@ angular.module('tokyoApp').controller('loginCtrl', ["$scope", "$location", 'logi
     $scope.backToLogin = function(){
         $scope.showPassword=false; 
         $scope.showLogin=true
+        $scope.showQuestions = false
+        $scope.forgotPass = false
         $scope.answer1 = ""
         $scope.answer2 = ""
         $scope.user.password = ""
