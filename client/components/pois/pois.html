@@ -3,7 +3,7 @@
     <div class="container">
       <h1 class="display-4">Welcome to the points of interest page!</h1>
       <hr class="my-4">
-      <p class="lead">Here you can view all of the Tokyo attractions in our database. Clicking on one of the attractions will open a new tab
+      <p class="lead">Here you can view all of the Tokyo attractions in our database. Clicking on one of the attractions will open a new modal
         that includes more detailed info about the attraction and will also registered users to review the attraction. </p>
     </div>
   </div>
@@ -45,7 +45,7 @@
       </thead> 
       <tbody> 
         <tr id="poi-row" ng-repeat="poi in filteredPois = (pois | orderBy: order : reverseSort | filter: search)" ng-show="categories[poi.CategoryName]"> 
-          <td ng-click="setCurrPoi(poi)" data-toggle="modal" data-target="#poiModal" >{{poi.Name}}</td>
+          <td class="poi-name" ng-click="setCurrPoi(poi)" data-toggle="modal" data-target="#poiModal" >{{poi.Name}}</td>
           <td><img id="poi-img" ng-click="setCurrPoi(poi)" ng-src="resources/images/poi/{{poi.Image}}" data-toggle="modal" data-target="#poiModal"></td>
           <td>{{poi.CategoryName}}</td>
           <td>{{poi.Views}}</td>
