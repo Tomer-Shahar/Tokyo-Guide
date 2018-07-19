@@ -16,8 +16,6 @@
                   <img src="resources/images/ninja.svg" onerror="this.src='../../resources/images/wave-circle.png'">
                   <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
                   <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
-                  <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
-                  <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
               </div>
               <div class="col-sm-5" id="category-boxes">
                   <div class="row" >
@@ -55,6 +53,7 @@
             <td>
               <ul class="list-group">
                   <img ng-click="moveUp(poi)" src="resources/images/up.png">
+                  <span class="poi-order">{{poiOrder[poi.PID]}}</span>
                   <img ng-click="moveDown(poi)" src="resources/images/down.png">
               </ul>
             </td>

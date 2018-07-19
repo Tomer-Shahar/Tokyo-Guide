@@ -35,7 +35,7 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
           .when("/favePois", {
             templateUrl: "components/favePois/favePois.html",
             controller: "favePoisCtrl",
-            resolve: {
+            resolve: { //We do it like so because we want the fave page to correctly display the order.
               order: function(orderService){
                 return orderService.getUserOrder();
               }

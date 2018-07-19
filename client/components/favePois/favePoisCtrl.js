@@ -1,135 +1,58 @@
 angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'orderService', 'order','$timeout',
     function($scope, poiService, orderService, order, $timeout) {
     
-    $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged
+    $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged;
     $scope.reverseSort = false;
-    $scope.showReview = false
+    $scope.showReview = false;
+    $scope.cat1 = true;
+    $scope.cat2 = true;
+    $scope.cat3 = true;
+    $scope.cat4 = true;
+    $scope.order = "position";
     $scope.poiReviews = {};
-    $scope.userReview = {}
-    $scope.favePoisArray = []
-    if(order.status === 200)
-      $scope.userOrder = order.data.userOrder
-    else
-      $scope.userOrder = []
-    $scope.poiOrder = {} //a dictionary mapping PID to POSITION    \ 
-    $scope.orderToPoi = {} //a dictionary mapping POSITION to PID  /
+    $scope.userReview = {};
+    $scope.favePoisArray = [];
+
+    $scope.poiOrder = order; //a dictionary mapping PID to POSITION \ 
+    $scope.orderToPoi = {}; //a dictionary mapping POSITION to PID  /
     $scope.categories = {
       "Sights & Landmarks" : true,
       "Concerts & Shows" : true,
       "Food & Drink" : true,
       "Nightlife": true
-    }
+    };
 
     $scope.categoryNums = { //map category numbers to their names
       1 : "Sights & Landmarks",
       2 : "Concerts & Shows",
       3 : "Food & Drink",
       4 : "Nightlife"
-    }
+    };
 
-    $scope.cat1 = true;
-    $scope.cat2 = true;
-    $scope.cat3 = true;
-    $scope.cat4 = true;
-
-    var favesMap = L.map('favesMap').setView([35.6896, 139.6921],8);
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-      maxZoom: 18,
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      id: 'mapbox.streets'
-      }).addTo(favesMap);
-    var layer = L.marker([35.6896, 139.6921]).addTo(favesMap).bindPopup('Tokyo City Center').openPopup();
-    layer.addTo(favesMap)
-
-    $scope.boxClicked = function(){
-      
+    $scope.boxClicked = function(){ //When clicked one of the checkboxes, come here
       $scope.categories = {
         "Sights & Landmarks" : $scope.cat1,
         "Concerts & Shows" : $scope.cat2,
         "Food & Drink" : $scope.cat3,
         "Nightlife": $scope.cat4
       }
-    }
+    };
 
-    $scope.addPositions = function(){
-      for(poi in $scope.favePois){
-        if(!(poi in $scope.poiOrder) ){
-          let newPosition = Object.keys($scope.poiOrder).length+1
-          $scope.poiOrder[poi] = newPosition
-          $scope.orderToPoi[newPosition] = poi
-        }
-      }
-      orderService.updateLocalOrder($scope.poiOrder)
-    }
-
-    let localOrder = orderService.getLocalOrder()
-    $scope.poiWasDeleted = false
-    for(poi in $scope.deletedPois){ //remove from the local Order the POIs that were deleted!
-      $scope.poiWasDeleted = true
-      delete localOrder[poi]
-    }
-
-    for(i=0; i<$scope.userOrder.length; i++){ //remove from the server's order the POIs that were deleted!
-      if($scope.userOrder[i].PID in $scope.deletedPois){
-        $scope.userOrder.splice(i,1)
-      }
-    }
-
-    $scope.sortDeletedPosition = function(){
-      if($scope.poiWasDeleted){ //if a poi was deleted, the positions might be messed up.
-      let newPosition = 1
-      let tempOrderToPoi = {}
-      for(position in $scope.orderToPoi){
-        let pid = $scope.orderToPoi[position]
-        tempOrderToPoi[newPosition] = pid
-        $scope.poiOrder[pid] = newPosition
-        newPosition++
-      }
-      $scope.orderToPoi = tempOrderToPoi
-    }
-  }
-
-    if(Object.keys(localOrder).length !== 0){ //we have a local order -> We assume local order takes preference over server order.
-      $scope.poiOrder = localOrder
+    $scope.update_orderToPoi = function(){
+      $scope.orderToPoi = {};
       for(pid in $scope.poiOrder){
-        position = $scope.poiOrder[pid]
-        $scope.orderToPoi[position] = pid 
+      let position = $scope.poiOrder[pid]
+      $scope.orderToPoi[position] = pid
       }
-      $scope.sortDeletedPosition()
-      $scope.addPositions();
-      orderService.addLocalOrder($scope.poiOrder)
     }
-    else if($scope.userOrder.length !== 0){ //We DO NOT have a local order, and we received an order from the server. 
-      //let orderObj = {}
-      for(const fave of $scope.userOrder){ //It should iterate based on position value
-        $scope.poiOrder[fave.PID] = fave.Position //We need to rearrange poiOrder to be dictionary such as { PID, position}
-        $scope.orderToPoi[fave.Position] = fave.PID
-      }
-      $scope.addPositions();
-      $scope.sortDeletedPosition() 
-      orderService.addLocalOrder($scope.poiOrder)
-    }
-    else{  // User has no local storage order or preferred order, assign default values
-      $scope.poiOrder = {}
-      let i = 1
-      for(favePID in $scope.favePois){
-          $scope.poiOrder[favePID] = i
-          $scope.orderToPoi[i] = favePID
-          i++
-      }
-      $scope.addPositions();
-      $scope.sortDeletedPosition(); 
-      orderService.addLocalOrder($scope.poiOrder)
-    }
-   
-    $scope.order = "position"
+
+    $scope.update_orderToPoi();
 
     //Save which of the POIs are favorites or not
     $scope.calcFaves();
 
     $scope.createFaveArray = function() { //create an array of Pois for the ng-repeat directive
+      $scope.favePoisArray = [];
       for(const favePID in $scope.favePois){
         if( $scope.favePois.hasOwnProperty(favePID)){
           $scope.favePois[favePID].position = $scope.poiOrder[favePID]
@@ -167,7 +90,8 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         }
 
         orderService.updateLocalOrder($scope.poiOrder);
-        $scope.saved = false
+        $scope.$parent.disableSave = false
+        $scope.$parent.saved = false
       }
     }
 
@@ -195,18 +119,9 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
         }
 
         orderService.updateLocalOrder($scope.poiOrder);
-        $scope.saved = false
+        $scope.$parent.disableSave = false
+        $scope.$parent.saved = false
       }
-    }
-
-    $scope.saveChanges = function(){
-        $scope.$parent.saveFaves()
-        if($scope.userOrder.length === 0) //DB has no order for this user
-          orderService.insertServerOrder($scope.poiOrder)
-        else{
-          orderService.updateServerOrder($scope.poiOrder)
-        }
-        $scope.saved = true
     }
 
     $scope.setCurrPoi = function(poi){
@@ -272,32 +187,22 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     }
 
     $scope.unFave = function(poi){
-      
-       let deletedPoiPosition = $scope.poiOrder[poi.PID]
-       for(fave of $scope.favePoisArray){ //We must decrease the position of all Pois below the one being deleted!!
-         if(fave.PID !== poi.PID){
-           if(fave.position > deletedPoiPosition){ //means it's below
-              fave.position-- //bump it up
-              $scope.poiOrder[fave.PID]--
-              $scope.orderToPoi[fave.position] = fave.PID
-           }
-         }
-       }
-
-       delete $scope.poiOrder[poi.PID]
-       delete $scope.orderToPoi[$scope.favePoisArray.length]
-
-       let len = $scope.favePoisArray.length
-        for (i=0; i<len; ++i) {
-          if($scope.favePoisArray[i].PID === poi.PID){
-            $scope.favePoisArray.splice(i,1)
-            break;
-          }
-        }
-        $scope.faveList[poi.PID] = false;
-        $scope.$parent.unFave(poi);
-        $scope.saved = false
+      $scope.$parent.unFave(poi);
+      $scope.poiOrder = orderService.getLocalOrder();
+      $scope.update_orderToPoi();
+      $scope.createFaveArray();
     }
+
+    var favesMap = L.map('favesMap').setView([35.6896, 139.6921],8);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      maxZoom: 18,
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      id: 'mapbox.streets'
+      }).addTo(favesMap);
+    var layer = L.marker([35.6896, 139.6921]).addTo(favesMap).bindPopup('Tokyo City Center').openPopup();
+    layer.addTo(favesMap)
 
     $scope.setCoordinates = function(poi){
       let x = poi.XCoordinate
@@ -320,5 +225,4 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     }
 
     $scope.calcFaves();
-
  }]);

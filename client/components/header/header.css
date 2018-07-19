@@ -29,3 +29,11 @@
   .nav-item.nav-link{
     margin-right: 40px;
   }
+
+  .navbar-nav.mr-auto img{
+    width: 3rem
+  }
+
+  .navbar-nav.mr-auto button{
+    margin-left: 1rem
+  }

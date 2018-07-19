@@ -1,5 +1,5 @@
-angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'poiService',
-    function($scope, loginService, poiService) {
+angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'poiService', 'orderService',
+    function($scope, loginService, poiService, orderService) {
 
         $scope.loginService = loginService;
         $scope.isLoggedInObject = {
@@ -13,6 +13,8 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
         $scope.updateSuccess = false;
         $scope.faveList = {}
         $scope.serverFaveList = {} //An object that will keep the original POIs that were in the server.
+        $scope.saved = false
+        $scope.disableSave = true
 
         $scope.$watch('loginService.isLoggedInObject', (newvalue, oldValue) => { //logged in or logged out will be caught here
             if(newvalue !== undefined){
@@ -23,20 +25,25 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                 for(const favePID in $scope.favePois)
                     if( $scope.favePois.hasOwnProperty(favePID))
                         $scope.serverFaveList[favePID] = true //Just to keep track of who was originally in the server.
-
+                $scope.disableSave = true //in any case user cant save after logging in or out
             }
             if($scope.favePois !== undefined){
                 $scope.faveCounter = Object.keys($scope.favePois).length;
-            } 
+            }
         })
+
         $scope.unFave = function(poi){
             delete $scope.favePois[poi.PID] //remove from faves
+            $scope.faveList[poi.PID] = false;
             $scope.deletedPois[poi.PID] = poi //add to deleted dict
             if(poi.PID in $scope.addedPois){
                 delete $scope.addedPois[poi.PID] //if it was added before, remove
             }
             poiService.updateLocalFaves($scope.favePois) //update local storage
+            orderService.removeFromOrder(poi)
             $scope.faveCounter -= 1
+            $scope.saved = false
+            $scope.disableSave = false
         }
 
         $scope.addToFave = function(poi){
@@ -46,10 +53,15 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                 delete $scope.deletedPois[poi.PID] //if it was deleted before, remove it
             }
             poiService.updateLocalFaves($scope.favePois) //update local storage
+            orderService.addToOrder(poi)
             $scope.faveCounter += 1 
+            $scope.saved = false
+            $scope.disableSave = false
         }
 
-        $scope.saveFaves = function(){
+        $scope.saveChanges = function(){
+
+            //save faves
             for(pid in $scope.deletedPois){
                 if(!(pid in $scope.serverFaveList))
                     delete $scope.deletedPois[pid]
@@ -59,7 +71,16 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                     delete $scope.addedPois[pid]
                 }
             }
-            poiService.updateDatabaseFaves($scope.addedPois, $scope.deletedPois)
+            var saveFaves = poiService.updateDatabaseFaves($scope.addedPois, $scope.deletedPois)
+            saveFaves.then(function(res){
+                console.log(res)
+                var saveSuccess = orderService.updateServerOrder(); //ToDo: Must execute this only after all favorites have been updated!!!!
+                saveSuccess.then(function(res){
+                    $scope.saved = true
+                    $scope.disableSave = true
+                })
+            })
+
         }
 
         $scope.calcFaves = function(){

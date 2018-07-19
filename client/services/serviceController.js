@@ -1,5 +1,5 @@
 angular.module('tokyoApp')
-.service('loginService', ['$http', '$location','localStorageModel','poiService', function ($http, $location, localStorageModel, poiService){
+.service('loginService', ['$http', '$location','localStorageModel','poiService','orderService', function ($http, $location, localStorageModel, poiService, orderService){
 
     let serverUrl = 'http://localhost:3000/api'
     var self = this
@@ -8,7 +8,6 @@ angular.module('tokyoApp')
         firstName: "Guest",
         favePois: {}
     };
-
     this.checkLogIn = function(){
         const token_key  = "token";
         const name_key = "name";
@@ -38,6 +37,8 @@ angular.module('tokyoApp')
                         firstName: self.isLoggedInObject.firstName,
                         favePois: favePoisTmp
                     }
+
+                    orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
                     self.isLoggedInObject = obj
                 }
                 else{
@@ -91,6 +92,7 @@ angular.module('tokyoApp')
                             firstName: self.isLoggedInObject.firstName,
                             favePois: favePoisTmp
                         }
+                        orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
                         self.isLoggedInObject = obj
                     }
                     else{
@@ -128,7 +130,6 @@ angular.module('tokyoApp')
         });
     }
 }])
-
 .service('registerService',['$http', function( $http){
 
     let serverUrl = 'http://localhost:3000/api'
@@ -156,18 +157,30 @@ angular.module('tokyoApp')
 }])
 .service('poiService',['$http','localStorageModel', function( $http, localStorageModel){
 
+    var self = this
     let serverUrl = 'http://localhost:3000/api'
-    let sessionFaves = {}
-    let serverFaves = {}
+    self.sessionFaves = null
+    self.allPois = null
+    self.serverFaves = {}
 
     this.getFavoritePois = function(){
         return $http.post(serverUrl + "/auth/protected/poi/userFavorites")
         .then(function(response){
-            serverFaves = response.data.userFavorites
+            self.serverFaves = response.data.userFavorites
             return response
         }, function(response){
             console.log("Something went wrong :-()")
             return response
+        });
+    }
+
+    this.getRandomPoi = function(num){
+        debugger
+        return $http.get(serverUrl + "/guests/poiRand/"+num+"/2.5")
+        .then((response) =>{
+            return response.data.POIs
+        }, (err)=>{
+            console.log("Something went wrong :-( ----> adminService " + err)
         });
     }
 
@@ -187,7 +200,7 @@ angular.module('tokyoApp')
         }, function(response){
             console.log("Something went wrong :-(")
             return response
-        });
+        })
     }
 
     //rankObj = { PID, ranking}
@@ -213,8 +226,12 @@ angular.module('tokyoApp')
     }
 
     this.getAllPoi = function(){
+        if(self.allPois !== null){
+            return self.allPois
+        }
         return $http.get(serverUrl + "/guests/poi" )
         .then(function(response){
+            self.allPois = response.data
             return response.data
         }, function(response){
             console.log("Something went wrong :-(")
@@ -236,7 +253,7 @@ angular.module('tokyoApp')
         .then(function(response){
             return response
         }, function(response){
-            console.log("Something went wrong :-(")
+            console.log(response.data.message)
             return response
         });
     }
@@ -250,7 +267,7 @@ angular.module('tokyoApp')
         .then(function(response){
             return response
         }, function(response){
-            console.log("Something went wrong :-(")
+            console.log(response.data.message)
             return response
         });
     }
@@ -287,29 +304,32 @@ angular.module('tokyoApp')
 
     this.updateLocalFaves = function(favePois){
        // localStorageModel.updateLocalStorage("faves", favePois);
-       sessionFaves = favePois
+       self.sessionFaves = favePois
     }
     
     this.getLocalFaves = function(){
         //return localStorageModel.getLocalStorage("faves");
-        return sessionFaves
+        return self.sessionFaves
     }
 
     this.insertFaves = function(favePois){
         //localStorageModel.addLocalStorage("faves", favePois );
-        sessionFaves = favePois
+        self.sessionFaves = favePois
 
     }
 
     this.updateDatabaseFaves = function(addedPois, deletedPois){
-        for(newFave in addedPois){
-            newObj = {"id": newFave} 
-            this.addFavePoi(newObj)
-        }
-        for(deletedFave in deletedPois){
-            deletedObj = { "id": deletedFave }
-            this.deleteFavePoi( deletedObj)
-        }
+        return new Promise(function(resolve, reject){
+            for(newFave in addedPois){
+                newObj = {"id": newFave} 
+                self.addFavePoi(newObj)
+            }
+            for(deletedFave in deletedPois){
+                deletedObj = { "id": deletedFave }
+                self.deleteFavePoi( deletedObj)
+            }
+            resolve("Done Updating")
+        })
     }
 
 }])
@@ -350,17 +370,35 @@ angular.module('tokyoApp')
             return response
         });
     }
-}]) 
-.service('orderService',['$http', function($http){
+}])
+/*
+There is a problem when the user logs in and adds favorite POIs from other pages. They must be concatenated to the existing list of POI positions,
+but the positions are only received from server when the user enters the fave page. Therefor we keep a list of POIs that were added before getting the positions
+for the first time, and concatenate them when the user does enter the fave page.
+*/ 
+.service('orderService',['$http', 'poiService', function($http, poiService){
 
-    let serverUrl = 'http://localhost:3000/api'
-
-    var sessionOrder = {}
+    let serverUrl = 'http://localhost:3000/api';
+    var self = this;
+    self.sessionOrder = {};
+    self.addedPois = []; 
 
     this.getUserOrder = function(){
+        if(Object.keys(self.sessionOrder).length !== 0){
+            return self.sessionOrder
+        }
         return $http.post(serverUrl + "/auth/protected/poi/userOrder")
         .then(function(response){
-            return response
+            let poiOrder = {};
+            for(poi in response.data.userOrder){ //We want to convert the response to a manageable object {3:1, 5:2, 6:3}
+                pid = response.data.userOrder[poi].PID;
+                position = response.data.userOrder[poi].Position;
+                poiOrder[pid] = position;
+            }
+            self.sessionOrder = poiOrder;
+            self.assignOrder();
+            self.addedPois = []
+            return self.sessionOrder;
         }, function(response){
             console.log("Something went wrong :-(")
             return response
@@ -369,25 +407,27 @@ angular.module('tokyoApp')
 
     this.updateLocalOrder = function(poiOrder){
         //localStorageModel.updateLocalStorage("order", poiOrder );
-        sessionOrder = poiOrder
+        self.sessionOrder = poiOrder
     }
 
     this.addLocalOrder = function(poiOrder){
         //localStorageModel.addLocalStorage("order", poiOrder );
-        sessionOrder = poiOrder
+        self.sessionOrder = poiOrder
     }
 
     this.getLocalOrder = function(){
        // return result = localStorageModel.getLocalStorage("order")
-       return sessionOrder
+       return self.sessionOrder
     }
 
     this.deleteLocalOrder = function(){
        // localStorageModel.removeItem("order")
-       sessionOrder = null
+       self.sessionOrder = null
     }
 
-    this.updateServerOrder = function(poiOrder){
+    // We generally want to use this one since PUT completely overwrites the server.
+    this.updateServerOrder = function(){
+        let poiOrder = self.sessionOrder
         let orderArray = []
         for(poi in poiOrder){
             orderArray.push({ PID: poi, position: poiOrder[poi] })
@@ -419,6 +459,54 @@ angular.module('tokyoApp')
         });
     }
 
+    //If a poi was added, we just give it a sequential position.
+    this.addToOrder = function(poi){
+        if(Object.keys(self.sessionOrder).length === 0){ //User hasn't entered favorites yet
+            self.addedPois.push(poi.PID);
+        }
+        else{
+            let newPosition = Object.keys(self.sessionOrder).length + 1
+            self.sessionOrder[poi.PID] = newPosition
+        }
+    }
+
+    //This is a bit trickier - if a poi was deleted we must update all the positions.
+    this.removeFromOrder = function(poi){
+        if(Object.keys(self.sessionOrder).length !== 0){ 
+        let deletedPosition = self.sessionOrder[poi.PID]
+
+        for(pid in self.sessionOrder){
+            if(self.sessionOrder[pid] > deletedPosition && poi.PID !== pid){
+                self.sessionOrder[pid]--; //bump it up if it isnt the deleted Poi and it had a lower position
+            }
+        }
+
+        delete self.sessionOrder[poi.PID]
+        }
+        else{ //User hasn't entered favorites yet
+            let indexToDelete = self.addedPois.indexOf(poi.PID);
+            self.addedPois.splice(indexToDelete,1);
+        }
+    }
+
+    //basically, we use this function to deal with the problem when the user has for some reason favorite Pois but they don't have a position assignined.
+    this.assignOrder = function(){
+        let favePois = poiService.getLocalFaves()
+        let newPosition = Object.keys(self.sessionOrder).length+1;
+        for(pid in favePois){
+            if(!(pid in self.sessionOrder)){ //If it isnt in the session order, we got a problem. Concatenate it!
+                self.sessionOrder[pid] = newPosition;
+                newPosition++;
+            }
+        }
+
+        for(const pid of self.addedPois){ //iterate over the POIs that were added before sessionOrder was initialized
+            if( !(pid in favePois)){
+                self.sessionOrder[pid] = newPosition;
+                newPosition++;
+            }
+        }
+    }
 
 }]);
 

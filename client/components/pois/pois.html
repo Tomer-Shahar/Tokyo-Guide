@@ -15,8 +15,6 @@
               <img src="resources/images/geisha.svg" onerror="this.src='../../resources/images/wave-circle.png'">
               <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" ng-model="search">
               <button id="searchBtn" class="btn btn-outline-success my-2 my-sm-0" ng-disabled="true">Search</button>
-              <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" >Save changes</button>
-              <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
           </div>
           <div class="col-sm-5" id="category-boxes">
             <div class="row" >
@@ -87,9 +85,9 @@
               <p class="lead"><b>Description:</b> {{currPoi.Description}}</p>
               <hr class="featurette-divider poi-divider">
               <p class="lead"><b>Latest reviews:</b></p>
-              <p class="lead">1) {{poiReviews[currPoi.PID][0].Description}}</p>
+              <p class="lead" ng-model="poiReviews[currPoi.PID][0].Description">1) {{poiReviews[currPoi.PID][0].Description}}</p>
               <p class="lead"><b>Date Written: </b>{{poiReviews[currPoi.PID][0].Date}}.</p> </br>
-              <p class="lead">2) {{poiReviews[currPoi.PID][1].Description}}</p>
+              <p class="lead" ng-model="poiReviews[currPoi.PID][1].Description">2) {{poiReviews[currPoi.PID][1].Description}}</p>
               <p class="lead"><b>Date Written: </b>{{poiReviews[currPoi.PID][1].Date}}.</p>
         </div>
         <div class="col-md-5">

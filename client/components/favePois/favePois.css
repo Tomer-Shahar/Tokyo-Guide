@@ -1,3 +1,13 @@
+@font-face{
+    font-family: electroHarmonix;
+    src: url("../../resources/fonts/electroharmonix.ttf");
+  }
+
+  @font-face{
+    font-family: kamikaze;
+    src: url("../../resources/fonts/Kamikaze.ttf");
+  }
+
 .display-4{
     width: 80rem;
 }
@@ -42,3 +52,7 @@
     margin-top: 0 !important;
 }
 
+.poi-order{
+    margin: 0 0 0 0.7rem;
+    font-weight: bold;
+}

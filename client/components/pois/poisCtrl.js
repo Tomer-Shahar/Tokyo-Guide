@@ -41,11 +41,6 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     //Save which of the POIs are favorites or not
     $scope.calcFaves();
 
-    $scope.saveChanges = function(){
-        $scope.$parent.saveFaves()
-        $scope.saved = true
-    }
-
     $scope.setCurrPoi = function(poi){
         $scope.incrementViews(poi);
         $scope.currPoi = poi;
@@ -121,13 +116,11 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
     $scope.unFave = function(poi){
         $scope.faveList[poi.PID] = false;
         $scope.$parent.unFave(poi);
-        $scope.saved = false
     }
 
     $scope.addToFave = function(poi){
         $scope.$parent.addToFave(poi);
         $scope.faveList[poi.PID] = true;
-        $scope.saved = false
     }
 
     $scope.setCoordinates = function(poi){

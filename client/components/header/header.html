@@ -33,6 +33,10 @@
         <li>
           <a class="nav-link">Hello, {{isLoggedInObject.firstName}}</a>
         </li>
+        <li ng-show="isLoggedInObject.isLogged">
+          <button class="btn btn-primary my-2 my-sm-0" ng-click="saveChanges()" ng-model="saved" ng-disabled="disableSave">Save changes</button>
+          <img src="resources/images/check.png" alt="Saved successfully!" ng-show="saved">
+        </li>
       </ul>
         <a id="register-btn" class="btn btn-outline-success my-2 my-sm-0" href="#/register" ng-show="!isLoggedInObject.isLogged" >Sign Up</a>
     </div>

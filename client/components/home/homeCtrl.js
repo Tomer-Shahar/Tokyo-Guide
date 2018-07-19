@@ -1,4 +1,5 @@
-angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiService','$timeout', function($scope, randomPois, poiService, $timeout) {
+angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiService','$timeout', 
+function($scope, randomPois, poiService, $timeout) {
 
     $scope.Pois = randomPois.POIs
     var path = "resources/images/poi/"
@@ -183,47 +184,3 @@ angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiSe
       $location = "https://www.telegraph.co.uk/travel/food-and-wine-holidays/cities-with-the-most-michelin-stars/tokyo/"
     }
 }]);
-
-    /*
-    $scope.submitReview = function(){
-      $scope.showReviewError = false;
-      rankObj = {id: $scope.currPoi.PID, ranking: $scope.poiRating}
-      var ranking = poiService.postRank(rankObj)
-      ranking.then(function(result){
-        debugger;
-          if(result.status === 200){
-            if($scope.textReview !== undefined){
-              reviewObj = {id: $scope.Pois[$scope.currPoi].PID, description: $scope.textReview}
-              var review = poiService.postReview(reviewObj)
-              review.then(function(result){
-                  if(result.status === 200){ //succeeded ranking AND text reviewing
-                    $scope.userReview[currPoi.PID] = true
-                    $scope.showReviewError = true;
-                    $scope.poiRating = 1
-                    $scope.textReview = undefined
-                    $scope.reviewSuccess = true;
-                  }
-                  else if($scope.poiRating !== undefined){ //text review failed but rating succeeded.
-                    $scope.reviewErrorMessage = result.data.message + '\n'
-                    $scope.showReviewError = true;
-                  }
-              });
-            }
-          }
-          else if($scope.textReview !== undefined){ //ranking failed either because it was empty or the server rejected it
-            reviewObj = {id: $scope.Pois[$scope.currPoi].PID, description: $scope.textReview}
-            var review = poiService.postReview(reviewObj)
-            review.then(function(result){
-                if(result.status === 200){ //text reviewing
-                  $scope.showReviewError = false;
-                  $scope.poiRating = undefined
-                  $scope.textReview = undefined
-                }
-                else{ //text review failed
-                  $scope.reviewErrorMessage += result.data.message
-                  $scope.showReviewError = true;
-                }
-            });
-          }
-      });
-    } */
