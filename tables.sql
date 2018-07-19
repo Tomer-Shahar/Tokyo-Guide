@@ -1,2 +1,2 @@
 SELECT *
-FROM favorites
+FROM positions

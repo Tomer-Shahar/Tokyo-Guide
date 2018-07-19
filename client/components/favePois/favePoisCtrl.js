@@ -182,6 +182,12 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
       });
     }
 
+    $scope.clearForm = function(){
+      $scope.showReviewError = false
+      $scope.poiRating = 1
+      $scope.textReview = undefined
+    }
+    
     $scope.flipReview = function(){
       $scope.showReview = !$scope.showReview
     }

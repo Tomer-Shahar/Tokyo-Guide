@@ -89,9 +89,9 @@
     margin: 1rem 0 1rem 0;
   }
   /* Modal Settings */
-  .modal-content{
-    width: 90rem;
-    margin: 0 0 0 -18rem;
+  .modal-content-custom{
+    width: 90rem !important; 
+    margin: 0 0 0 -18rem !important;
   }
   .poi-details{
     margin: 0;

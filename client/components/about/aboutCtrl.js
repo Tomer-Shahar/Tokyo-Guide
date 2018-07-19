@@ -47,7 +47,13 @@ angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiS
             $scope.$parent.addToFave(poi)
             $scope.faveList[poi.PID] = true;
         }
-
+        
+        $scope.clearForm = function(){
+            $scope.showReviewError = false
+            $scope.poiRating = 1
+            $scope.textReview = undefined
+        }
+        
         $scope.submitReview = function(){
             $scope.showReviewError = false;
             $scope.userReview[$scope.currPoi.PID] = false;

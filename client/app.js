@@ -1,6 +1,6 @@
 var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule',"pathgather.popeye"]);
 
-    app.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider)  {
+    app.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider){
 
         $locationProvider.hashPrefix('');
 
@@ -74,3 +74,17 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
         .otherwise({ redirectTo: "/home" });
 
     }]);
+
+    app.directive('poiModal', function(){
+      return{
+        restrict: 'EA',
+        scope:{
+          handler: '=lolo'
+        },
+        templateUrl: 'components/modal/poiModal.html',
+        transclude: true,
+        controller: function($scope){
+          $scope.handler = 'pop';
+        },
+      };
+    });

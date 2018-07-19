@@ -72,10 +72,11 @@ angular.module('tokyoApp').controller('indexCtrl', ["$scope", 'loginService', 'p
                 }
             }
             var saveFaves = poiService.updateDatabaseFaves($scope.addedPois, $scope.deletedPois)
-            saveFaves.then(function(res){
-                console.log(res)
+            saveFaves.then(function(res){ //Only enter once the DB has been updated.
+                console.log("Saved favorites Successfully")
                 var saveSuccess = orderService.updateServerOrder(); //ToDo: Must execute this only after all favorites have been updated!!!!
                 saveSuccess.then(function(res){
+                    console.log("Saved user order Successfully")
                     $scope.saved = true
                     $scope.disableSave = true
                 })

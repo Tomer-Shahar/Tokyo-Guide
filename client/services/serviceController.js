@@ -319,19 +319,18 @@ angular.module('tokyoApp')
     }
 
     this.updateDatabaseFaves = function(addedPois, deletedPois){
-        return new Promise(function(resolve, reject){
-            for(newFave in addedPois){
-                newObj = {"id": newFave} 
-                self.addFavePoi(newObj)
-            }
-            for(deletedFave in deletedPois){
-                deletedObj = { "id": deletedFave }
-                self.deleteFavePoi( deletedObj)
-            }
-            resolve("Done Updating")
-        })
+        debugger
+        let addPoiPromisesArray = []
+        for(newFave in addedPois){
+            newObj = {"id": newFave} 
+            addPoiPromisesArray.push(self.addFavePoi(newObj))
+        }
+        for(deletedFave in deletedPois){
+            deletedObj = { "id": deletedFave }
+            addPoiPromisesArray.push(self.deleteFavePoi(deletedObj))
+        }
+        return Promise.all(addPoiPromisesArray) //Magic function: It will only resolve when all the promises inside resolve.
     }
-
 }])
 .service('adminService',['$http', function( $http){
 

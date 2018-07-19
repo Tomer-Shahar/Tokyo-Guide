@@ -102,6 +102,12 @@ function($scope, randomPois, poiService, $timeout) {
       });
     }
 
+    $scope.clearForm = function(){
+      $scope.showReviewError = false
+      $scope.poiRating = 1
+      $scope.textReview = undefined
+    }
+
     $scope.submitReview = function(){
       $scope.showReviewError = false;
       $scope.userReview[$scope.currPoi.PID] = false;

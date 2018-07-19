@@ -55,6 +55,12 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
             $scope.poiReviews[poi.PID][1].Date =  $scope.poiReviews[poi.PID][1].Date.substring(0,10);
         });
     }
+
+    $scope.clearForm = function(){
+      $scope.showReviewError = false;
+      $scope.poiRating = 1;
+      $scope.textReview = undefined;
+    }
     
     $scope.boxClicked = function(){
       $scope.categories = {
@@ -73,7 +79,7 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
         ranking.then(function(result){
           debugger;
             if(result.status === 200){
-              if($scope.textReview !== undefined){
+              if($scope.textReview !== undefined ){
                 reviewObj = {id: $scope.currPoi.PID, description: $scope.textReview}
                 var review = poiService.postReview(reviewObj)
                 review.then(function(result){
@@ -82,11 +88,11 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
                       $scope.showReviewError = false
                       $scope.poiRating = undefined
                       $scope.textReview = undefined
-                      var review = poiService.getNewReviews(poi.PID)
+                      var review = poiService.getNewReviews($scope.currPoi.PID)
                       review.then(function(result){
-                          $scope.poiReviews[poi.PID] = result;
-                          $scope.poiReviews[poi.PID][0].Date =  $scope.poiReviews[poi.PID][0].Date.substring(0,10);
-                          $scope.poiReviews[poi.PID][1].Date =  $scope.poiReviews[poi.PID][1].Date.substring(0,10);
+                          $scope.poiReviews[$scope.currPoi.PID] = result;
+                          $scope.poiReviews[$scope.currPoi.PID][0].Date =  $scope.poiReviews[$scope.currPoi.PID][0].Date.substring(0,10);
+                          $scope.poiReviews[$scope.currPoi.PID][1].Date =  $scope.poiReviews[$scope.currPoi.PID][1].Date.substring(0,10);
                       });
                     }
                     else{ //text review failed
