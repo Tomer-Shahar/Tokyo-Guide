@@ -8,11 +8,6 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
         .when("/home", {
           templateUrl: "components/home/home.html",
           controller: "homeCtrl",
-          resolve: {
-            randomPois: function(randomPoiService){
-              return randomPoiService.getRandomPoi(3);
-            }
-          }
         })
         .when("/pois", {
             templateUrl: "components/pois/pois.html",
@@ -35,11 +30,11 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
           .when("/favePois", {
             templateUrl: "components/favePois/favePois.html",
             controller: "favePoisCtrl",
-            resolve: { //We do it like so because we want the fave page to correctly display the order.
+           /* resolve: { //We do it like so because we want the fave page to correctly display the order.
               order: function(orderService){
                 return orderService.getUserOrder();
               }
-            }
+            } */
           })
           .when("/login", {
             templateUrl: "components/login/login.html",
@@ -65,11 +60,6 @@ var app = angular.module('tokyoApp', ['ngRoute', 'ngAnimate','LocalStorageModule
           .when("/about", {
             templateUrl: "components/about/about.html",
             controller: "aboutCtrl",
-            resolve: {
-              randomPois: function(randomPoiService){
-                return randomPoiService.getRandomPoi(6);
-              }
-            }
           })
         .otherwise({ redirectTo: "/home" });
 

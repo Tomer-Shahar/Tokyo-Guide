@@ -1,15 +1,12 @@
-angular.module('tokyoApp').controller('homeCtrl', ["$scope", 'randomPois','poiService','$timeout', 
-function($scope, randomPois, poiService, $timeout) {
+angular.module('tokyoApp').controller('homeCtrl', ["$scope",'poiService','$timeout', 'randomPoiService',
+function($scope,poiService, $timeout, randomPoiService) {
 
-    $scope.Pois = randomPois.POIs
-    var path = "resources/images/poi/"
-    $scope.img0 = path + $scope.Pois[0].Image
-    $scope.img1 = path + $scope.Pois[1].Image
-    $scope.img2 = path + $scope.Pois[2].Image
-    $scope.imgs = [ $scope.img0, $scope.img1, $scope.img2 ]; //Useful for poi modals
+    var random = randomPoiService.getRandomPoi(3);
+    random.then(function(result){
+      $scope.Pois = result
+      $scope.currPoi = $scope.Pois[0];
+    })
 
-    $scope.currPoi = $scope.Pois[0];
-    $scope.currImg = $scope.img0
 
     $scope.poiReviews = {}
     $scope.userReview = {}
@@ -77,7 +74,7 @@ function($scope, randomPois, poiService, $timeout) {
       $scope.currPoi = $scope.Pois[num]
       $scope.setCoordinates($scope.currPoi)
       $scope.incrementViews($scope.currPoi);
-      $scope.currImg = $scope.imgs[num]
+     // $scope.currImg = $scope.imgs[num]
       $scope.showReviewError = false;
       $scope.reviewSuccess = false;
       var review = poiService.getNewReviews($scope.Pois[num].PID)

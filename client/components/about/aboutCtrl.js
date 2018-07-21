@@ -1,8 +1,12 @@
-angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPois','poiService', '$timeout',
-    function($scope, randomPois, poiService, $timeout) {
+angular.module('tokyoApp').controller('aboutCtrl', ["$scope", 'randomPoiService','poiService', '$timeout',
+    function($scope, randomPoiService, poiService, $timeout) {
 
-        $scope.Pois = randomPois.POIs
-        $scope.currPoi = $scope.Pois[0] // The POI shown in the modal will be stored here.
+        var random = randomPoiService.getRandomPoi(6);
+        random.then(function(result){
+          $scope.Pois = result
+          $scope.currPoi = $scope.Pois[0];
+        })
+
         $scope.poiReviews = {}
         $scope.showReview = false
         $scope.faveList = {}

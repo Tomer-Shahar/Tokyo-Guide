@@ -1,5 +1,5 @@
-angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'orderService', 'order','$timeout',
-    function($scope, poiService, orderService, order, $timeout) {
+angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'orderService', '$timeout',
+    function($scope, poiService, orderService, $timeout) {
     
     $scope.loggedIn = $scope.$parent.isLoggedInObject.isLogged;
     $scope.reverseSort = false;
@@ -13,7 +13,7 @@ angular.module('tokyoApp').controller('favePoisCtrl', ["$scope",'poiService', 'o
     $scope.userReview = {};
     $scope.favePoisArray = [];
 
-    $scope.poiOrder = order; //a dictionary mapping PID to POSITION \ 
+    $scope.poiOrder = orderService.getLocalOrder(); //a dictionary mapping PID to POSITION \ 
     $scope.orderToPoi = {}; //a dictionary mapping POSITION to PID  /
     $scope.categories = {
       "Sights & Landmarks" : true,

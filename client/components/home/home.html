@@ -106,7 +106,7 @@
           <p class="lead">{{Pois[0].Description}}</p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" src="{{img0}}" >
+          <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{Pois[0].Image}}" >
           <h4 style="text-align: center"><span class="text-muted">{{Pois[0].CategoryName}}</span></h4>
         </div>
       </div>
@@ -119,7 +119,7 @@
           <p class="lead">{{Pois[1].Description}}</p>
         </div>
         <div class="col-md-5 order-md-1">
-          <img class="featurette-image img-fluid mx-auto" src="{{img1}}" ng-click="setCurrPoi('1')" data-toggle="modal" data-target="#poiModal">
+          <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{Pois[1].Image}}" ng-click="setCurrPoi('1')" data-toggle="modal" data-target="#poiModal">
           <h4 style="text-align: center"><span class="text-muted">{{Pois[1].CategoryName}}</span></h4>
         </div>
       </div>
@@ -132,7 +132,7 @@
           <p class="lead">{{Pois[2].Description}}</p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" src="{{img2}}" alt="Generic placeholder image" ng-click="setCurrPoi('2')" data-toggle="modal" data-target="#poiModal">
+          <img class="featurette-image img-fluid mx-auto" ng-src="resources/images/poi/{{Pois[2].Image}}" alt="Generic placeholder image" ng-click="setCurrPoi('2')" data-toggle="modal" data-target="#poiModal">
           <h4 style="text-align: center"><span class="text-muted">{{Pois[2].CategoryName}}</span></h4>
         </div>
       </div>

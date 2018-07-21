@@ -11,20 +11,33 @@ angular.module('tokyoApp')
     this.checkLogIn = function(){
         const token_key  = "token";
         const name_key = "name";
+        const fave_key = "faves"
+        const order_key = "order"
         
         const token = localStorageModel.getLocalStorage(token_key);
         const user = localStorageModel.getLocalStorage(name_key);
-       // const faves = localStorageModel.getLocalStorage("faves");
+        const faves = localStorageModel.getLocalStorage(fave_key);
+        const order = localStorageModel.getLocalStorage(order_key);
 
-        if(token && user /*&& faves */) {
+        if(token && user && faves && order) {
             this.isLoggedInObject.isLoggedin = true;
             this.isLoggedInObject.firstName = user;
-            //this.isLoggedInObject.favePois = faves;
+            this.isLoggedInObject.favePois = faves;
+            this.isLoggedInObject.order = order;
             $http.defaults.headers.common['authorization'] = "Bearer " + token
             $http.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
+            let obj = {
+                isLoggedin: true,
+                firstName: self.isLoggedInObject.firstName,
+                favePois: faves,
+                order: order
+            }
 
+           // orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
+            self.isLoggedInObject = obj
+            
             //If a token is stored ---> Get favorites from server!
-            favePoisTmp = {} 
+            /*favePoisTmp = {} 
             var faves = poiService.getFavoritePois()
             faves.then(function(result){
                 if(result.status === 200){
@@ -44,7 +57,9 @@ angular.module('tokyoApp')
                 else{
                     console.log("Couldnt get favorite POIs.")
                 }
-            });
+            }); */
+
+            
         }
     };
     this.checkLogIn(); //done once when opening website.
@@ -67,8 +82,8 @@ angular.module('tokyoApp')
 
         localStorageModel.removeItem("token")
         localStorageModel.removeItem("name")
-        //localStorageModel.removeItem("faves")
-        //localStorageModel.removeItem("order")
+        localStorageModel.removeItem("faves")
+        localStorageModel.removeItem("order")
     }
 
     this.login = function (user) {
@@ -87,13 +102,20 @@ angular.module('tokyoApp')
                             favePoisTmp[fave.PID] = fave
                         }
                         poiService.insertFaves(favePoisTmp)
+                        debugger
+                        var serverOrder = orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
+                        serverOrder.then(function(orderPromise){
+                        orderService.updateLocalOrder(orderPromise)
+                        orderService.assignOrder();
+                        var localOrder = orderService.getLocalOrder()
                         let obj = {
                             isLoggedin: true,
                             firstName: self.isLoggedInObject.firstName,
-                            favePois: favePoisTmp
+                            favePois: favePoisTmp,
+                            order: localOrder
                         }
-                        orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
                         self.isLoggedInObject = obj
+                        })
                     }
                     else{
                         console.log("Couldnt get favorite POIs.")
@@ -124,7 +146,7 @@ angular.module('tokyoApp')
     this.getRandomPoi = function(num){
         return $http.get(serverUrl + "/guests/poiRand/"+num+"/2.5")
         .then((response) =>{
-            return response.data
+            return response.data.POIs
         }, (err)=>{
             console.log("Something went wrong :-( ----> adminService " + err)
         });
@@ -159,7 +181,7 @@ angular.module('tokyoApp')
 
     var self = this
     let serverUrl = 'http://localhost:3000/api'
-    self.sessionFaves = null
+    self.sessionFaves = localStorageModel.getLocalStorage("faves")
     self.allPois = null
     self.serverFaves = {}
 
@@ -175,7 +197,6 @@ angular.module('tokyoApp')
     }
 
     this.getRandomPoi = function(num){
-        debugger
         return $http.get(serverUrl + "/guests/poiRand/"+num+"/2.5")
         .then((response) =>{
             return response.data.POIs
@@ -303,23 +324,22 @@ angular.module('tokyoApp')
     }
 
     this.updateLocalFaves = function(favePois){
-       // localStorageModel.updateLocalStorage("faves", favePois);
+       localStorageModel.updateLocalStorage("faves", favePois);
        self.sessionFaves = favePois
     }
     
     this.getLocalFaves = function(){
-        //return localStorageModel.getLocalStorage("faves");
-        return self.sessionFaves
+        return localStorageModel.getLocalStorage("faves");
+       // return self.sessionFaves
     }
 
     this.insertFaves = function(favePois){
-        //localStorageModel.addLocalStorage("faves", favePois );
+        localStorageModel.addLocalStorage("faves", favePois );
         self.sessionFaves = favePois
 
     }
 
     this.updateDatabaseFaves = function(addedPois, deletedPois){
-        debugger
         let addPoiPromisesArray = []
         for(newFave in addedPois){
             newObj = {"id": newFave} 
@@ -370,22 +390,21 @@ angular.module('tokyoApp')
         });
     }
 }])
-/*
-There is a problem when the user logs in and adds favorite POIs from other pages. They must be concatenated to the existing list of POI positions,
-but the positions are only received from server when the user enters the fave page. Therefor we keep a list of POIs that were added before getting the positions
-for the first time, and concatenate them when the user does enter the fave page.
-*/ 
-.service('orderService',['$http', 'poiService', function($http, poiService){
+
+.service('orderService',['$http', 'poiService','localStorageModel', function($http, poiService, localStorageModel){
 
     let serverUrl = 'http://localhost:3000/api';
     var self = this;
-    self.sessionOrder = {};
+    self.sessionOrder  = localStorageModel.getLocalStorage("order");
+   /* if(self.sessionOrder === null){
+        self.sessionOrder = {} //We don't want to keep it null so that we can 
+    } */
     self.addedPois = []; 
 
     this.getUserOrder = function(){
-        if(Object.keys(self.sessionOrder).length !== 0){
+        /*if(Object.keys(self.sessionOrder).length !== 0){
             return self.sessionOrder
-        }
+        }*/
         return $http.post(serverUrl + "/auth/protected/poi/userOrder")
         .then(function(response){
             let poiOrder = {};
@@ -405,23 +424,23 @@ for the first time, and concatenate them when the user does enter the fave page.
     }
 
     this.updateLocalOrder = function(poiOrder){
-        //localStorageModel.updateLocalStorage("order", poiOrder );
+        localStorageModel.updateLocalStorage("order", poiOrder );
         self.sessionOrder = poiOrder
     }
 
     this.addLocalOrder = function(poiOrder){
-        //localStorageModel.addLocalStorage("order", poiOrder );
+        localStorageModel.addLocalStorage("order", poiOrder );
         self.sessionOrder = poiOrder
     }
 
     this.getLocalOrder = function(){
-       // return result = localStorageModel.getLocalStorage("order")
-       return self.sessionOrder
+        return localStorageModel.getLocalStorage("order")
+      // return self.sessionOrder
     }
 
     this.deleteLocalOrder = function(){
-       // localStorageModel.removeItem("order")
-       self.sessionOrder = null
+        localStorageModel.removeItem("order")
+        self.sessionOrder = null
     }
 
     // We generally want to use this one since PUT completely overwrites the server.
@@ -460,18 +479,14 @@ for the first time, and concatenate them when the user does enter the fave page.
 
     //If a poi was added, we just give it a sequential position.
     this.addToOrder = function(poi){
-        if(Object.keys(self.sessionOrder).length === 0){ //User hasn't entered favorites yet
-            self.addedPois.push(poi.PID);
-        }
-        else{
-            let newPosition = Object.keys(self.sessionOrder).length + 1
-            self.sessionOrder[poi.PID] = newPosition
-        }
+        let newPosition = Object.keys(self.sessionOrder).length + 1
+        self.sessionOrder[poi.PID] = newPosition
+        self.updateLocalOrder(self.sessionOrder);
     }
 
     //This is a bit trickier - if a poi was deleted we must update all the positions.
     this.removeFromOrder = function(poi){
-        if(Object.keys(self.sessionOrder).length !== 0){ 
+
         let deletedPosition = self.sessionOrder[poi.PID]
 
         for(pid in self.sessionOrder){
@@ -481,11 +496,7 @@ for the first time, and concatenate them when the user does enter the fave page.
         }
 
         delete self.sessionOrder[poi.PID]
-        }
-        else{ //User hasn't entered favorites yet
-            let indexToDelete = self.addedPois.indexOf(poi.PID);
-            self.addedPois.splice(indexToDelete,1);
-        }
+        self.updateLocalOrder(self.sessionOrder);
     }
 
     //basically, we use this function to deal with the problem when the user has for some reason favorite Pois but they don't have a position assignined.
@@ -505,6 +516,8 @@ for the first time, and concatenate them when the user does enter the fave page.
                 newPosition++;
             }
         }
+
+        self.updateLocalOrder(self.sessionOrder)
     }
 
 }]);
