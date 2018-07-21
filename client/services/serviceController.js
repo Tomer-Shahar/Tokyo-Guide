@@ -456,7 +456,7 @@ angular.module('tokyoApp')
         .then(function(response){
             return response.data
         }, function(response){
-            console.log("Something went wrong :-(")
+            console.log(response)
             return response
         });
     }
