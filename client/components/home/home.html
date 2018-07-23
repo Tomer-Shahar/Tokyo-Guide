@@ -273,15 +273,14 @@
                 <h4 style="text-align: center"><span class="text-muted">{{Pois[currPoi].CategoryName}}</span></h4>
                 <p ng-show="isLoggedInObject.isLogged && faveList[currPoi.PID]"><img class="fave"  ng-click="unFave(currPoi)" src="resources/images/isFavorite.png"></p>
                 <p ng-show="isLoggedInObject.isLogged && !faveList[currPoi.PID]"><img class="fave" ng-click="addToFave(currPoi)"  src="resources/images/notFavorite.png"></p>
+                <div ng-show="isLoggedInObject.isLogged && !userReview[currPoi.PID]" class="container">
+                  <hr class="featurette-divider" id="map-review-divider">
+                  <button type="button" class="btn btn-info btn-block"  data-toggle="modal" ng-click="clearForm()" ng-show="!userReview[currPoi.PID]" data-target="#reviewModal">Write a review</button> <!-- Triggers the review form-->
+                </div>
               </div>
             </div>
         </div>
-        <!-- Map will go here-->
         <div id="homeMap">
-        </div>
-        <div ng-show="isLoggedInObject.isLogged" class="container">
-          <hr class="featurette-divider" id="map-review-divider">
-          <button type="button" class="btn btn-info btn-block"  data-toggle="modal" ng-click="clearForm()" ng-show="!userReview[currPoi.PID]" data-target="#reviewModal">Write a review</button> <!-- Triggers the review form-->
         </div>
         <div class="modal-body" ng-show="userReview[currPoi.PID]">
           <h1 class="featurette-heading poi-details">
@@ -296,7 +295,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Review Modal-->
 <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

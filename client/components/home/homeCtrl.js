@@ -5,6 +5,9 @@ function($scope,poiService, $timeout, randomPoiService) {
     random.then(function(result){
       $scope.Pois = result
       $scope.currPoi = $scope.Pois[0];
+      if($scope.latestPois === null){
+        $scope.latestPois = [$scope.Pois[0], $scope.Pois[1]]
+      }
     })
 
 
@@ -34,16 +37,10 @@ function($scope,poiService, $timeout, randomPoiService) {
           $scope.popularPois = []
         }
       });
-
+      $scope.latestPois = null;
       var latestPois = poiService.getUsersLastFaves();
       latestPois.then(function(result){
-        if(result.status === 200){ //Got the popular Pois.
           $scope.latestPois = result.data.userFavorites
-        }
-        else{ //text review failed
-          $scope.latestPois = []
-          $scope.latestPois = [$scope.Pois[0], $scope.Pois[1]]
-        }
       });
 
       $scope.categories = {
@@ -186,4 +183,12 @@ function($scope,poiService, $timeout, randomPoiService) {
     $scope.followLink = function(){
       $location = "https://www.telegraph.co.uk/travel/food-and-wine-holidays/cities-with-the-most-michelin-stars/tokyo/"
     }
+
+
+    // Deals with the problem of a modal on top of another modal
+    //When closing 2nd modal, will return focus to first
+    $('#reviewModal').on('hidden.bs.modal', function (e) {
+      console.log('Modal is successfully shown!');
+      $('body').addClass('modal-open')
+    });
 }]);

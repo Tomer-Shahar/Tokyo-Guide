@@ -151,4 +151,11 @@ angular.module('tokyoApp').controller('poisCtrl', ["$scope",'poiService','allPoi
 
     $scope.calcFaves();
 
+    // Deals with the problem of a modal on top of another modal
+    //When closing 2nd modal, will return focus to first
+    $('#reviewModal').on('hidden.bs.modal', function (e) {
+      console.log('Modal is successfully shown!');
+      $('body').addClass('modal-open')
+    }); 
+
  }]);

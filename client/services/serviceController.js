@@ -35,6 +35,7 @@ angular.module('tokyoApp')
 
            // orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
             self.isLoggedInObject = obj
+            poiService.getFavoritePois();
             
             //If a token is stored ---> Get favorites from server!
             /*favePoisTmp = {} 
@@ -102,19 +103,18 @@ angular.module('tokyoApp')
                             favePoisTmp[fave.PID] = fave
                         }
                         poiService.insertFaves(favePoisTmp)
-                        debugger
                         var serverOrder = orderService.getUserOrder() //We do this right after logging in in case a user starts adding fave POIs before entering the favePoi Page.
                         serverOrder.then(function(orderPromise){
-                        orderService.updateLocalOrder(orderPromise)
-                        orderService.assignOrder();
-                        var localOrder = orderService.getLocalOrder()
-                        let obj = {
-                            isLoggedin: true,
-                            firstName: self.isLoggedInObject.firstName,
-                            favePois: favePoisTmp,
-                            order: localOrder
-                        }
-                        self.isLoggedInObject = obj
+                            orderService.updateLocalOrder(orderPromise)
+                            orderService.assignOrder();
+                            var localOrder = orderService.getLocalOrder()
+                            let obj = {
+                                isLoggedin: true,
+                                firstName: self.isLoggedInObject.firstName,
+                                favePois: favePoisTmp,
+                                order: localOrder
+                            }
+                            self.isLoggedInObject = obj
                         })
                     }
                     else{
@@ -188,7 +188,11 @@ angular.module('tokyoApp')
     this.getFavoritePois = function(){
         return $http.post(serverUrl + "/auth/protected/poi/userFavorites")
         .then(function(response){
-            self.serverFaves = response.data.userFavorites
+            self.serverFaves = {}
+            for(entry in response.data.userFavorites){
+                let pid = response.data.userFavorites[entry].PID
+                self.serverFaves[pid] = response.data.userFavorites[entry]
+            }
             return response
         }, function(response){
             console.log("Something went wrong :-()")
@@ -341,16 +345,39 @@ angular.module('tokyoApp')
 
     this.updateDatabaseFaves = function(addedPois, deletedPois){
         let addPoiPromisesArray = []
-        for(newFave in addedPois){
-            newObj = {"id": newFave} 
-            addPoiPromisesArray.push(self.addFavePoi(newObj))
+        var localFaves = self.getLocalFaves();
+
+        for(pid in localFaves){
+            if(!(pid in self.serverFaves)){
+                newObj = {"id": pid} 
+                addPoiPromisesArray.push(self.addFavePoi(newObj))
+                console.log("Poi to be added: " + pid)
+            }
         }
-        for(deletedFave in deletedPois){
-            deletedObj = { "id": deletedFave }
-            addPoiPromisesArray.push(self.deleteFavePoi(deletedObj))
+        for(pid in self.serverFaves){
+            if(!(pid in localFaves)){
+                deletedObj = { "id": pid }
+                addPoiPromisesArray.push(self.deleteFavePoi(deletedObj))
+                console.log("Poi to be deleted: " + pid)
+            }
         }
-        return Promise.all(addPoiPromisesArray) //Magic function: It will only resolve when all the promises inside resolve.
-    }
+
+        return Promise.all(addPoiPromisesArray) //Magic function: It will only resolve when all the promises inside resolve.    
+
+            /*
+            for(newFave in addedPois){
+                newObj = {"id": newFave} 
+                addPoiPromisesArray.push(self.addFavePoi(newObj))
+                console.log("Poi to be added: " + newFave)
+            }
+            for(deletedFave in deletedPois){
+                deletedObj = { "id": deletedFave }
+                addPoiPromisesArray.push(self.deleteFavePoi(deletedObj))
+                console.log("Poi to be deleted: " + deletedFave)
+    
+            } */
+        
+}
 }])
 .service('adminService',['$http', function( $http){
 
@@ -449,11 +476,13 @@ angular.module('tokyoApp')
         let orderArray = []
         for(poi in poiOrder){
             orderArray.push({ PID: poi, position: poiOrder[poi] })
+            console.log("Poi: " + poi + " order: " + poiOrder[poi])
         }
         let orderObj = { "orders": orderArray}
 
         return $http.put(serverUrl + "/auth/protected/poi/order", orderObj)
         .then(function(response){
+            console.log("Successfully updated server order")
             return response.data
         }, function(response){
             console.log(response)
@@ -465,6 +494,7 @@ angular.module('tokyoApp')
         let orderArray = []
         for(poi in poiOrder){
             orderArray.push({ PID: poi, position: poiOrder[poi] })
+            console.log("Poi: " + poi + "order: " + poiOrder[poi])
         }
         let orderObj = { "orders": orderArray}
 
@@ -501,7 +531,8 @@ angular.module('tokyoApp')
 
     //basically, we use this function to deal with the problem when the user has for some reason favorite Pois but they don't have a position assignined.
     this.assignOrder = function(){
-        let favePois = poiService.getLocalFaves()
+        self.correctPositions();
+        let favePois = poiService.getLocalFaves();
         let newPosition = Object.keys(self.sessionOrder).length+1;
         for(pid in favePois){
             if(!(pid in self.sessionOrder)){ //If it isnt in the session order, we got a problem. Concatenate it!
@@ -518,6 +549,28 @@ angular.module('tokyoApp')
         }
 
         self.updateLocalOrder(self.sessionOrder)
+    }
+    
+    //in case there's a server error and the positions of the POI aren't sequential starting from 1
+    this.correctPositions = function(){
+        let newPosition = 1;
+        let newOrder = {};
+        let orderToPoi = {};
+        for(pid in self.sessionOrder){ //create a dict mapping positions to PID for easier iteration
+            let position = self.sessionOrder[pid];
+            orderToPoi[position] = pid;
+        }
+        let i = 1;
+         //basically loop from min position to max position until we found all of the POIs. 
+        while( newPosition <=Object.keys(self.sessionOrder).length ){
+            if(i in orderToPoi){
+                let currPID = orderToPoi[i];
+                newOrder[currPID] = newPosition;
+                newPosition++
+            }
+            i++;
+        }
+        self.sessionOrder = newOrder;
     }
 
 }]);

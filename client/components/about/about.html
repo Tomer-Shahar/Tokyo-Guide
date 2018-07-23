@@ -91,21 +91,22 @@
                   <h4 style="text-align: center"><span class="text-muted">{{currPoi.CategoryName}}</span></h4>
                   <p ng-show="loggedIn && faveList[currPoi.PID]"><img ng-click="unFave(currPoi)" class="fave" src="resources/images/isFavorite.png"></p>
                   <p ng-show="loggedIn && !faveList[currPoi.PID]"><img ng-click="addToFave(currPoi)" class="fave" src="resources/images/notFavorite.png"></p>
+                  <div ng-show="isLoggedInObject.isLogged && !userReview[currPoi.PID]" class="container">
+                    <hr class="featurette-divider" id="map-review-divider">
+                    <button type="button" class="btn btn-info btn-block"  data-toggle="modal" ng-click="clearForm()" ng-show="!userReview[currPoi.PID]" data-target="#reviewModal">Write a review</button> <!-- Triggers the review form-->
+                  </div>
                 </div>
               </div>
             </div>
             <div id="cardMap">
             </div>
-              <div ng-show="loggedIn && !userReview[currPoi.PID]" class="container">
-                <button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#reviewModal" ng-show="!userReview[currPoi.PID]" ng-click="clearForm()">Write a review</button> <!-- Triggers the review form-->
-              </div>
-              <div class="modal-body" ng-show="userReview[currPoi.PID]">
-                  <h1 class="featurette-heading poi-details">
-                    <span class="text-muted poi-muted-text">
-                        Review successfully added!
-                    </span>
-                  </h1>
-              </div>
+            <div class="modal-body" ng-show="userReview[currPoi.PID]">
+                <h1 class="featurette-heading poi-details">
+                  <span class="text-muted poi-muted-text">
+                      Review successfully added!
+                  </span>
+                </h1>
+            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>

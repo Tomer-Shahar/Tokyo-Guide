@@ -88,11 +88,12 @@
   #home-end-div{
     margin: 1rem 0 1rem 0;
   }
-  /* Modal Settings */
+  /* Modal Settings 
   .modal-content-custom{
     width: 90rem !important; 
     margin: 0 0 0 -18rem !important;
-  }
+  } */
+  
   .poi-details{
     margin: 0;
     font-weight: 400;

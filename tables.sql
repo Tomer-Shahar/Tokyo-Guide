@@ -1,2 +1,2 @@
 SELECT *
-FROM positions
+FROM admins
