@@ -1,2 +1,2 @@
 SELECT *
-FROM admins
+FROM users
