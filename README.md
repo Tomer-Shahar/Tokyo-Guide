@@ -46,19 +46,19 @@ will load the following screen:
 
 Here the user can see their favorite attractions. The user can search, filter and sort the attractions and save for later use. In order to properly save the attractions, click the “Save Changes” button. If the save was successful, the icon will change as so:
 
-![Home-Page](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/homepage.png?raw=true)
+![successful](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/successful.png?raw=true)
 
 Note: it is necessary to save the changes in order to update the server of your new preferences.
 
 # New options for logged in users
 Once logged in, the user can add favorite attractions to their list and also submit reviews. This can be done in several ways. For example from the attractions page:
 
-![successful](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/successful.png?raw=true)
+![reviews](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/reviews.png?raw=true)
 
 Favorite attractions are marked with a full heart, while non-favorites have an empty heart.
 This may also be accomplished by clicking one of the attraction links in any part of the page:
 
-![reviews](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/reviews.png?raw=true)
+![heart](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/heart.png?raw=true)
 
 Clicking the “Write a review” button will make it open as so:
 
