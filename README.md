@@ -14,7 +14,7 @@ By scrolling down the user will find 3 random points of interest to view. Clicki
 # Registering
 
 After clicking the “Sign Up” link, the user will be taken to this screen
-![registering](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/registering.png?raw=true)
+![registering](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/Registering.png?raw=true)
 After filling in all the fields, the user may click the “Submit” button at the bottom. If there are issues with signing up, the appropriate messages will appear at the bottom. If there aren’t any issues, you will be transferred back to the home screen where you may now sign in with your new account.
 
 # Logging in
