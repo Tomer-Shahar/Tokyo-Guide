@@ -1,4 +1,6 @@
 # README #
+Internet programming environments Department of Software and Information Systems Engineering 
+Nevo Itzhak and Tomer Shahar
 
 This is a website we wrote for assisting people in plannning their trip to tokyo. The client side was developed in AngularJS and the server side was developed in node.js
 
@@ -65,3 +67,14 @@ Clicking the “Write a review” button will make it open as so:
 ![Write](https://github.com/Tomer-Shahar/Tokyo-Guide/blob/master/client/resources/images/write.png?raw=true)
 
 At this point a user can rate the attraction on a scale of 1-5, and can optionally write a review. If all is well the user can submit the review and it’ll add it to the database. Note that you can only review an attraction once. If the review was successful, an appropriate message will appear.
+
+Licence:
+====
+
+Copyright 2018 Nevo Itzhak and Tomer Shahar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
