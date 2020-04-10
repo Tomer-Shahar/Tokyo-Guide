@@ -4,6 +4,10 @@ Nevo Itzhak and Tomer Shahar
 
 This is a website we wrote for assisting people in plannning their trip to tokyo. The client side was developed in AngularJS and the server side was developed in node.js
 
+## Authors
+* **Tomer Shahar** - [Tomer Shahar](https://github.com/Tomer-Shahar)
+* **Nevo Itzhak** - [Nevo Itzhak](https://github.com/nevoit)
+
 # Main home window
 
 Whilst entering the website, the user will be confronted with the following screen:
